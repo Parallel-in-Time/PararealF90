@@ -1,0 +1,5 @@
+- race condition in OpenMP-pipe
+- happens already for two threads, but only rarely
+- check algorithm in draft; make one loop nt=0,Nthreads-1 over fine run and coarse correction with latter ordererd
+- ????
+- PROFIT!!!

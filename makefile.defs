@@ -1,0 +1,5 @@
+F90 = mpif90
+
+
+FCFLAGS = -cpp -O3 -fopenmp -Wtabs -ffree-line-length-none -Wall
+#FCFLAGS += -g -frecursive -ffree-form -frange-check -fbacktrace -fvar-tracking -C -Wconversion -fimplicit-none -Warray-temporaries -Wcharacter-truncation -Wline-truncation -fcheck=all -fbounds-check
