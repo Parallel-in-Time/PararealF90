@@ -1,6 +1,10 @@
 !>
 !! @todo docu
 !!
+
+!> Module: runt_timestepper
+!> \author Daniel Ruprecht
+!> \date 28 October, 2014
 PROGRAM run_timestepper
 
 USE omp_lib
@@ -20,7 +24,12 @@ INTEGER :: Nx, Ny, Nz, N_fine, N_coarse, Niter, method, order_adv, order_diff, &
     ierr, mpi_thread_provided, Nthreads
 LOGICAL :: do_io, be_verbose
 
+!>
 NAMELIST /param/ nu, Nx, Ny, Nz, N_fine, N_coarse, Niter, Tend, do_io, be_verbose
+
+! ***********************
+! Here starts the program
+! ***********************
 
 Nthreads=1
 
@@ -28,6 +37,7 @@ OPEN(unit=20, FILE='parameter.in', ACTION='read', STATUS='old')
 READ(20,NML=param)
 CLOSE(20)
 
+! Command line arguments: C = run coarse method, F = run fine method
 CALL GET_COMMAND_ARGUMENT(1, arg)
 IF (arg=='C') THEN
     method     = 1
@@ -42,6 +52,7 @@ ELSE
     STOP
 END IF
 
+! Computational domain is unit cube
 dy = 1.0/DBLE(Ny)
 dz = 1.0/DBLE(Nz)
 dx = 1.0/DBLE(Nx)

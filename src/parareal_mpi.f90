@@ -53,9 +53,9 @@ IF ((myrank==0) .AND. (be_verbose)) THEN
 END IF
 
 CALL InitializeTimestepper(nu, Nx, Ny, Nz, Nthreads)
-ALLOCATE(Q(    -2:Nx+3,-2:Ny+3,-2:Nz+3))
+ALLOCATE(Q(   -2:Nx+3,-2:Ny+3,-2:Nz+3))
 ALLOCATE(Qend(-2:Nx+3,-2:Ny+3,-2:Nz+3))
-ALLOCATE(GQ(   -2:Nx+3,-2:Ny+3,-2:Nz+3))
+ALLOCATE(GQ(  -2:Nx+3,-2:Ny+3,-2:Nz+3))
 
 dim = SIZE(Q,1)*SIZE(Q,2)*SIZE(Q,3)
 
