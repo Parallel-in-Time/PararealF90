@@ -16,15 +16,16 @@ do_io = True
 be_verbose = True
 #
 generate_q0(Nx, Ny, Nz)
-Nproc = [2, 4, 8]
-#types = [ 'mpi' ]
+#Nproc = [2, 4, 8]
+Nproc = [4]
 # read the run command to use plus possible options from a file run_cmd.txt
 with open("system.txt", "r") as rfile:
     system = rfile.readline()
     system = system.rstrip()
     rfile.close()
 for np in Nproc:
-  types = [ 'mpi', 'openmp', 'openmp_pipe' ]
+  #types = [ 'mpi', 'openmp', 'openmp_pipe' ]
+  types = [ 'mpi' ]
   timemesh = generate_timemesh(0.0, Tend, dt_fine, dt_coarse, np)
   Nfine = timemesh.get('Nfine')
   Ncoarse = timemesh.get('Ncoarse')
@@ -33,7 +34,7 @@ for np in Nproc:
       type=types.pop(0)
       if system=="mac":
           if type=="mpi":
-              os.system("time mpirun -n "+str(np)+" bin/parareal_"+type+".out")
+              os.system("time mpirun -n "+str(np)+" bin/run_parareal_"+type+".out")
           elif type=="openmp":
               os.system("time OMP_NUM_THREADS="+str(np)+" mpirun -n 1 bin/parareal_"+type+".out")
           elif type=="openmp_pipe":

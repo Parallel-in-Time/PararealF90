@@ -2,12 +2,16 @@ PROGRAM run_parareal_mpi
 
 USE parareal_mpi, only: InitializePararealMPI, FinalizePararealMPI, PararealMPI;
 
+IMPLICIT NONE
+
+INCLUDE 'mpif.h'
+
 !> @todo docu
 LOGICAL :: do_io, be_verbose
 
 DOUBLE PRECISION :: nu, dx, dy, dz, Tend
 
-INTEGER :: Nx, Ny, Nz, N_fine, N_coarse, Niter
+INTEGER :: Nx, Ny, Nz, N_fine, N_coarse, Niter, ierr, mpi_thread_provided
 
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:) :: Q
 
@@ -26,8 +30,9 @@ dy = DBLE(1.0)/DBLE(Ny)
 dz = DBLE(1.0)/DBLE(Nz)
 dx = DBLE(1.0)/DBLE(Nx)
 
-! Start MPI
+! Initialize
 CALL MPI_INIT_THREAD(MPI_THREAD_FUNNELED, mpi_thread_provided, ierr)
+CALL InitializePararealMPI(nu, Nx, Ny, Nz)
 
 ! Load initial data
 ALLOCATE(Q(-2:Nx+3,-2:Ny+3,-2:Nz+3))

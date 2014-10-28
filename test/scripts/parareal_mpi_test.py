@@ -11,8 +11,9 @@ N_coarse = 1
 Niter = 0
 Tend  = 1.0
 do_io = True
-build_namelist(nu, Nx, Ny, Nz, N_fine, N_coarse, Niter, Tend, do_io)
+be_verbose=True
+build_namelist(nu, Nx, Ny, Nz, N_fine, N_coarse, Niter, Tend, do_io, be_verbose)
 generate_q0(Nx, Ny, Nz)
 Nproc = 8
-os.system('cp ../../bin/parareal_mpi.out .')
-os.system("mpirun -n "+str(Nproc)+" ./parareal_mpi.out")
+os.system('cp ../../bin/run_parareal_mpi.out .')
+os.system("mpirun -n "+str(Nproc)+" ./run_parareal_mpi.out")
