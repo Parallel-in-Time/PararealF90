@@ -1,8 +1,16 @@
+!>
+!! @todo complete docu
+!!
+!! \\( q_t + f(q)_x + g(q)_y + h(q)_z = 0 \\)
+!!
+!! depending on preprocessor flag
+!!
+!! \\( f(q) = g(q) = h(q) = c q \\) (linear advection)
+!!
+!! or
+!!
+!! \\( f(q) = g(q) = h(q) = \\frac{1}{2} q^2 \\) (nonlinear advection)
 MODULE weno5
-! This module provides the implementation of a two-dimensional, finite difference WENO-5 scheme.
-!
-! Daniel Ruprecht, 8.2.2012
-! ICS Lugano
 
 USE omp_lib, only : omp_get_thread_num
 USE fluxes,  only : FluxI, FluxJ, FluxK, param, FluxI_Cell, FluxJ_Cell, FluxK_Cell
@@ -14,15 +22,29 @@ IMPLICIT NONE
 PRIVATE
 PUBLIC :: WenoFluxes
 
-! Define fixed parameters used by the WENO-5 method (see Shu .... e.g.)
+!> @todo add docu
 DOUBLE PRECISION, PARAMETER, DIMENSION(3) :: weights_plus = (/ 0.3_8, 0.6_8, 0.1_8 /)
+
+!> @todo add docu
 DOUBLE PRECISION, PARAMETER, DIMENSION(5) :: stencil_weights = (/ 2.0_8, 5.0_8, -1.0_8, -7.0_8, 11.0_8 /)*(1.0_8/6.0_8)
-DOUBLE PRECISION, PARAMETER               :: coeff_1 = 13.0_8/12.0_8, coeff_2 = 1.0_8/4.0_8
-DOUBLE PRECISION, PARAMETER               :: weno_tol = 1.0e-6_8
-DOUBLE PRECISION, PARAMETER               :: weno_n   = 2.0_8
+
+!> @todo add docu
+DOUBLE PRECISION, PARAMETER :: coeff_1 = 13.0_8/12.0_8
+
+!> @todo add docu
+DOUBLE PRECISION, PARAMETER :: coeff_2 = 1.0_8/4.0_8
+
+!> @todo add docu
+DOUBLE PRECISION, PARAMETER :: weno_tol = 1.0e-6_8
+
+!> @todo add docu
+DOUBLE PRECISION, PARAMETER :: weno_n   = 2.0_8
 
 CONTAINS
 
+    !>
+    !! @todo add docu
+    !! @param[in]
     SUBROUTINE WenoFluxes(Q)
     
         DOUBLE PRECISION, DIMENSION(param%i_min:, param%j_min:, param%k_min:), INTENT(IN)  :: Q
@@ -52,7 +74,10 @@ CONTAINS
             
     END SUBROUTINE WenoFluxes
         
-    ! Updates the horizontal fluxes using WENO5
+    !>
+    !! @todo add docu
+    !! @param[in] Qcell
+    !! @param[in] max_vel
     SUBROUTINE UpdateFluxI(Qcell, max_vel)
         
         DOUBLE PRECISION, DIMENSION(param%i_min:,param%j_min:,param%k_min:), INTENT(IN) :: Qcell
@@ -103,7 +128,10 @@ CONTAINS
 
     END SUBROUTINE UpdateFluxI
     
-    ! Update vertical fluxes using WENO5
+    !>
+    !! @todo add docu
+    !! @param[in] Qcell
+    !! @param[in] max_vel
     SUBROUTINE UpdateFluxJ(Qcell, max_vel)
     
         DOUBLE PRECISION, DIMENSION(param%i_min:,param%j_min:,param%k_min:), INTENT(IN) :: Qcell
@@ -147,6 +175,10 @@ CONTAINS
     
     END SUBROUTINE UpdateFluxJ
 
+    !>
+    !! @todo add docu
+    !! @param[in] Qcell
+    !! @param[in] max_vel
     SUBROUTINE UpdateFluxK(Qcell, max_vel)
 
         DOUBLE PRECISION, DIMENSION(param%i_min:,param%j_min:,param%k_min:), INTENT(IN) :: Qcell
@@ -159,8 +191,6 @@ CONTAINS
         
         ! Out of the global fields Qcell and FluxQcell, updated interface
         ! values of the flux are computed
-
-
         DO i=param%i_start,param%i_end
             DO j=param%j_start,param%j_end
 
@@ -200,8 +230,12 @@ CONTAINS
 ! a flux value at the interface is reconstructed.
 !
     
-    ! Moves all values in Qcell_local and Fcell_local one index down and inserts new
-    ! values at index 6.
+    !> Moves all values in Qcell_local and Fcell_local one index down and inserts new
+    !! values at index 6. @todo complete docu
+    !! @param[in] Qcell_new
+    !! @param[in] Fcell_new
+    !! @param[inout] Qcell_local
+    !! @param[inout] Fcell_local
     PURE SUBROUTINE ShiftLocalValues(Qcell_local, Fcell_local, Qcell_new, Fcell_new)
 
     DOUBLE PRECISION, DIMENSION(6), INTENT(INOUT) :: Qcell_local, Fcell_local
@@ -221,7 +255,10 @@ CONTAINS
                 
     END SUBROUTINE ShiftLocalValues
     
-    ! This routine performs the actual reconstruction of the interface values    
+    !> This routine performs the actual reconstruction of the interface values
+    !! @todo complete doc
+    !! @param[in]
+    !! @param[out] Fint
     FUNCTION ReconstructInterfaceValue(Qcell_local, Fcell_local, local_vel) RESULT(Fint)
     
         DOUBLE PRECISION, DIMENSION(6) :: Qcell_local, Fcell_local
@@ -244,7 +281,7 @@ CONTAINS
         
         CONTAINS
         
-            ! Local Lax-Friedrichs flux-splitting
+            !> Local Lax-Friedrichs flux-splitting @todo complete docu
             PURE SUBROUTINE GetLocalFluxSplit(Qcell_local, Fcell_local, local_vel, Fcell_plus, Fcell_minus)
     
                 DOUBLE PRECISION, DIMENSION(6), INTENT(IN)  :: Qcell_local, Fcell_local
@@ -257,8 +294,8 @@ CONTAINS
                                         
             END SUBROUTINE GetLocalFluxSplit
     
-            ! In this routine, the WENO magic happens: The three candidate stencils are
-            ! calculated, the smoothness measures beta and then the final weights
+            !> In this routine, the WENO magic happens: The three candidate stencils are
+            !! calculated, the smoothness measures beta and then the final weights @todo complete docu
             PURE SUBROUTINE GetWenoInterfaceValue(Fcell_plus, Fcell_minus, Fint_plus, Fint_minus)
         
                 DOUBLE PRECISION, DIMENSION(5), INTENT(IN)  :: Fcell_plus, Fcell_minus

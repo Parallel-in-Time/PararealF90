@@ -1,8 +1,8 @@
+!>
+!! @todo complete docu
+!!
+!! \\( q_t + f(q)_x + g(q)_y + h(q)_z = 0 \\)
 MODULE upwind
-! This module provides the implementation of a two-dimensional, finite difference upwind scheme.
-!
-! Daniel Ruprecht, 17.4.2014
-! ICS Lugano
 
 USE omp_lib,       only : omp_get_thread_num
 USE fluxes,        only : param, FluxI, FluxJ, FluxK
@@ -16,6 +16,7 @@ PUBLIC :: UpwindFluxes
 
 CONTAINS
 
+    !> @todo complete docu
     SUBROUTINE UpwindFluxes(Q)
     
         DOUBLE PRECISION, DIMENSION(param%i_min:, param%j_min:, param%k_min:), &
@@ -28,7 +29,7 @@ CONTAINS
 
     END SUBROUTINE UpwindFluxes
 
-    ! Updates the horizontal fluxes using first order upwinding
+    !> Updates the horizontal fluxes using first order upwinding @todo complete docu
     SUBROUTINE UpdateFluxI(Q)
         
         DOUBLE PRECISION, DIMENSION(param%i_min:, param%j_min:, param%k_min:), &
@@ -70,7 +71,7 @@ CONTAINS
                 
     END SUBROUTINE UpdateFluxI
     
-    ! Update vertical fluxes using first order upwinding
+    !> Update vertical fluxes using first order upwinding @complete docu
     SUBROUTINE UpdateFluxJ(Q)
     
         DOUBLE PRECISION, DIMENSION(param%i_min:, param%j_min:, param%k_min:), &
@@ -104,7 +105,8 @@ CONTAINS
         END DO
     
     END SUBROUTINE UpdateFluxJ
-    
+
+    !> @todo docu
     SUBROUTINE UpdateFluxK(Q)
     
         DOUBLE PRECISION, DIMENSION(param%i_min:, param%j_min:, param%k_min:), &
