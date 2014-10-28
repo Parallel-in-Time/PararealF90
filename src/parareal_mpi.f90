@@ -55,6 +55,8 @@ CONTAINS
     ALLOCATE(Qend(-2:Nx+3,-2:Ny+3,-2:Nz+3))
     ALLOCATE(GQ(  -2:Nx+3,-2:Ny+3,-2:Nz+3))
 
+    dim = SIZE(Q,1)*SIZE(Q,2)*SIZE(Q,3)
+
   END SUBROUTINE InitializePararealMPI
 
   !> @todo docu
@@ -76,10 +78,16 @@ CONTAINS
     CALL MPI_COMM_SIZE(MPI_COMM_WORLD, Nproc, ierr)
     CALL MPI_COMM_RANK(MPI_COMM_WORLD, myrank, ierr)
 
+    ! Output
+    IF ((myrank==0) .AND. (be_verbose)) THEN
+      WRITE(*,'(A, I2)') '--- Running MPI parareal, no. of processes: ', Nproc
+    END IF
+
     timer_all    = MPI_WTIME()
     timer_fine   = 0.0
     timer_coarse = 0.0
     timer_comm   = 0.0
+
 
     ! Divide time interval [0,T] into Nproc many timeslices
     dt_slice  = Tend/DBLE(Nproc)
