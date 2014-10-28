@@ -1,3 +1,7 @@
+!>
+!! @todo docu
+!!
+!! \\( y^{k+1}_{n+1} = G(y^{k+1}_{n}) + F(y^k_n) - G(y^k_n) \\)
 PROGRAM parareal_mpi
 
 USE omp_lib
@@ -12,16 +16,21 @@ INTEGER, PARAMETER :: Nthreads = 1, & ! In MPI version, don't need multiple thre
 
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:) :: Q, GQ, Qend
 
+!> @todo docu
 DOUBLE PRECISION :: nu, dx, dy, dz, Tend, dt_coarse, dt_fine, dt_slice, &
     tstart_myslice, tend_myslice, timer_coarse, timer_fine, timer_comm, timer_all, T0, T1
-    
+
+!> @todu docu
 INTEGER :: mpi_thread_provided, dim, ierr, Nx, Ny, Nz, k, N_fine,&
      N_coarse, Nproc, myrank, Niter, recv_status(MPI_STATUS_SIZE), send_status(MPI_STATUS_SIZE)
-     
+
+!> @todo docu
 LOGICAL :: do_io, be_verbose
 
+!> @todo docu
 CHARACTER(len=64) :: filename
 
+!> @todo docu
 NAMELIST /param/ nu, Nx, Ny, Nz, N_fine, N_coarse, Niter, Tend, do_io, be_verbose
 
 ! -------------- here comes the code....

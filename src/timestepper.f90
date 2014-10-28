@@ -1,3 +1,8 @@
+!>
+!! @todo docu
+!!
+!! \\( q_t = F(q) \\)
+!!
 MODULE timestepper
 
 USE omp_lib,   only : omp_get_thread_num
@@ -10,16 +15,21 @@ IMPLICIT NONE
 PRIVATE
 PUBLIC :: Euler, Rk3Ssp, InitializeTimestepper, FinalizeTimestepper
 
+
+!> @todo docu
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: Q_aux, FQ
 
+!> @todo docu
 TYPE timestepper_parameter
     INTEGER :: i_max, j_max, k_max
 END TYPE
 
+!> @todo docu
 TYPE(timestepper_parameter) :: param
 
 CONTAINS
 
+    !> @todo docu
     SUBROUTINE Euler(Q, T0, T1, Nsteps, dx, dy, dz, order_adv, order_diff)
     
         DOUBLE PRECISION, DIMENSION(-2:,-2:,-2:), INTENT(INOUT) :: Q
@@ -44,8 +54,9 @@ CONTAINS
 
     END SUBROUTINE Euler
     
-    ! Third order strong stability preserving Runge-Kutta scheme from Shu and Osher (1988),
-    ! see e.g. Durran, "Numerical Methods for Fluid Dynamics", pp. 55f
+    !> Third order strong stability preserving Runge-Kutta scheme from Shu and Osher (1988),
+    !! see e.g. Durran, "Numerical Methods for Fluid Dynamics", pp. 55f
+    !! @todo add docu
     SUBROUTINE Rk3Ssp(Q, T0, T1, Nsteps, dx, dy, dz, order_adv, order_diff)
     
         DOUBLE PRECISION, DIMENSION(:,:,:), INTENT(INOUT) :: Q
@@ -81,7 +92,8 @@ CONTAINS
         END DO
             
     END SUBROUTINE Rk3Ssp
-    
+
+    !> @todo docu
     SUBROUTINE InitializeTimestepper(nu, i_max, j_max, k_max, nthreads)
     
         DOUBLE PRECISION, INTENT(IN) :: nu
@@ -109,7 +121,8 @@ CONTAINS
         !$OMP END PARALLEL DO
         
     END SUBROUTINE InitializeTimestepper
-    
+
+    !> @todo docu
     SUBROUTINE FinalizeTimestepper()
             CALL FinalizeAdvection
             CALL FinalizeBoundaries

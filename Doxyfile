@@ -380,7 +380,7 @@ EXTRACT_PACKAGE        = NO
 # If the EXTRACT_STATIC tag is set to YES all static members of a file
 # will be included in the documentation.
 
-EXTRACT_STATIC         = NO
+EXTRACT_STATIC         = YES
 
 # If the EXTRACT_LOCAL_CLASSES tag is set to YES classes (and structs)
 # defined locally in source files will be included in the documentation.
@@ -445,7 +445,7 @@ INTERNAL_DOCS          = NO
 # in case and if your file system supports case sensitive file names. Windows
 # and Mac users are advised to set this option to NO.
 
-CASE_SENSE_NAMES       = NO
+CASE_SENSE_NAMES       = YES
 
 # If the HIDE_SCOPE_NAMES tag is set to NO (the default) then Doxygen
 # will show members with their full class and namespace scopes in the
