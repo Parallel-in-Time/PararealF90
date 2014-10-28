@@ -4,3 +4,4 @@ parareal_mpi.o:         timestepper.o
 parareal_openmp.o:      timestepper.o
 parareal_openmp_pipe.o: timestepper.o
 run_timerstepper.o:     timestepper.o
+run_parareal_mpi.o:     parareal_mpi.o

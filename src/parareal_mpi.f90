@@ -37,11 +37,17 @@ DOUBLE PRECISION :: tend_myslice
 DOUBLE PRECISION :: timer_coarse, timer_fine, timer_comm, timer_all, T0, T1
 
 !> @todu docu
-INTEGER :: mpi_thread_provided, dim, ierr, Nx, Ny, Nz, k, N_fine,&
-     N_coarse, Nproc, myrank, Niter, recv_status(MPI_STATUS_SIZE), send_status(MPI_STATUS_SIZE)
+INTEGER :: mpi_thread_provided, dim, ierr, k, Nproc, myrank, recv_status(MPI_STATUS_SIZE), send_status(MPI_STATUS_SIZE)
 
 !> @todo docu
 CHARACTER(len=64) :: filename
+
+
+TYPE parareal_parameter
+    INTEGER Nx, Ny, Nz
+END TYPE
+
+TYPE(parareal_parameter) :: param
 
 CONTAINS
 
@@ -56,6 +62,10 @@ CONTAINS
     ALLOCATE(GQ(  -2:Nx+3,-2:Ny+3,-2:Nz+3))
 
     dim = SIZE(Q,1)*SIZE(Q,2)*SIZE(Q,3)
+
+    param%Nx = Nx
+    param%Ny = Ny
+    param%Nz = Nz
 
   END SUBROUTINE InitializePararealMPI
 
@@ -207,36 +217,28 @@ CONTAINS
       ! GQ   <- G(y^k_n)
       ! Qend <- y^k_(n+1)
       
-      END DO
+    END DO
 
-      IF(do_io) THEN
-          IF (myrank<10) THEN
-            WRITE(filename, '(A,I1,A,I2,A)') 'q_final_0', myrank, '_', Nproc,'_mpi.dat'
-          ELSE
-            WRITE(filename, '(A,I2,A,I2,A)') 'q_final_', myrank, '_', Nproc, '_mpi.dat'
-          END IF 
-          OPEN(unit=myrank, FILE=filename)
-          WRITE(myrank, '(F35.25)') Qend(1:Nx, 1:Ny, 1:Nz)
-          CLOSE(myrank)
-      END IF
+    IF(do_io) THEN
+        WRITE(filename, '(A,I0.2,A,I0.2,A)') 'q_final_', myrank, '_', Nproc, '_mpi.dat'
+        OPEN(unit=myrank, FILE=filename)
+        WRITE(myrank, '(F35.25)') Qend(1:param%Nx, 1:param%Ny, 1:param%Nz)
+        CLOSE(myrank)
+    END IF
 
-      ! END ACTUAL PARAREAL
+    ! END ACTUAL PARAREAL
 
-      timer_all = MPI_WTIME() - timer_all
+    timer_all = MPI_WTIME() - timer_all
 
-      IF(do_io) THEN
-          IF (myrank<10) THEN
-            WRITE(filename, '(A,I1,A,I2,A)') 'timings_mpi_0', myrank, '_', Nproc, '.dat'
-          ELSE
-            WRITE(filename, '(A,I2,A,I2,A)') 'timings_mpi', myrank, '_', Nproc, '.dat'
-          END IF 
-          OPEN(unit=myrank, FILE=filename)
-          WRITE(myrank, '(F8.2)') timer_all
-          WRITE(myrank, '(F8.2)') timer_fine
-          WRITE(myrank, '(F8.2)') timer_coarse
-          WRITE(myrank, '(F8.2)') timer_comm
-          CLOSE(myrank)
-      END IF
+    IF(do_io) THEN
+        WRITE(filename, '(A,I0.2,A,I0.2,A)') 'timings_mpi', myrank, '_', Nproc, '.dat'
+        OPEN(unit=myrank, FILE=filename)
+        WRITE(myrank, '(F8.2)') timer_all
+        WRITE(myrank, '(F8.2)') timer_fine
+        WRITE(myrank, '(F8.2)') timer_coarse
+        WRITE(myrank, '(F8.2)') timer_comm
+        CLOSE(myrank)
+    END IF
 
   END SUBROUTINE PararealMPI
 
