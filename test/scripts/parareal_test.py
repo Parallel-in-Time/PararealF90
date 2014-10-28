@@ -71,7 +71,7 @@ if do_test[test]:
     build_namelist(nu, Nx, Ny, Nz,    N_fine,    N_coarse,     0, Tend, do_io, be_verbose)
     os.system('OMP_NUM_THREADS='+str(Np)+' ./parareal_openmp.out')
     fser = open('qend.dat','r')
-    fpar = open('q_final_'+Np_s+'_openmp.dat')
+    fpar = open('q_final_'+Np_s+'_'+Np_s_p1+'_openmp.dat')
     max_err = 0.0
     for i in range(0,Nx):
         for j in range(0,Ny):
