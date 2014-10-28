@@ -1,7 +1,7 @@
 include ../makefile.defs
 include dependencies
 
-all: objects run_timestepper.out parareal_mpi.out parareal_openmp.out parareal_openmp_pipe.out
+all: objects run_timestepper.out run_parareal_mpi.out parareal_openmp.out parareal_openmp_pipe.out
 
 # Update objects where necessary
 objects:
@@ -10,8 +10,8 @@ objects:
 run_timestepper.out: ../obj/run_timestepper.o
 	$(F90) $(FCFLAGS) $(DEP) ../obj/run_timestepper.o -o run_timestepper.out
 
-parareal_mpi.out: ../obj/parareal_mpi.o
-	$(F90) $(FCFLAGS) $(DEP) ../obj/parareal_mpi.o -o parareal_mpi.out
+run_parareal_mpi.out: ../obj/run_parareal_mpi.o
+	$(F90) $(FCFLAGS) $(DEP) ../obj/run_parareal_mpi.o -o run_parareal_mpi.out
 
 parareal_openmp.out: ../obj/parareal_openmp.o
 	$(F90) $(FCFLAGS) $(DEP) ../obj/parareal_openmp.o -o parareal_openmp.out

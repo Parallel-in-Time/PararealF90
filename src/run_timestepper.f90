@@ -2,7 +2,7 @@
 !! @todo docu
 !!
 
-!> Module: runt_timestepper
+!> Module: run_timestepper
 !> \author Daniel Ruprecht
 !> \date 28 October, 2014
 PROGRAM run_timestepper
@@ -33,6 +33,7 @@ NAMELIST /param/ nu, Nx, Ny, Nz, N_fine, N_coarse, Niter, Tend, do_io, be_verbos
 
 Nthreads=1
 
+! Read parameter
 OPEN(unit=20, FILE='parameter.in', ACTION='read', STATUS='old')
 READ(20,NML=param)
 CLOSE(20)
@@ -57,15 +58,17 @@ dy = 1.0/DBLE(Ny)
 dz = 1.0/DBLE(Nz)
 dx = 1.0/DBLE(Nx)
 
+! Initialize
 CALL MPI_INIT_THREAD(MPI_THREAD_FUNNELED, mpi_thread_provided, ierr)
-
 CALL InitializeTimestepper(nu, Nx, Ny, Nz, Nthreads)
-ALLOCATE(Q(-2:Nx+3,-2:Ny+3,-2:Nz+3))
 
+! Load initial value
+ALLOCATE(Q(-2:Nx+3,-2:Ny+3,-2:Nz+3))
 OPEN(unit=100, file='q0.dat', ACTION='read', STATUS='old')
 READ(100,'(F35.25)') Q
 CLOSE(100)
 
+! Output
 IF (be_verbose) THEN
     WRITE(*,'(A)') '--- Running serial timestepper ...'
     WRITE(*,'(A, F9.5)') 'Fine step length:   ', Tend/DBLE(N_fine)
@@ -82,8 +85,8 @@ OPEN(unit=100, file='qend.dat')
 WRITE(100, '(F35.25)') Q(1:Nx,1:Ny,1:Nz)
 CLOSE(100)
 
+! Finalize
 CALL FinalizeTimestepper
-
 CALL MPI_FINALIZE(ierr)
 
 END PROGRAM run_timestepper

@@ -18,8 +18,8 @@ clean:
 	cd $(CURDIR)/test/scripts; make clean
 	cd $(CURDIR)/scaling/obj; make clean
 	cd $(CURDIR)/scaling/bin; make clean
-	rm -rf *.dat
-	rm -rf *.pyc
-	rm -rf scripts/*.pyc
-	rm -rf *.out
-	rm -rf submit_*.sh
+	rm -f *.dat
+	rm -f *.pyc
+	rm -f scripts/*.pyc
+	rm -f *.out
+	rm -f submit_*.sh
