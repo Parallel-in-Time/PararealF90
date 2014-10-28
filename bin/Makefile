@@ -1,9 +1,9 @@
 include ../makefile.defs
+include dependencies
 
 all: objects run_timestepper.out parareal_mpi.out parareal_openmp.out parareal_openmp_pipe.out
 
-DEP = ../obj/fluxes.o ../obj/upwind.o ../obj/weno5.o ../obj/advection.o ../obj/diffusion.o ../obj/boundaries.o ../obj/timestepper.o 
-
+# Update objects where necessary
 objects:
 	cd $(CURDIR)/../obj; make
 

@@ -2,25 +2,16 @@ include ../makefile.defs
 
 INC=-I$(CURDIR)/..
 
-all: boundaries.o diffusion.o advection.o timestepper.o parareal_mpi.o parareal_openmp.o run_timestepper.o parareal_openmp_pipe.o
+all: $(patsubst ../src/%.f90, %.o, $(wildcard ../src/*.f90))
 
-fluxes.o: ../src/fluxes.f90
-	$(F90) $(FCFLAGS) $(INC) -c ../src/fluxes.f90 -o fluxes.o
+%.o: ../src/%.f90 ../preprocessor.f90
+	$(F90) $(FCFLAGS) $(INC) -c $< -o $@
 
-upwind.o: ../src/upwind.f90
-	$(F90) $(FCFLAGS) $(INC) -c ../src/upwind.f90 -o upwind.o
-
-weno5.o: ../src/weno5.f90
-	$(F90) $(FCFLAGS) $(INC) -c ../src/weno5.f90 -o weno5.o
-
-diffusion.o: fluxes.o ../src/diffusion.f90
-	$(F90) $(FCFLAGS) $(INC) -c ../src/diffusion.f90 -o diffusion.o
+# NOTE: To ensure that *.mod files exist when required, all modules that USE other modules
+# must have their dependencies list here explicitly.
 
 advection.o: fluxes.o upwind.o weno5.o ../preprocessor.f90 ../src/advection.f90
 	$(F90) $(FCFLAGS) $(INC) -c ../src/advection.f90 -o advection.o
-
-boundaries.o: ../src/boundaries.f90
-	$(F90) $(FCFLAGS) $(INC) -c ../src/boundaries.f90 -o boundaries.o
 
 timestepper.o: advection.o diffusion.o boundaries.o ../src/timestepper.f90
 	$(F90) $(FCFLAGS) $(INC) -c ../src/timestepper.f90 -o timestepper.o
@@ -36,6 +27,7 @@ parareal_openmp_pipe.o: timestepper.o ../src/parareal_openmp_pipe.f90
 
 run_timestepper.o : timestepper.o ../src/run_timestepper.f90
 	$(F90) $(FCFLAGS) $(INC) -c ../src/run_timestepper.f90 -o run_timestepper.o
+
 
 clean:
 	rm -rf *.o
