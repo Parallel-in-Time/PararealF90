@@ -16,7 +16,7 @@ N_coarse = 100
 Niter = 3
 Tend  = 0.2
 do_io = T
-be_verbose = T
+be_verbose = F
 Np    = 2
 run_cmd  = 'mpirun'
 Np_s = '%0.2i' % (Np-1)
@@ -218,7 +218,7 @@ if do_test[test]:
     for nt in range(0,Np):
         nt_s = '%0.2i' % (nt)
         fmpi    = open('q_final_'+nt_s+'_'+Np_s+'_mpi.dat')
-        fopenmp = open('q_final_'+nt_s+'_openmp.dat')
+        fopenmp = open('q_final_'+nt_s+'_'+Np_s+'_openmp.dat')
         max_err = 0.0
         for i in range(0,Nx):
             for j in range(0,Ny):
@@ -242,14 +242,15 @@ if do_test[test]:
     build_namelist(nu, Nx, Ny, Nz, N_fine, N_coarse, Niter, Tend, do_io, be_verbose)
     os.system(run_cmd+' -n '+str(Np)+' ./run_parareal_mpi.out')
     os.system('OMP_NUM_THREADS='+str(Np)+' ./parareal_openmp_pipe.out')
+    Np_s = '%0.2i' % (Np)
     # add OpenMP-pipe
     for nt in range(0,Np):
         if nt<10:
             nt_s = '0'+str(nt)
         else:
             nt_s = str(nt)
-        fmpi    = open('q_final_'+nt_s+'_mpi.dat')
-        fopenmp = open('q_final_'+nt_s+'_openmp_pipe.dat')
+        fmpi    = open('q_final_'+nt_s+'_'+Np_s+'_mpi.dat')
+        fopenmp = open('q_final_'+nt_s+'_'+Np_s+'_openmp_pipe.dat')
         max_err = 0.0
         for i in range(0,Nx):
             for j in range(0,Ny):
