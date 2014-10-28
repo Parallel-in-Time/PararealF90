@@ -1,3 +1,6 @@
+!>
+!! @todo docu
+!!
 MODULE advection
 
 USE omp_lib, only : omp_get_thread_num
@@ -10,6 +13,7 @@ PUBLIC :: GetRHSAdvection, InitializeAdvection, FinalizeAdvection
 
 CONTAINS
 
+    !> @todo docu
     SUBROUTINE GetRHSAdvection(Q, RQ, dx, dy, dz, i_start, i_end, j_start, j_end, k_start, k_end, order)
 
         DOUBLE PRECISION, DIMENSION(param%i_min:, param%j_min:, param%k_min:), INTENT(IN)  :: Q
@@ -42,6 +46,9 @@ CONTAINS
 
     END SUBROUTINE GetRHSAdvection
 
+    !> @todo
+    !! @param[in]
+    !! @param[in]
     SUBROUTINE InitializeAdvection(i_min, i_max, j_min, j_max, k_min, k_max, Nthreads, echo_on)
     
         INTEGER, INTENT(IN) :: Nthreads, i_min, i_max, j_min, j_max, k_min, k_max
@@ -51,11 +58,15 @@ CONTAINS
 
     END SUBROUTINE InitializeAdvection
 
+    !> @todo
     SUBROUTINE FinalizeAdvection()
         CALL FinalizeFluxes
     END SUBROUTINE FinalizeAdvection
 
-    ! For computed fluxes, compute the flux divergence
+    !> For computed fluxes, compute the flux divergence @todo
+    !! \\( f(q)_x + f(q)_y + f(q)_z \\)
+    !! @param[in]
+    !! @param[out]
     SUBROUTINE GetFluxDivergence(RQ, dx, dy, dz)
     
         DOUBLE PRECISION, DIMENSION(param%i_min:, param%j_min:, param%k_min:), INTENT(OUT) :: RQ

@@ -1,3 +1,8 @@
+!>
+!! @todo docu
+!!
+!! \\( \\Delta q = q_{xx} + q_{yy} + q_{zz} \\)
+!!
 MODULE diffusion
 
 USE omp_lib, only : omp_get_thread_num
@@ -6,17 +11,28 @@ IMPLICIT NONE
 
 PUBLIC :: GetRHSDiffusion
 
+!> @todo docu
 TYPE diffusion_parameter
     INTEGER :: i_min, i_max, j_min, j_max, k_min, k_max
     DOUBLE PRECISION :: nu
 END TYPE
 
+!> @todo
 TYPE(diffusion_parameter) :: param
 
-DOUBLE PRECISION, PARAMETER :: w1 = 1.0_8/12.0_8, w2 = 4.0_8/3.0_8, w3 = 5.0_8/2.0_8
+!> @todo docu
+DOUBLE PRECISION, PARAMETER :: w1 = 1.0_8/12.0_8
+
+!> @todo docu
+DOUBLE PRECISION, PARAMETER :: w2 = 4.0_8/3.0_8
+
+!> @todo docu
+DOUBLE PRECISION, PARAMETER :: w3 = 5.0_8/2.0_8
 
 CONTAINS
 
+    !> @todo docu
+    !! param[in] Q
     SUBROUTINE GetRHSDiffusion(Q, RQ, dx, dy, dz, i_start, i_end, j_start, j_end, k_start, k_end, order)
         DOUBLE PRECISION, DIMENSION(param%i_min:, param%j_min:, param%k_min:), INTENT(IN)  :: Q
         DOUBLE PRECISION, DIMENSION(param%i_min:, param%j_min:, param%k_min:), INTENT(OUT) :: RQ
@@ -75,7 +91,8 @@ CONTAINS
         END SELECT 
         
     END SUBROUTINE GetRHSDiffusion
-    
+
+    !> @todo docu
     SUBROUTINE InitializeDiffusion(i_min, i_max, j_min, j_max, k_min, k_max, nu)
     
         DOUBLE PRECISION, INTENT(IN) :: nu        

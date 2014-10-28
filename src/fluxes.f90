@@ -1,26 +1,43 @@
+!>
+!! @todo docu
+!!
 MODULE fluxes
 
 USE omp_lib, only : omp_get_num_threads
 
 IMPLICIT NONE
 
+!> @todo docu
 TYPE advection_parameter
     INTEGER :: Nthreads, i_start, i_end, j_start, j_end, k_start, k_end
     INTEGER :: i_min, i_max, j_min, j_max, k_min, k_max
     LOGICAL :: echo_on
 END TYPE
 
+!> @todo docu
 TYPE(advection_parameter) :: param
 
-! Define buffers storing the interface fluxes in x, y and z direction
-DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: FluxI, FluxJ, FluxK
+!> Define buffers storing the interface fluxes in x, y and z direction @todo docu
+DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: FluxI
 
-! Define buffers storing the horizontal cell and interface flux values
-DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: FluxI_Cell, FluxJ_Cell, FluxK_Cell
+!> @todo docu
+DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: FluxJ
+
+!> @todo docu
+DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: FluxK
+
+!> Define buffers storing the horizontal cell and interface flux values @todo add docu
+DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: FluxI_Cell
+
+!> @todo docu
+DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: FluxJ_Cell
+
+!> @todo docu
+DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: FluxK_Cell
 
 CONTAINS
 
-    ! Initialization routine
+    !> Initialization routine
     SUBROUTINE InitializeFluxes(i_min, i_max, j_min, j_max, k_min, k_max, Nthreads, echo_on)
     
         INTEGER, INTENT(IN) :: Nthreads, i_min, i_max, j_min, j_max, k_min, k_max
@@ -68,9 +85,11 @@ CONTAINS
         !$OMP END PARALLEL
         
     END SUBROUTINE InitializeFluxes
-    
+
+    !>
     SUBROUTINE FinalizeFluxes()
-    
+
+        ! Deallocate all buffers in this module
         DEALLOCATE(FluxI)
         DEALLOCATE(FluxJ)
         DEALLOCATE(FluxK)

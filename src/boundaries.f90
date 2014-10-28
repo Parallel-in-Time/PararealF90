@@ -1,17 +1,25 @@
+!>
+!! @todo docu
+!!
 MODULE boundaries
 
 IMPLICIT NONE
+
 PRIVATE
 PUBLIC :: periodic, InitializeBoundaries, FinalizeBoundaries
 
+!> @todo docu
 TYPE boundaries_parameter
     INTEGER :: i_max, j_max, k_max
 END TYPE
 
+!> @todo docu
 TYPE(boundaries_parameter) :: param
 
 CONTAINS
 
+    !> @todo docu
+    !! @param[inout]
     SUBROUTINE periodic(Q)
         DOUBLE PRECISION, DIMENSION(-2:,-2:,-2:), INTENT(INOUT) :: Q
         
@@ -80,7 +88,8 @@ CONTAINS
         END DO  
                          
     END SUBROUTINE periodic
-        
+
+    !> @todo docu
     SUBROUTINE InitializeBoundaries(i_max, j_max, k_max)
         INTEGER, INTENT(IN) :: i_max, j_max, k_max
         
@@ -89,9 +98,10 @@ CONTAINS
         param%k_max = k_max
         
     END SUBROUTINE InitializeBoundaries
-    
+
+    !> @todo docu
     SUBROUTINE FinalizeBoundaries
-    
+      ! Nothing to DEALLOCATE here.
     END SUBROUTINE FinalizeBoundaries
     
 END MODULE boundaries
