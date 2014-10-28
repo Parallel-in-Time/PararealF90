@@ -20,12 +20,11 @@ Ntests_f = 5
 Ntests_c = 5
 Ntests   = 5
 run_cmd  = 'mpirun'
-if Np<10:
-    Np_s = '0'+str(Np-1)
-else:
-    Np_s = str(Np-1)
+Np_s = '%0.2i' % (Np-1)
+Np_s_p1 = '%0.2i' % Np
+
 os.system('cp ../../bin/run_timestepper.out .')
-os.system('cp ../../bin/parareal_mpi.out .')
+os.system('cp ../../bin/run_parareal_mpi.out .')
 os.system('cp ../../bin/parareal_openmp.out .')
 os.system('cp ../../bin/parareal_openmp_pipe.out .')
 
@@ -42,7 +41,7 @@ for nn in range(0,Ntests_c):
     build_namelist(nu, Nx, Ny, Nz,    N_fine,    N_coarse,     0, Tend, do_io, be_verbose)
     os.system('OMP_NUM_THREADS='+str(Np)+' ./parareal_openmp_pipe.out')
     fser = open('qend.dat','r')
-    fpar = open('q_final_'+Np_s+'_openmp_pipe.dat')
+    fpar = open('q_final_'+Np_s+'_'+Np_s_p1+'_openmp_pipe.dat')
     max_err = 0.0
     for i in range(0,Nx):
         for j in range(0,Ny):
@@ -70,7 +69,7 @@ for nn in range(0,Ntests_f):
     build_namelist(nu, Nx, Ny, Nz,    N_fine,    N_coarse,    Np, Tend, do_io, be_verbose)
     os.system('OMP_NUM_THREADS='+str(Np)+' ./parareal_openmp_pipe.out')
     fser = open('qend.dat','r')
-    fpar = open('q_final_'+Np_s+'_openmp_pipe.dat')
+    fpar = open('q_final_'+Np_s+'_'+Np_s_p1+'_openmp_pipe.dat')
     max_err = 0.0
     for i in range(0,Nx):
         for j in range(0,Ny):
@@ -93,16 +92,17 @@ for nn in range(0,Ntests):
     os.system('rm -f *.dat')
     generate_q0(Nx, Ny, Nz)
     build_namelist(nu, Nx, Ny, Nz, N_fine, N_coarse, Niter, Tend, do_io, be_verbose)
-    os.system(run_cmd+' -n '+str(Np)+' ./parareal_mpi.out')
+    os.system(run_cmd+' -n '+str(Np)+' ./run_parareal_mpi.out')
     os.system('OMP_NUM_THREADS='+str(Np)+' ./parareal_openmp_pipe.out')
     # add OpenMP-pipe
+    Np_s = '%0.2i' % (Np)
     for nt in range(0,Np):
         if nt<10:
             nt_s = '0'+str(nt)
         else:
             nt_s = str(nt)
-        fmpi    = open('q_final_'+nt_s+'_mpi.dat')
-        fopenmp = open('q_final_'+nt_s+'_openmp_pipe.dat')
+        fmpi    = open('q_final_'+nt_s+'_'+Np_s+'_mpi.dat')
+        fopenmp = open('q_final_'+nt_s+'_'+Np_s+'_openmp_pipe.dat')
         max_err = 0.0
         for i in range(0,Nx):
             for j in range(0,Ny):
