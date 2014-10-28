@@ -20,4 +20,4 @@ parareal_openmp_pipe.out: ../obj/parareal_openmp_pipe.o
 	$(F90) $(FCFLAGS) $(DEP) ../obj/parareal_openmp_pipe.o -o parareal_openmp_pipe.out
 
 clean:
-	rm -rf *.out
+	rm -f *.out

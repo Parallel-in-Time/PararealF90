@@ -10,5 +10,5 @@ all: $(patsubst ../src/%.f90, %.o, $(wildcard ../src/*.f90))
 include dependencies
 
 clean:
-	rm -rf *.o
-	rm -rf *.mod
+	rm -f *.o
+	rm -f *.mod

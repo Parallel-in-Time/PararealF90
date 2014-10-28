@@ -11,4 +11,5 @@ objects:
 	$(F90) -c $(FCFLAGS) $(INC) $< -o $@
 
 clean:
-	rm -rf *.o
+	rm -f *.o
+	rm -f *.mod 
