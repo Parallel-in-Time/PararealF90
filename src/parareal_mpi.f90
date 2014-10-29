@@ -98,7 +98,6 @@ CONTAINS
     timer_coarse = 0.0
     timer_comm   = 0.0
 
-
     ! Divide time interval [0,T] into Nproc many timeslices
     dt_slice  = Tend/DBLE(Nproc)
     dt_fine   = dt_slice/DBLE(N_fine)
@@ -117,7 +116,7 @@ CONTAINS
         END IF
     END IF
 
-    ! --- START ACTUAL PARAREAL ---
+    ! --- START PARAREAL --- !
 
     T0 = MPI_WTIME()
 
@@ -142,8 +141,7 @@ CONTAINS
     T1 = MPI_WTIME()
     timer_coarse = timer_coarse + (T1-T0)
 
-    ! Parareal iteration
-    DO k=1,Niter
+    DO k=1,Niter   ! Parareal iteration
          
       ! Initial state: 
       ! Q     <- y^(k-1)_n 
@@ -155,10 +153,11 @@ CONTAINS
       ! GQ    <- G(y^k_n)
       ! Qend  <- y^k_(n+1) 
            
+
+      T0 = MPI_WTIME()
+
       ! Run fine integrator:
       ! Q <- F(y^(k-1)_n)
-      T0 = MPI_WTIME()
-      
       CALL Rk3SSp(Q, tstart_myslice, tend_myslice, N_fine, dx, dy, dz, order_adv_f, order_diff_f)
       
       ! Compute difference fine minus coarse
@@ -178,12 +177,14 @@ CONTAINS
         timer_comm = timer_comm + (T1-T0)
            
       ELSE IF (myrank==0) THEN
+
         ! Fetch initial value again
         ! Q <- y^k_n with n=0
         T0 = MPI_WTIME()
         Q = Q_initial
         T1 = MPI_WTIME()
         timer_comm = timer_comm + (T1-T0)
+
       ELSE
         WRITE(*,*) 'Found negative value for myrank, now exiting.'
         STOP  
@@ -217,7 +218,12 @@ CONTAINS
       ! GQ   <- G(y^k_n)
       ! Qend <- y^k_(n+1)
       
-    END DO
+    END DO ! End of parareal loop
+
+    ! --- END PARAREAL --- !
+
+    ! Return final value in Q_initial
+    Q_initial = Qend
 
     IF(do_io) THEN
         WRITE(filename, '(A,I0.2,A,I0.2,A)') 'q_final_', myrank, '_', Nproc, '_mpi.dat'
@@ -225,8 +231,6 @@ CONTAINS
         WRITE(myrank, '(F35.25)') Qend(1:param%Nx, 1:param%Ny, 1:param%Nz)
         CLOSE(myrank)
     END IF
-
-    ! END ACTUAL PARAREAL
 
     timer_all = MPI_WTIME() - timer_all
 

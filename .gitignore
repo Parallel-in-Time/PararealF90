@@ -1,3 +1,8 @@
 *.out
 *.mod
 *.o
+*.dat
+*~
+*.*~
+*.pyc
+*.out.dSYM
