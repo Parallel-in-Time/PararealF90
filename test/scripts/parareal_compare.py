@@ -1,3 +1,9 @@
+##
+# Verifies that all three variants of Parareal (MPI, OpenMP and
+# OpenMP-pipelined) yield identical results. In order to rule out
+# possible race conditions in the OpenMP versions, the same setup
+# is run and compared multiple times (default 5).
+#
 import os, sys, numpy
 sys.path.append('../../scripts')
 from build_namelist import build_namelist
@@ -15,13 +21,13 @@ Niter = 1
 Tend  = 0.2
 do_io = True
 be_verbose = False
-Np    = 8
+Np       = 8
 Ntests_f = 5
 Ntests_c = 5
 Ntests   = 5
 run_cmd  = 'mpirun'
-Np_s = '%0.2i' % (Np-1)
-Np_s_p1 = '%0.2i' % Np
+Np_s     = '%0.2i' % (Np-1)
+Np_s_p1  = '%0.2i' % Np
 
 os.system('cp ../../bin/run_timestepper.out .')
 os.system('cp ../../bin/run_parareal_mpi.out .')
