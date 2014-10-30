@@ -39,8 +39,9 @@ DO method=3,3,2
         ALLOCATE(error(SIZE(N_v)))
         ALLOCATE(convrate(SIZE(N_v)-1))
                   
-        DO nn=1,SIZE(N_v)
-        
+        !DO nn=1,SIZE(N_v)
+        DO nn=3,4
+
             Nx = N_v(nn)-3
             Ny = N_v(nn)+1
             Nz = N_v(nn)+3
@@ -57,7 +58,7 @@ DO method=3,3,2
            !write(*,'(f9.5)') nu*dt/(dx*dx) 
         
             !DO Nthreads=1,8,7
-            DO Nthreads=1,1
+            DO Nthreads=2,3 ! BUG: FOr Nthreads=2,4 or 1,4 ... NOT for 2,3
             
                 ALLOCATE(Q(   -2:Nx+3, -2:Ny+3, -2:Nz+3, 0:Nthreads-1))
                 ALLOCATE(RQ(  -2:Nx+3, -2:Ny+3, -2:Nz+3, 0:Nthreads-1))
