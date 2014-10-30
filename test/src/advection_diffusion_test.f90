@@ -1,3 +1,8 @@
+!>
+! Runs a linear advection diffusion equation with increasing resolution and checks that the observed
+! convergence orders match the order of the involved discretizations.
+! Additionally, the same test is run N times by N threads and it is checked that all threads compute the same results.
+!
 PROGRAM advection_diffusion_test
 
 USE Timestepper, only : Euler, RK3Ssp, InitializeTimestepper, FinalizeTimestepper
@@ -8,7 +13,7 @@ INCLUDE 'mpif.h'
 #include <preprocessor.f90>
 
 #if(linear==0)
-    WRITE(*,*) 'Test requires linear advection to have analytical solution available... recompile with flag linear=1. Now exiting.'
+    WRITE(*,*) 'WARNING: advection_diffusion_test requires linear advection to have analytical solution available... recompile with flag linear=1 to run this test. Now exiting.'
     STOP
 #else
 
@@ -20,7 +25,7 @@ DOUBLE PRECISION, PARAMETER :: Tend = 0.05
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: Q, RQ, Qref
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: error, convrate
 
-DOUBLE PRECISION :: dx, dy, dz, x, y, z, dt, T0, T1, nu
+DOUBLE PRECISION :: dx, dy, dz, x, y, z, dt, T0, T1, nu, max_err
 INTEGER :: method, i, j, k, Nx, Ny, Nz, nt, nn, order_adv, order_diff, Nsteps, Nthreads, mpi_thread_provided, ierr
 
 CALL MPI_INIT_THREAD(MPI_THREAD_FUNNELED, mpi_thread_provided, ierr)
@@ -38,27 +43,31 @@ DO method=3,3,2
         
         ALLOCATE(error(SIZE(N_v)))
         ALLOCATE(convrate(SIZE(N_v)-1))
-                  
-        DO nn=1,SIZE(N_v)
-        
-            Nx = N_v(nn)-3
-            Ny = N_v(nn)+1
-            Nz = N_v(nn)+3
+
+        DO nn=3,4
+        !DO nn=1,SIZE(N_v)
+
+            !Nx = N_v(nn)-3
+            !Ny = N_v(nn)+1
+            !Nz = N_v(nn)+3
+
+            Nx = N_v(nn)
+            Ny = Nx
+            Nz = Nx
         
             dx = 1.0/DBLE(Nx)
             dy = 1.0/DBLE(Ny)
             dz = 1.0/DBLE(Nz)
                    
-            nu = 0.0025
-            dt = 0.5*(dz*dz)/nu
+            !nu = 0.0025
+            nu = 0.0
+            !dt = 0.5*(dz*dz)/nu
+            dt = 0.5*dz
             Nsteps = CEILING(Tend/dt)
             dt     = Tend/DBLE(Nsteps)
-            
-           !write(*,'(f9.5)') nu*dt/(dx*dx) 
-        
-            !DO Nthreads=1,8,7
-            DO Nthreads=1,1
-            
+
+           DO Nthreads=2,4
+
                 ALLOCATE(Q(   -2:Nx+3, -2:Ny+3, -2:Nz+3, 0:Nthreads-1))
                 ALLOCATE(RQ(  -2:Nx+3, -2:Ny+3, -2:Nz+3, 0:Nthreads-1))
                 ALLOCATE(Qref(-2:Nx+3, -2:Ny+3, -2:Nz+3, 0:Nthreads-1))
@@ -94,28 +103,22 @@ DO method=3,3,2
                 END DO
                 !$OMP END PARALLEL DO
                 T1 = MPI_WTIME()
-                 
-                !WRITE(*,'(A, I2, A, F9.5)') 'Runtime for Nthreads=', Nthreads, ' -- ', T1-T0
-            
+                            
                 DO nt=1,Nthreads-1
-                     IF (MAXVAL(ABS(Q(:,:,:,nt)-Q(:,:,:,nt-1)))>1e-14) THEN
-                        WRITE(*,'(A, I1, A)') 'For method=', method, ' not all threads computed the same result, this should not have happened. Now exiting...'
-                        STOP
+                     max_err = MAXVAL(ABS(Q(:,:,:,nt)-Q(:,:,:,nt-1)))
+                     !print *,max_err
+                     print *,maxval(abs(Q(:,:,:,nt)))
+                     IF (max_err>1e-14) THEN
+                        !print *,max_err
+                        WRITE(*,'(A, I1, A, I2, A)') 'ERROR: For method=', method, ' and Nthreads = ', Nthreads, ' not all threads computed the same result, this should not have happened. Now exiting...'
+                        !STOP
                     END IF               
                 END DO
-                
-!open(unit=1,file='q.txt')
-!write(1,'(f35.25)') Q(1:Nx,1:Ny,1:Nz,0)
-!close(1)                      
-!open(unit=1,file='qref.txt')
-!write(1,'(f35.25)') Qref(1:Nx,1:Ny,1:Nz,0)
-!close(1)                      
-      
+
+                write(*,*)
+
                 error(nn) = MAXVAL(ABS(Q(1:Nx,1:Ny,1:Nz,0) - Qref(1:Nx,1:Ny,1:Nz,0)))/MAXVAL(ABS(Qref(1:Nx,1:Ny,1:Nz,0)))
-                
-                !WRITE(*,*) method
-                WRITE(*,'(E9.3)') error(nn)
-                
+
                 CALL FinalizeTimestepper  
                       
                 DEALLOCATE(Q)
@@ -127,7 +130,7 @@ DO method=3,3,2
         
         DO nn=1,SIZE(N_v)-1
             convrate(nn) = LOG10( error(nn+1)/error(nn) )/LOG10( DBLE(N_v(nn))/DBLE(N_v(nn+1)) )
-            WRITE(*,'(F9.5)') convrate(nn)
+            !WRITE(*,'(F9.5)') convrate(nn)
         END DO
                 
         DEALLOCATE(error)
