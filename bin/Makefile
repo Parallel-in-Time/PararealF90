@@ -7,10 +7,10 @@ all: objects run_timestepper.out run_parareal_mpi.out parareal_openmp.out parare
 objects:
 	cd $(CURDIR)/../obj; make
 
-run_timestepper.out: ../obj/run_timestepper.o
+run_timestepper.out: ../obj/run_timestepper.o ../obj/timestepper.o
 	$(F90) $(FCFLAGS) $(DEP) ../obj/run_timestepper.o -o run_timestepper.out
 
-run_parareal_mpi.out: ../obj/run_parareal_mpi.o
+run_parareal_mpi.out: ../obj/run_parareal_mpi.o ../obj/parareal_mpi.o
 	$(F90) $(FCFLAGS) $(DEP) ../obj/run_parareal_mpi.o -o run_parareal_mpi.out
 
 parareal_openmp.out: ../obj/parareal_openmp.o

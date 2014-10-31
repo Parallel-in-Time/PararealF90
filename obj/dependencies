@@ -1,6 +1,6 @@
-advection.o:            fluxes.o upwind.o weno5.o ../preprocessor.f90
+advection.o:            fluxes.o upwind.o weno5.o
 weno.o:                 fluxes.o ../preprocessor.f90
-upwind.o:               fluxes.o ../preprocessor.f90
+upwind.o:               fluxes.o ../preprocessor.f90 
 timestepper.o:          advection.o diffusion.o boundaries.o
 parareal_mpi.o:         timestepper.o
 parareal_openmp.o:      timestepper.o
