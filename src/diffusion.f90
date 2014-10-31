@@ -5,11 +5,9 @@
 !!
 MODULE diffusion
 
-USE omp_lib, only : omp_get_thread_num
-
 IMPLICIT NONE
 
-PUBLIC :: GetRHSDiffusion
+PUBLIC :: GetRHSDiffusion, InitializeDiffusion
 
 !> @todo docu
 TYPE diffusion_parameter
@@ -86,7 +84,7 @@ CONTAINS
                 END DO
             
             CASE DEFAULT
-                WRITE(*,'(A,I2,A)') 'Now implementation available for order = ', order, ' .. now exiting'
+                WRITE(*,'(A,I2,A)') 'No implementation available for order = ', order, ' .. now exiting'
                 STOP                
         END SELECT 
         

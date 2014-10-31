@@ -86,4 +86,4 @@ def para_fine_test():
   elif numpy.isnan(max_err):
     sys.exit("ERROR: Parareal-OpenMP-pipe with Nit=Nproc and fine integrator produced NaN error.")
 
-  print "[0] -- Successful: All three versions of Parareal (MPI, OpenMP, OpenMP-pipe) reproduce the fine integrator for Nit = Np"
+  print " [0] -- Successful: All three versions of Parareal (MPI, OpenMP, OpenMP-pipe) reproduce the fine integrator for Nit = Np"

@@ -1,3 +1,6 @@
+!>
+!
+!
 PROGRAM Upwind_Test
 
 USE Advection, only : GetRHSAdvection, InitializeAdvection, FinalizeAdvection
@@ -75,11 +78,6 @@ IF (do_test(1)) THEN
             CALL InitializeAdvection(i_start-i_add, i_end+i_add, j_start-j_add, j_end+j_add, k_start-k_add, k_end+k_add, nt, .true.)
 
             CALL OMP_SET_NUM_THREADS(nt)
-            !$OMP PARALLEL
-            !$OMP MASTER
-               ! WRITE(*,'(A, I2)') 'OMP threads: ', omp_get_num_threads()
-            !$OMP END MASTER
-            !$OMP END PARALLEL
 
             ! fill Q with constant random value
             q_val = RAND(1)
@@ -104,7 +102,7 @@ IF (do_test(1)) THEN
             T1 = MPI_WTIME()
         
             IF (MAXVAL(ABS(RQ(i_start:i_end,j_start:j_end,k_start:k_end,0:nt-1)))>1e-12) THEN
-                WRITE(*,'(A,I1,A)') ' Test failed for order ', order, ' : constant Q does not result in zero flux divergence'
+                WRITE(*,'(A,I1,A)') 'ERROR: Test failed for order ', order, ' : constant Q does not result in zero flux divergence'
                 OPEN(unit=1,file='rqfield.txt')
                     WRITE(1, '(F35.25)') RQ
                 STOP
@@ -190,7 +188,7 @@ IF (do_test(2)) THEN
             
             DO j=j_start,j_end-1
                 IF (MAXVAL(ABS(RQ(:,j+1,:,:)-RQ(:,j,:,:)))>1e-13) THEN
-                    WRITE(*,'(A, I1, A)') '(IJ) -- Constant Q in j direction produced non-constant RQ for order = ', order, '. Now exiting...'
+                    WRITE(*,'(A, I1, A)') 'ERROR: (IJ) -- Constant Q in j direction produced non-constant RQ for order = ', order, '. Now exiting...'
                     OPEN(unit=1,file='q.txt')
                     WRITE(1,'(F35.25)') Q(1:Nx, 1:Ny, 1:Nz, 0)
                     CLOSE(1)
@@ -200,7 +198,7 @@ IF (do_test(2)) THEN
             
             DO k=k_start,k_end-1
                 IF (MAXVAL(ABS(RQ(:,:,k+1,:)-RQ(:,:,k,:)))>1e-13) THEN
-                    WRITE(*,'(A, I1, A)') '(IK) -- Constant Q in k direction produced non-constant RQ for order = ', order, '. Now exiting...'
+                    WRITE(*,'(A, I1, A)') 'ERROR: (IK) -- Constant Q in k direction produced non-constant RQ for order = ', order, '. Now exiting...'
                     STOP               
                 END IF 
             END DO                             
@@ -226,13 +224,13 @@ IF (do_test(2)) THEN
             
             DO i=i_start,i_end-1
                 IF (MAXVAL(ABS(RQ(i+1,:,:,:)-RQ(i,:,:,:)))>1e-13) THEN
-                    WRITE(*,'(A, I1, A)') '(JI) -- Constant Q in i direction produced non-constant RQ for order = ', order, '. Now exiting...'
+                    WRITE(*,'(A, I1, A)') 'ERROR: (JI) -- Constant Q in i direction produced non-constant RQ for order = ', order, '. Now exiting...'
                 END IF 
             END DO
             
             DO k=k_start,k_end-1
                 IF (MAXVAL(ABS(RQ(:,:,k+1,:)-RQ(:,:,k,:)))>1e-13) THEN
-                    WRITE(*,'(A, I1, A)') '(JK) -- Constant Q in k direction produced non-constant RQ for order = ', order, '. Now exiting...'
+                    WRITE(*,'(A, I1, A)') 'ERROR: (JK) -- Constant Q in k direction produced non-constant RQ for order = ', order, '. Now exiting...'
                 END IF             
             END DO            
         END DO      
@@ -258,13 +256,13 @@ IF (do_test(2)) THEN
             
             DO i=i_start,i_end-1
                 IF (MAXVAL(ABS(RQ(i+1,:,:,:)-RQ(i,:,:,:)))>1e-13) THEN
-                    WRITE(*,'(A, I1, A)') '(KI) -- Constant Q in i direction produced non-constant RQ for order = ', order, '. Now exiting...'
+                    WRITE(*,'(A, I1, A)') 'ERROR: (KI) -- Constant Q in i direction produced non-constant RQ for order = ', order, '. Now exiting...'
                 END IF             
             END DO
             
             DO j=j_start,j_end-1
                 IF (MAXVAL(ABS(RQ(:,j+1,:,:)-RQ(:,j,:,:)))>1e-13) THEN
-                    WRITE(*,'(A, I1, A)') '(KJ) -- Constant Q in j direction produced non-constant RQ for order = ', order, '. Now exiting...'
+                    WRITE(*,'(A, I1, A)') 'ERROR: (KJ) -- Constant Q in j direction produced non-constant RQ for order = ', order, '. Now exiting...'
                 END IF             
             END DO            
         END DO
@@ -373,28 +371,7 @@ IF (do_test(3)) THEN
             err_v(r) = maxval(error)/maxval(abs(FQ_x_y))
         
             CALL FinalizeAdvection
-    
-            ! If Nx_factor = 1, no convergence test can be made. Take this as an indication
-            ! that this is a debugging run and dump all buffers into ascii files
-            IF (SIZE(Nx_v)==1) THEN
-                    ! ** Use together with matlab routine plot_output to manually verify that the correct mesh 
-                    ! ** and q-values are generated      
-                open(unit=20, file='qfield.txt')
-                write(20, '(F35.25)') Q(i_start:i_end,j_start:j_end,k_start:k_end,:)
-                close(20)   
 
-                    ! ** Uncomment to manually verify with the matlab routine plot_output that the generated
-                    ! ** fields are correct    
-                open(unit=20, file='rqfield.txt')
-                write(20, '(F35.25)') RQ(i_start:i_end,j_start:j_end,k_start:k_end,:)
-                close(20)
-
-                open(unit=20, file='fqxyfield.txt')
-                write(20, '(F35.25)') FQ_x_y(i_start:i_end,j_start:j_end,k_start:k_end)
-                close(20)
-        
-            END IF
-        
             DEALLOCATE(Q)
             DEALLOCATE(RQ)
             DEALLOCATE(FQ_x_y)
@@ -405,17 +382,9 @@ IF (do_test(3)) THEN
         DO r=2,SIZE(Nx_v)
             convrate(r-1) = LOG10(err_v(r)/err_v(r-1)) / LOG10( DBLE(Nx_v(r-1)) / DBLE(Nx_v(r)) )
         END DO
-
-        !DO r=1,SIZE(Nx_v)
-        !    WRITE(*,'(A, ES9.3)') 'Error: ', err_v(r)
-        !END DO
-
-!        DO r=1,SIZE(Nx_v)-1
-!            WRITE(*,'(A, F5.3)') 'Convergence rate: ', convrate(r)
-!        END DO
         
         IF (minval(convrate)<=0.95*order) THEN
-            WRITE(*,'(A, I2, A)') 'Failed to verify convergence rate of ', order, ' ... printing errors and convergence rates, then stopping'
+            WRITE(*,'(A, I2, A)') 'ERROR: Failed to verify convergence rate of ', order, ' ... printing errors and convergence rates, then stopping'
             DO r=1,SIZE(Nx_v)
                 WRITE(*,'(ES9.3)') err_v(r)
             END DO
@@ -440,7 +409,7 @@ CALL MPI_FINALIZE(ierr)
 IF(SIZE(Nx_v)==1) THEN
     WRITE(*,*) 'WARNING: No convergence test... output in ascii files'
 ELSE
-    WRITE(*,*) '**** Advection: Test successful ****'
+    WRITE(*,*) '[0] -- Successful: Advection module returns zero for constant input and produces expected rates of convergence.'
 END IF
 
 END PROGRAM Upwind_Test

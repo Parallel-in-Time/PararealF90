@@ -84,4 +84,4 @@ def para_compare_test():
       elif numpy.isnan(max_err):
         sys.ext('ERROR: Parareal-MPI and Parareal-OpenMP produced NaN error')
 
-  print "[0] -- Successful: All three versions of Parareal (MPI, OpenMP, OpenMP-pipe) give identical results."
+  print " [0] -- Successful: All three versions of Parareal (MPI, OpenMP, OpenMP-pipe) give identical results."
