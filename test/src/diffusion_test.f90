@@ -90,7 +90,7 @@ DO order=2,4,2
     END DO
     
     IF (MINVAL(convrate)<=0.95*order) THEN
-        WRITE(*,'(A, I1)') 'Failed to verify convergence order for order = ', order    
+        WRITE(*,'(A, I1)') 'ERROR: Failed to verify convergence order for order = ', order
         DO nn=1,SIZE(N_v)
             WRITE(*,'(F9.3)') convrate(nn)
         END DO
@@ -104,6 +104,6 @@ END DO
 
 CALL MPI_FINALIZE(ierr)
 
-WRITE(*,*) '**** Diffusion: Test successful ****'
+WRITE(*,*) '[0] -- Successful: Diffusion module produces expected rates of convergence.'
 
 END PROGRAM diffusion_test

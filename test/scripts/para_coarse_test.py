@@ -85,4 +85,4 @@ def para_coarse_test():
   elif numpy.isnan(max_err):
       sys.exit("ERROR: Parareal-OpenMP-pipe with Nit=0 and coarse integrator produced NaN error.")
 
-  print "[0] -- Successful: All three versions of Parareal (MPI, OpenMP, OpenMP-pipe) reproduce the coarse integrator for Nit = 0"
+  print " [0] -- Successful: All three versions of Parareal (MPI, OpenMP, OpenMP-pipe) reproduce the coarse integrator for Nit = 0"

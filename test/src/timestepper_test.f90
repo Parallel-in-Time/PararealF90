@@ -91,13 +91,13 @@ DO method = 1,3,2
 
         DO nt=1,Nthreads-1
             IF (MAXVAL(ABS(Q(:,:,:,nt)-Q(:,:,:,nt-1)))>1e-14) THEN
-                WRITE(*,'(A, I1, A)') 'For method=', method, ' not all threads computed the same result, this should not have happened. Now exiting...'
+                WRITE(*,'(A, I1, A)') 'ERROR: For method=', method, ' not all threads computed the same result, this should not have happened. Now exiting...'
                 STOP
             END IF
         END DO
 
         IF (ANY(ISNAN(Q))) THEN
-            WRITE(*,'(A, I1, A)') 'For method=', method, ' found NAN in solution, run is probably unstable. Now exiting...'
+            WRITE(*,'(A, I1, A)') 'ERROR: For method=', method, ' found NAN in solution, run is probably unstable. Now exiting...'
             STOP
         END IF
         ! For nonlinear advection, no analytic solution is available to use solution
@@ -118,17 +118,13 @@ DO method = 1,3,2
     END DO
 
     IF (MINVAL(convrate)<=0.95*method) THEN
-        WRITE(*,'(A, I1, A, I1)') 'Failed to verify convergence order for method = ', method, ', order = ', order_adv
+        WRITE(*,'(A, I1, A, I1)') 'ERROR: Failed to verify convergence order for method = ', method, ', order = ', order_adv
         DO kk=1,SIZE(N_v)-2
            WRITE(*,'(F6.3)') convrate(kk)
         END DO
         STOP
     END IF
 
-    !DO kk=1,SIZE(N_v)-2
-    !   WRITE(*,'(F6.3)') convrate(kk)
-    !END DO
-        
     CALL FinalizeTimestepper
 
     DEALLOCATE(Q)
@@ -141,6 +137,6 @@ END DO ! method
 
 CALL MPI_FINALIZE(ierr)
 
-WRITE(*,*) '**** Timestepper: Test successful ****'
+WRITE(*,*) '[0] -- Successful: Timestepping methods produced expected order of convergence.'
 
 END PROGRAM timestepper_test
