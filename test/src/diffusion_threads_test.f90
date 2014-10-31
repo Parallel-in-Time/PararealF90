@@ -1,5 +1,6 @@
 !>
-!
+! Simultaneously applied the diffusion routine on multiple threads to identical input data
+! and verifies that all threads produce identical output.
 !
 PROGRAM diffusion_threads_test
 
@@ -16,20 +17,24 @@ DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: Q, RQ
 DOUBLE PRECISION :: dx, dy, dz, x, y, z
 
 DO order=2,4,2
+
   DO nn=1,SIZE(N_v)
+
     Nx = N_v(nn)
-    Ny = Nx
-    Nz = Nx
+    Ny = Nx-3
+    Nz = Nx+2
 
     dx = 1.0/DBLE(Nx)
     dy = 1.0/DBLE(Ny)
     dz = 1.0/DBLE(Nz)
 
-    DO Nthreads=1,2
+    DO Nthreads=1,8
 
       ALLOCATE(Q( -2:Nx+3,-2:Ny+3,-2:Nz+3,0:Nthreads-1))
       ALLOCATE(RQ(-2:Nx+3,-2:Ny+3,-2:Nz+3,0:Nthreads-1))
 
+      ! Initialize RHS to zero.
+      RQ = 0.0
 
       CALL InitializeDiffusion(-2,Nx+3,-2,Ny+3,-2,Nz+3, DBLE(0.05))
 
@@ -55,10 +60,9 @@ DO order=2,4,2
 
       DO nt=1,Nthreads-1
         IF ( MAXVAL(ABS(RQ(:,:,:,nt) - RQ(:,:,:,nt-1)))>1e-12) THEN
-          WRITE(*,*) 'ERROR: '
+          WRITE(*,*) 'ERROR: For identical input GetRHSDiffusion produced differences in output across multiple threads. Now exiting.'
           STOP
         END IF
-        print *,MAXVAL(ABS(RQ(:,:,:,nt) - RQ(:,:,:,nt-1)))
       END DO
 
 

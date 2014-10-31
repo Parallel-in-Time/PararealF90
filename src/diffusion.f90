@@ -5,8 +5,6 @@
 !!
 MODULE diffusion
 
-USE omp_lib, only : omp_get_thread_num
-
 IMPLICIT NONE
 
 PUBLIC :: GetRHSDiffusion, InitializeDiffusion
