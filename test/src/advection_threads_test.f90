@@ -74,6 +74,6 @@ DO order=1,5,4
   END DO ! N_v
 END DO ! order
 
-WRITE(*,*) '[0] -- Successful: GetRHSAdvection on multiple threads on identical input yields identical output.'
+WRITE(*,*) '\x1B[32m[0] -- Successful: GetRHSAdvection on multiple threads on identical input yields identical output.\x1B[0m'
 
 END PROGRAM advections_threads_test

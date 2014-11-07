@@ -112,7 +112,7 @@ END DO ! method
 
 CALL MPI_FINALIZE(ierr)
 
-WRITE(*,*) '[0] -- Successful: Both Euler and Rk3Ssp produced the expected order of convergence for the linear advection-diffusion problem.'
+PRINT*, '\x1B[32m[0] -- Successful: Both Euler and Rk3Ssp produced the expected order of convergence for the linear advection-diffusion problem. \x1B[0m'
 
 #endif
 

@@ -73,5 +73,5 @@ DO order=2,4,2
   END DO ! N_v
 END DO ! order
 
-WRITE(*,*) '[0] -- Successful: GetRHSDiffusion on multiple threads on identical input yields identical output.'
+PRINT*, '\x1B[32m[0] -- Successful: GetRHSDiffusion on multiple threads on identical input yields identical output.\x1B[0m'
 END PROGRAM diffusion_threads_test
