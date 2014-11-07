@@ -9,15 +9,16 @@ from build_namelist import build_namelist
 from generate_q0 import generate_q0
 import multiprocessing
 from termcolor import colored
+import random as rnd
 
 def para_compare_test(run_cmd):
   #
-  nu = 0.005
-  Nx = 13
-  Ny = 15
-  Nz = 14
-  N_fine   = 40
-  N_coarse = 20
+  nu = rnd.uniform(0.001, 0.009)
+  Nx = rnd.randint(10,17)
+  Ny = rnd.randint(10,17)
+  Nz = rnd.randint(10,17)
+  N_fine   = rnd.randint(30,50)
+  N_coarse = rnd.randint(10,20)
   Niter = 1
   Tend  = 0.2
   do_io = True
