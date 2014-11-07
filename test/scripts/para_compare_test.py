@@ -59,24 +59,24 @@ def para_compare_test(run_cmd):
       elif numpy.isnan(max_err):
         sys.exit(colored('ERROR: Parareal-MPI and Parareal-OpenMP produced NaN error','red'))
   
-  # Compare MPI to OpenMP-pipe
-  Np_s = '%0.2i' % (Np)
-  for nt in range(0,Np):
-    nt_s = '%0.2i' % nt
-    fmpi    = open('q_final_'+nt_s+'_'+Np_s+'_mpi.dat')
-    fopenmp = open('q_final_'+nt_s+'_'+Np_s+'_openmp_pipe.dat')
-    max_err = 0.0
-    for i in range(0,Nx):
-      for j in range(0,Ny):
-        for z in range(0,Nz):
-          Qmpi    = float(fmpi.readline())
-          Qopenmp = float(fopenmp.readline())
-          max_err = max( abs(Qmpi - Qopenmp), max_err )
-    if max_err>1e-14:
-      print 'Timeslice: '+str(nt)
-      print max_err
-      sys.exit(colored('ERROR: Parareal-MPI and Parareal-OpenMP-pipe did not yield identical results.','red'))
-    elif numpy.isnan(max_err):
-      sys.exit(colored('ERROR: Parareal-MPI and Parareal-OpenMP-pipe produced NaN error','red'))
+    # Compare MPI to OpenMP-pipe
+    Np_s = '%0.2i' % (Np)
+    for nt in range(0,Np):
+      nt_s = '%0.2i' % nt
+      fmpi    = open('q_final_'+nt_s+'_'+Np_s+'_mpi.dat')
+      fopenmp = open('q_final_'+nt_s+'_'+Np_s+'_openmp_pipe.dat')
+      max_err = 0.0
+      for i in range(0,Nx):
+        for j in range(0,Ny):
+          for z in range(0,Nz):
+            Qmpi    = float(fmpi.readline())
+            Qopenmp = float(fopenmp.readline())
+            max_err = max( abs(Qmpi - Qopenmp), max_err )
+      if max_err>1e-14:
+        print 'Timeslice: '+str(nt)
+        print max_err
+        sys.exit(colored('ERROR: Parareal-MPI and Parareal-OpenMP-pipe did not yield identical results.','red'))
+      elif numpy.isnan(max_err):
+        sys.exit(colored('ERROR: Parareal-MPI and Parareal-OpenMP-pipe produced NaN error','red'))
 
   print colored(" [0] -- Successful: All three versions of Parareal (MPI, OpenMP, OpenMP-pipe) give identical results.",'green')
