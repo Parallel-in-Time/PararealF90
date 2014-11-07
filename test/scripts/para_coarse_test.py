@@ -15,6 +15,7 @@ def para_coarse_test(run_cmd):
   for nn in range(0,Ntests):
     sys.stdout.write('Running coarse test %2i of %2i. \r' % (nn, Ntests) )
     sys.stdout.flush()
+    os.system('rm -f *.dat')
   
     nu         = rnd.uniform(0.001, 0.009)
     Nx         = rnd.randint(16, 25)
@@ -36,7 +37,6 @@ def para_coarse_test(run_cmd):
     Np_s_p1    = '%0.2i' % (Np)
 
     # Prepare
-    os.system('rm -f *.dat')
     generate_q0(Nx, Ny, Nz)
     build_namelist(nu, Nx, Ny, Nz, Np*N_fine, Np*N_coarse, Niter, Tend, do_io, be_verbose)
 

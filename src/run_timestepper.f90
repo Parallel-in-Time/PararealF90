@@ -81,9 +81,9 @@ ELSE IF (method==3) THEN
     CALL Rk3Ssp(Q, DBLE(0.0), Tend, N_fine, dx, dy, dz, order_adv, order_diff)
 END IF
 
-OPEN(unit=100, file='qend.dat')
-WRITE(100, '(F35.25)') Q(1:Nx,1:Ny,1:Nz)
-CLOSE(100)
+OPEN(unit=10, FILE='qend.dat')
+WRITE(10, '(F35.25)') Q(1:Nx,1:Ny,1:Nz)
+CLOSE(10)
 
 ! Finalize
 CALL FinalizeTimestepper
