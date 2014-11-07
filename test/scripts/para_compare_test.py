@@ -34,9 +34,9 @@ def para_compare_test(run_cmd):
     os.system('rm -f *.dat')
     generate_q0(Nx, Ny, Nz)
     build_namelist(nu, Nx, Ny, Nz, N_fine, N_coarse, Niter, Tend, do_io, be_verbose)
-    os.system(run_cmd+' -n '+str(Np)+' ./bin/run_parareal_mpi.out')
-    os.system('OMP_NUM_THREADS='+str(Np)+' ./bin/parareal_openmp_pipe.out')
-    os.system('OMP_NUM_THREADS='+str(Np)+' ./bin/parareal_openmp.out')
+    os.system('OMP_NUM_THREADS=1'           +run_cmd+' -n '+str(Np)+' ./bin/run_parareal_mpi.out')
+    os.system('OMP_NUM_THREADS='+str(Np)+' '+run_cmd+' -n 1 ./bin/parareal_openmp_pipe.out')
+    os.system('OMP_NUM_THREADS='+str(Np)+' '+run_cmd+' -n 1 ./bin/parareal_openmp.out')
     
     # Compare MPI to OpenMP-pipe
     Np_s = '%0.2i' % (Np)

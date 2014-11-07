@@ -41,13 +41,13 @@ def para_fine_test(run_cmd):
     build_namelist(nu, Nx, Ny, Nz, Np*N_fine, Np*N_coarse, Niter, Tend, do_io, be_verbose)
 
     # Compute fine reference
-    os.system('./bin/run_timestepper.out F')
+    os.system('OMP_NUM_THREADS=1 '+run_cmd+' -n 1 ./bin/run_timestepper.out F')
 
     # Build namelist for Parareal
     build_namelist(nu, Nx, Ny, Nz,    N_fine,    N_coarse,    Np, Tend, do_io, be_verbose)
 
     # Parareal-MPI
-    os.system(run_cmd+' -n '+str(Np)+' ./bin/run_parareal_mpi.out')
+    os.system('OMP_NUM_THREADS=1 '+run_cmd+' -n '+str(Np)+' ./bin/run_parareal_mpi.out')
     fser = open('qend.dat','r')
     fpar = open('q_final_'+Np_s+'_'+Np_s_p1+'_mpi.dat')
     max_err = 0.0
