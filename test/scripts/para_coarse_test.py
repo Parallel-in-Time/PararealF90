@@ -15,7 +15,7 @@ def para_coarse_test(run_cmd):
   for nn in range(0,Ntests):
     sys.stdout.write('Running coarse test %2i of %2i. \r' % (nn, Ntests) )
     sys.stdout.flush()
-    os.system('rm -f *.dat')
+    #os.system('rm -f *.dat')
   
     nu         = rnd.uniform(0.001, 0.009)
     Nx         = rnd.randint(16, 25)
@@ -49,7 +49,7 @@ def para_coarse_test(run_cmd):
 
     # Parareal-MPI
     os.system('OMP_NUM_THREADS=1 '+run_cmd+' -n '+str(Np)+' ./bin/run_parareal_mpi.out')
-    fser = open('qend.dat','r')
+    fser = open('qend.dat')
     fpar = open('q_final_'+Np_s+'_'+Np_s_p1+'_mpi.dat')
     max_err = 0.0
     for i in range(0,Nx):

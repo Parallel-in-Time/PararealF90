@@ -213,7 +213,7 @@ IF(do_io) THEN
     DO nt=0,Nthreads-1
         CALL OMP_DESTROY_LOCK(nlocks(nt))
         WRITE(filename, '(A,I0.2,A,I0.2,A)') 'q_final_', nt, '_', Nthreads, '_openmp_pipe.dat'
-        OPEN(unit=nt, FILE=filename)
+        OPEN(unit=nt, FILE=filename, ACTION='write', STATUS='replace')
         WRITE(nt, '(F35.25)') Qend(1:Nx, 1:Ny, 1:Nz, nt)
         CLOSE(nt)
     END DO
@@ -225,7 +225,7 @@ timer_all = OMP_GET_WTIME() - timer_all
 IF(do_io) THEN
     DO nt=0,Nthreads-1
         WRITE(filename, '(A,I0.2,A,I0.2,A)') 'timings_openmp_pipe', nt, '_', Nthreads, '.dat'
-        OPEN(unit=nt, FILE=filename)
+        OPEN(unit=nt, FILE=filename, ACTION='write', STATUS='replace')
         WRITE(nt, '(F8.2)') timer_all
         WRITE(nt, '(F8.2)') timer_fine(nt)
         WRITE(nt, '(F8.2)') timer_coarse(nt)

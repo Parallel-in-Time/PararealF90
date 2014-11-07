@@ -227,7 +227,7 @@ CONTAINS
 
     IF(do_io) THEN
         WRITE(filename, '(A,I0.2,A,I0.2,A)') 'q_final_', myrank, '_', Nproc, '_mpi.dat'
-        OPEN(unit=myrank, FILE=filename)
+        OPEN(UNIT=myrank, FILE=filename, ACTION='write', STATUS='replace')
         WRITE(myrank, '(F35.25)') Qend(1:param%Nx, 1:param%Ny, 1:param%Nz)
         CLOSE(myrank)
     END IF
@@ -236,7 +236,7 @@ CONTAINS
 
     IF(do_io) THEN
         WRITE(filename, '(A,I0.2,A,I0.2,A)') 'timings_mpi', myrank, '_', Nproc, '.dat'
-        OPEN(unit=myrank, FILE=filename)
+        OPEN(UNIT=myrank, FILE=filename, ACTION='write', STATUS='replace')
         WRITE(myrank, '(F8.2)') timer_all
         WRITE(myrank, '(F8.2)') timer_fine
         WRITE(myrank, '(F8.2)') timer_coarse

@@ -32,6 +32,7 @@ def para_fine_test(run_cmd):
       Np = 2
     else:
       Np         = rnd.randint(2,Nproc)
+    
     Niter      = Np
     Np_s       = '%0.2i' % (Np-1)
     Np_s_p1    = '%0.2i' % (Np)

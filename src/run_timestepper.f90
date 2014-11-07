@@ -34,7 +34,7 @@ NAMELIST /param/ nu, Nx, Ny, Nz, N_fine, N_coarse, Niter, Tend, do_io, be_verbos
 Nthreads=1
 
 ! Read parameter
-OPEN(unit=20, FILE='parameter.in', ACTION='read', STATUS='old')
+OPEN(UNIT=20, FILE='parameter.in', ACTION='read', STATUS='old')
 READ(20,NML=param)
 CLOSE(20)
 
@@ -81,7 +81,7 @@ ELSE IF (method==3) THEN
     CALL Rk3Ssp(Q, DBLE(0.0), Tend, N_fine, dx, dy, dz, order_adv, order_diff)
 END IF
 
-OPEN(unit=10, FILE='qend.dat')
+OPEN(UNIT=10, FILE='qend.dat', ACTION='write', STATUS='replace')
 WRITE(10, '(F35.25)') Q(1:Nx,1:Ny,1:Nz)
 CLOSE(10)
 
