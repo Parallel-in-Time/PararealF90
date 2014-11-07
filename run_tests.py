@@ -13,9 +13,9 @@ with open("system.txt", "r") as rfile:
     runcmd = runcmd.rstrip()
     rfile.close()
 
-para_coarse_test(runcmd);
+#para_coarse_test(runcmd);
 #para_fine_test(runcmd);
-#para_compare_test(runcmd);
+para_compare_test(runcmd);
 
 tests = glob.glob('test/bin/*.out')
 #for file in tests:

@@ -8,6 +8,7 @@ import os, sys, numpy
 from build_namelist import build_namelist
 from generate_q0 import generate_q0
 import multiprocessing
+from termcolor import colored
 
 def para_compare_test(run_cmd):
   #
@@ -34,7 +35,7 @@ def para_compare_test(run_cmd):
     os.system('rm -f *.dat')
     generate_q0(Nx, Ny, Nz)
     build_namelist(nu, Nx, Ny, Nz, N_fine, N_coarse, Niter, Tend, do_io, be_verbose)
-    os.system('OMP_NUM_THREADS=1'           +run_cmd+' -n '+str(Np)+' ./bin/run_parareal_mpi.out')
+    os.system('OMP_NUM_THREADS=1 '+run_cmd+' -n '+str(Np)+' ./bin/run_parareal_mpi.out')
     os.system('OMP_NUM_THREADS='+str(Np)+' '+run_cmd+' -n 1 ./bin/parareal_openmp_pipe.out')
     os.system('OMP_NUM_THREADS='+str(Np)+' '+run_cmd+' -n 1 ./bin/parareal_openmp.out')
     
@@ -57,9 +58,9 @@ def para_compare_test(run_cmd):
       if max_err>1e-14:
         print 'Timeslice: '+str(nt)
         print max_err
-        sys.exit('ERROR: Parareal-MPI and Parareal-OpenMP-pipe did not yield identical results.')
+        sys.exit(colored('ERROR: Parareal-MPI and Parareal-OpenMP-pipe did not yield identical results.','red'))
       elif numpy.isnan(max_err):
-        sys.ext('ERROR: Parareal-MPI and Parareal-OpenMP-pipe produced NaN error')
+        sys.exit(colored('ERROR: Parareal-MPI and Parareal-OpenMP-pipe produced NaN error','red'))
 
     # Compare MPI to OpenMP
     Np_s = '%0.2i' % (Np)
@@ -80,8 +81,8 @@ def para_compare_test(run_cmd):
       if max_err>1e-14:
         print 'Timeslice: '+str(nt)
         print max_err
-        sys.exit('ERROR: Parareal-MPI and Parareal-OpenMP did not yield identical results.')
+        sys.exit(colored('ERROR: Parareal-MPI and Parareal-OpenMP did not yield identical results.','red'))
       elif numpy.isnan(max_err):
-        sys.ext('ERROR: Parareal-MPI and Parareal-OpenMP produced NaN error')
+        sys.exit(colored('ERROR: Parareal-MPI and Parareal-OpenMP produced NaN error','red'))
 
-  print " [0] -- Successful: All three versions of Parareal (MPI, OpenMP, OpenMP-pipe) give identical results."
+  print colored(" [0] -- Successful: All three versions of Parareal (MPI, OpenMP, OpenMP-pipe) give identical results.",'green')
