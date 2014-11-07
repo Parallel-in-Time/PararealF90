@@ -409,7 +409,7 @@ CALL MPI_FINALIZE(ierr)
 IF(SIZE(Nx_v)==1) THEN
     WRITE(*,*) 'WARNING: No convergence test... output in ascii files'
 ELSE
-    WRITE(*,*) '[0] -- Successful: Advection module returns zero for constant input and produces expected rates of convergence.'
+    PRINT*, '\x1B[32m[0] -- Successful: Advection module returns zero for constant input and produces expected rates of convergence. \x1B[0m'
 END IF
 
 END PROGRAM Upwind_Test

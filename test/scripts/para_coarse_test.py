@@ -7,8 +7,9 @@ from build_namelist import build_namelist
 from generate_q0 import generate_q0
 import random as rnd
 import multiprocessing
+from termcolor import colored
 
-def para_coarse_test():
+def para_coarse_test(run_cmd):
   #
   Ntests = 5
   for nn in range(0,Ntests):
@@ -31,7 +32,6 @@ def para_coarse_test():
       Np = 2
     else:
       Np         = rnd.randint(2,Nproc)
-    run_cmd    = 'mpirun'
     Np_s       = '%0.2i' % (Np-1)
     Np_s_p1    = '%0.2i' % (Np)
 
@@ -42,13 +42,13 @@ def para_coarse_test():
 
     # Generate coarse reference
     # Compute fine reference
-    os.system('./bin/run_timestepper.out C')
+    os.system('OMP_NUM_THREADS=1 '+run_cmd+' -n 1 ./bin/run_timestepper.out C')
 
     # Build namelist for Parareal
     build_namelist(nu, Nx, Ny, Nz,    N_fine,    N_coarse,     0, Tend, do_io, be_verbose)
 
     # Parareal-MPI
-    os.system(run_cmd+' -n '+str(Np)+' ./bin/run_parareal_mpi.out')
+    os.system('OMP_NUM_THREADS=1 '+run_cmd+' -n '+str(Np)+' ./bin/run_parareal_mpi.out')
     fser = open('qend.dat','r')
     fpar = open('q_final_'+Np_s+'_'+Np_s_p1+'_mpi.dat')
     max_err = 0.0
@@ -60,12 +60,12 @@ def para_coarse_test():
                 max_err = max( abs(Qser-Qpar), max_err )
     if max_err>1e-14:
         print max_err
-        sys.exit("ERROR: Parareal-MPI with Nit=0 and coarse integrator did not yield identical results.")
+        sys.exit(colored("ERROR: Parareal-MPI with Nit=0 and coarse integrator did not yield identical results.",'red'))
     elif numpy.isnan(max_err):
-        sys.exit("ERROR: Parareal-MPI with Nit=0 and coarse integrator produced NaN error.")
+        sys.exit(colored("ERROR: Parareal-MPI with Nit=0 and coarse integrator produced NaN error.",'red'))
 
     # Parareal-OpenMP
-    os.system('OMP_NUM_THREADS='+str(Np)+' ./bin/parareal_openmp.out')
+    os.system('OMP_NUM_THREADS='+str(Np)+' '+run_cmd+' -n 1 ./bin/parareal_openmp.out')
     fser = open('qend.dat','r')
     fpar = open('q_final_'+Np_s+'_'+Np_s_p1+'_openmp.dat')
     max_err = 0.0
@@ -76,13 +76,13 @@ def para_coarse_test():
                 Qpar = float(fpar.readline())
                 max_err = max( abs(Qser-Qpar), max_err )
     if max_err>1e-14:
-        sys.exit("ERROR: Parareal-OpenMP with Nit=0 and coarse integrator did not yield identical results.")
+        sys.exit(colored("ERROR: Parareal-OpenMP with Nit=0 and coarse integrator did not yield identical results.",'red'))
     elif numpy.isnan(max_err):
-        sys.exit("ERROR: Parareal-OpenMP with Nit=0 and coarse integrator produced NaN error.")
+        sys.exit(colored("ERROR: Parareal-OpenMP with Nit=0 and coarse integrator produced NaN error.",'red'))
 
 
     # Parareal-OpenMP-pipe
-    os.system('OMP_NUM_THREADS='+str(Np)+' ./bin/parareal_openmp_pipe.out')
+    os.system('OMP_NUM_THREADS='+str(Np)+' '+run_cmd+' -n 1 ./bin/parareal_openmp_pipe.out')
     fser = open('qend.dat','r')
     fpar = open('q_final_'+Np_s+'_'+Np_s_p1+'_openmp_pipe.dat')
     max_err = 0.0
@@ -93,8 +93,8 @@ def para_coarse_test():
                 Qpar = float(fpar.readline())
                 max_err = max( abs(Qser-Qpar), max_err )
     if max_err>1e-14:
-        sys.exit("ERROR: Parareal-OpenMP-pipe with Nit=0 and coarse integrator did not yield identical results.")
+        sys.exit(colored("ERROR: Parareal-OpenMP-pipe with Nit=0 and coarse integrator did not yield identical results.",'red'))
     elif numpy.isnan(max_err):
-        sys.exit("ERROR: Parareal-OpenMP-pipe with Nit=0 and coarse integrator produced NaN error.")
+        sys.exit(colored("ERROR: Parareal-OpenMP-pipe with Nit=0 and coarse integrator produced NaN error.",'red'))
 
-  print " [0] -- Successful: All three versions of Parareal (MPI, OpenMP, OpenMP-pipe) reproduce the coarse integrator for Nit = 0"
+  print colored(" [0] -- Successful: All three versions of Parareal (MPI, OpenMP, OpenMP-pipe) reproduce the coarse integrator for Nit = 0", 'green')

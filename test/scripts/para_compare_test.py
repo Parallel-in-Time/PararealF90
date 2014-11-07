@@ -8,22 +8,23 @@ import os, sys, numpy
 from build_namelist import build_namelist
 from generate_q0 import generate_q0
 import multiprocessing
+from termcolor import colored
+import random as rnd
 
-def para_compare_test():
+def para_compare_test(run_cmd):
   #
-  nu = 0.005
-  Nx = 13
-  Ny = 15
-  Nz = 14
-  N_fine   = 40
-  N_coarse = 20
+  nu = rnd.uniform(0.001, 0.009)
+  Nx = rnd.randint(10,17)
+  Ny = rnd.randint(10,17)
+  Nz = rnd.randint(10,17)
+  N_fine   = rnd.randint(30,50)
+  N_coarse = rnd.randint(10,20)
   Niter = 1
   Tend  = 0.2
   do_io = True
   be_verbose = False
   Np       = multiprocessing.cpu_count()
   Ntests   = 10
-  run_cmd  = 'mpirun'
   Np_s     = '%0.2i' % (Np-1)
   Np_s_p1  = '%0.2i' % Np
 
@@ -35,9 +36,9 @@ def para_compare_test():
     os.system('rm -f *.dat')
     generate_q0(Nx, Ny, Nz)
     build_namelist(nu, Nx, Ny, Nz, N_fine, N_coarse, Niter, Tend, do_io, be_verbose)
-    os.system(run_cmd+' -n '+str(Np)+' ./bin/run_parareal_mpi.out')
-    os.system('OMP_NUM_THREADS='+str(Np)+' ./bin/parareal_openmp_pipe.out')
-    os.system('OMP_NUM_THREADS='+str(Np)+' ./bin/parareal_openmp.out')
+    os.system('OMP_NUM_THREADS=1 '+run_cmd+' -n '+str(Np)+' ./bin/run_parareal_mpi.out')
+    os.system('OMP_NUM_THREADS='+str(Np)+' '+run_cmd+' -n 1 ./bin/parareal_openmp_pipe.out')
+    os.system('OMP_NUM_THREADS='+str(Np)+' '+run_cmd+' -n 1 ./bin/parareal_openmp.out')
     
     # Compare MPI to OpenMP-pipe
     Np_s = '%0.2i' % (Np)
@@ -58,9 +59,9 @@ def para_compare_test():
       if max_err>1e-14:
         print 'Timeslice: '+str(nt)
         print max_err
-        sys.exit('ERROR: Parareal-MPI and Parareal-OpenMP-pipe did not yield identical results.')
+        sys.exit(colored('ERROR: Parareal-MPI and Parareal-OpenMP-pipe did not yield identical results.','red'))
       elif numpy.isnan(max_err):
-        sys.ext('ERROR: Parareal-MPI and Parareal-OpenMP-pipe produced NaN error')
+        sys.exit(colored('ERROR: Parareal-MPI and Parareal-OpenMP-pipe produced NaN error','red'))
 
     # Compare MPI to OpenMP
     Np_s = '%0.2i' % (Np)
@@ -81,8 +82,8 @@ def para_compare_test():
       if max_err>1e-14:
         print 'Timeslice: '+str(nt)
         print max_err
-        sys.exit('ERROR: Parareal-MPI and Parareal-OpenMP did not yield identical results.')
+        sys.exit(colored('ERROR: Parareal-MPI and Parareal-OpenMP did not yield identical results.','red'))
       elif numpy.isnan(max_err):
-        sys.ext('ERROR: Parareal-MPI and Parareal-OpenMP produced NaN error')
+        sys.exit(colored('ERROR: Parareal-MPI and Parareal-OpenMP produced NaN error','red'))
 
-  print " [0] -- Successful: All three versions of Parareal (MPI, OpenMP, OpenMP-pipe) give identical results."
+  print colored(" [0] -- Successful: All three versions of Parareal (MPI, OpenMP, OpenMP-pipe) give identical results.",'green')

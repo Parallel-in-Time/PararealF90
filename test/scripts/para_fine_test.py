@@ -8,8 +8,9 @@ from build_namelist import build_namelist
 from generate_q0 import generate_q0
 import random as rnd
 import multiprocessing
+from termcolor import colored
 
-def para_fine_test():
+def para_fine_test(run_cmd):
   Ntests = 5
   for nn in range(0,Ntests):
     sys.stdout.write('Running fine test %2i of %2i. \r' % (nn, Ntests) )
@@ -32,7 +33,6 @@ def para_fine_test():
     else:
       Np         = rnd.randint(2,Nproc)
     Niter      = Np
-    run_cmd    = 'mpirun'
     Np_s       = '%0.2i' % (Np-1)
     Np_s_p1    = '%0.2i' % (Np)
 
@@ -42,13 +42,13 @@ def para_fine_test():
     build_namelist(nu, Nx, Ny, Nz, Np*N_fine, Np*N_coarse, Niter, Tend, do_io, be_verbose)
 
     # Compute fine reference
-    os.system('./bin/run_timestepper.out F')
+    os.system('OMP_NUM_THREADS=1 '+run_cmd+' -n 1 ./bin/run_timestepper.out F')
 
     # Build namelist for Parareal
     build_namelist(nu, Nx, Ny, Nz,    N_fine,    N_coarse,    Np, Tend, do_io, be_verbose)
 
     # Parareal-MPI
-    os.system(run_cmd+' -n '+str(Np)+' ./bin/run_parareal_mpi.out')
+    os.system('OMP_NUM_THREADS=1 '+run_cmd+' -n '+str(Np)+' ./bin/run_parareal_mpi.out')
     fser = open('qend.dat','r')
     fpar = open('q_final_'+Np_s+'_'+Np_s_p1+'_mpi.dat')
     max_err = 0.0
@@ -60,9 +60,9 @@ def para_fine_test():
           max_err = max( abs(Qser-Qpar), max_err )
     if max_err>1e-14:
       print max_err
-      sys.exit("ERROR: Parareal-MPI with Nit=Nproc and fine integrator did not yield identical results.")
+      sys.exit(colored("ERROR: Parareal-MPI with Nit=Nproc and fine integrator did not yield identical results.",'red'))
     elif numpy.isnan(max_err):
-      sys.exit("ERROR: Parareal-MPI with Nit=Nproc and fine integrator produced NaN error.")
+      sys.exit(colored("ERROR: Parareal-MPI with Nit=Nproc and fine integrator produced NaN error.",'red'))
 
     # Parareal-OpenMP
     os.system('OMP_NUM_THREADS='+str(Np)+' '+run_cmd+' -n '+str(Np)+' ./bin/parareal_openmp.out')
@@ -77,9 +77,9 @@ def para_fine_test():
           max_err = max( abs(Qser-Qpar), max_err )
     if max_err>1e-14:
       print max_err
-      sys.exit("ERROR: Parareal-OpenMP with Nit=Nproc and fine integrator did not yield identical results.")
+      sys.exit(colored("ERROR: Parareal-OpenMP with Nit=Nproc and fine integrator did not yield identical results.",'red'))
     elif numpy.isnan(max_err):
-      sys.exit("ERROR: Parareal-OpenMP with Nit=Nproc and fine integrator produced NaN error.")
+      sys.exit(colored("ERROR: Parareal-OpenMP with Nit=Nproc and fine integrator produced NaN error.",'red'))
 
     # Parareal-OpenMP-pipe
     os.system('OMP_NUM_THREADS='+str(Np)+' '+run_cmd+' -n '+str(Np)+' ./bin/parareal_openmp_pipe.out')
@@ -94,8 +94,8 @@ def para_fine_test():
           max_err = max( abs(Qser-Qpar), max_err )
     if max_err>1e-14:
       print max_err
-      sys.exit("ERROR: Parareal-OpenMP-pipe with Nit=Nproc and fine integrator did not yield identical results.")
+      sys.exit(colored("ERROR: Parareal-OpenMP-pipe with Nit=Nproc and fine integrator did not yield identical results.",'red'))
     elif numpy.isnan(max_err):
-      sys.exit("ERROR: Parareal-OpenMP-pipe with Nit=Nproc and fine integrator produced NaN error.")
+      sys.exit(colored("ERROR: Parareal-OpenMP-pipe with Nit=Nproc and fine integrator produced NaN error.",'red'))
 
-  print " [0] -- Successful: All three versions of Parareal (MPI, OpenMP, OpenMP-pipe) reproduce the fine integrator for Nit = Np"
+  print colored(" [0] -- Successful: All three versions of Parareal (MPI, OpenMP, OpenMP-pipe) reproduce the fine integrator for Nit = Np", 'green')

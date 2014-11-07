@@ -137,6 +137,6 @@ END DO ! method
 
 CALL MPI_FINALIZE(ierr)
 
-WRITE(*,*) '[0] -- Successful: Timestepping methods produced expected order of convergence.'
+PRINT*, '\x1B[32m[0] -- Successful: Timestepping methods produced expected order of convergence.\x1B[0m'
 
 END PROGRAM timestepper_test

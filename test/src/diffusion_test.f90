@@ -104,6 +104,6 @@ END DO
 
 CALL MPI_FINALIZE(ierr)
 
-WRITE(*,*) '[0] -- Successful: Diffusion module produces expected rates of convergence.'
+PRINT*, '\x1B[32m[0] -- Successful: Diffusion module produces expected rates of convergence.\x1B[0m'
 
 END PROGRAM diffusion_test
