@@ -1,4 +1,5 @@
 clean:
-	rm -rf *.dat
-	rm -rf *.out
-	rm -rf *.in
+	rm -f *.dat
+	rm -f *.out
+	rm -f *.in
+	rm -f *.pyc
