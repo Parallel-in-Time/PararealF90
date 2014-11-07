@@ -109,6 +109,6 @@ DEALLOCATE(RQbc)
 CALL FinalizeAdvection
 CALL FinalizeBoundaries
 
-WRITE(*,*)'[0] -- Successful: GetRHSAdvection produces identical results when ghost-cells are filled manually or through the boundaries module.'
+PRINT*, '\x1B[32m [0] -- Successful: GetRHSAdvection produces identical results when ghost-cells are filled manually or through the boundaries module.\x1B[0m'
 
 END PROGRAM advection_boundaries_test

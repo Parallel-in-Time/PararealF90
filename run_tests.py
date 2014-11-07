@@ -21,4 +21,4 @@ with open("system.txt", "r") as rfile:
 Np    = multiprocessing.cpu_count()
 tests = glob.glob('test/bin/*.out')
 for file in tests:
-  os.system('OMP_NUM_THREADS='+str(Np)+' mpirun -n 1 '+file)
+  os.system('OMP_NUM_THREADS='+str(Np)+' '+runcmd+' -n 1 '+file)
