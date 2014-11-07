@@ -9,7 +9,7 @@ from build_namelist import build_namelist
 from generate_q0 import generate_q0
 import multiprocessing
 
-def para_compare_test():
+def para_compare_test(run_cmd):
   #
   nu = 0.005
   Nx = 13
@@ -23,7 +23,6 @@ def para_compare_test():
   be_verbose = False
   Np       = multiprocessing.cpu_count()
   Ntests   = 10
-  run_cmd  = 'mpirun'
   Np_s     = '%0.2i' % (Np-1)
   Np_s_p1  = '%0.2i' % Np
 

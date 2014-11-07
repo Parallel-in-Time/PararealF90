@@ -8,7 +8,7 @@ from generate_q0 import generate_q0
 import random as rnd
 import multiprocessing
 
-def para_coarse_test():
+def para_coarse_test(run_cmd):
   #
   Ntests = 5
   for nn in range(0,Ntests):
@@ -31,7 +31,6 @@ def para_coarse_test():
       Np = 2
     else:
       Np         = rnd.randint(2,Nproc)
-    run_cmd    = 'mpirun'
     Np_s       = '%0.2i' % (Np-1)
     Np_s_p1    = '%0.2i' % (Np)
 

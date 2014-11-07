@@ -9,7 +9,7 @@ from generate_q0 import generate_q0
 import random as rnd
 import multiprocessing
 
-def para_fine_test():
+def para_fine_test(run_cmd):
   Ntests = 5
   for nn in range(0,Ntests):
     sys.stdout.write('Running fine test %2i of %2i. \r' % (nn, Ntests) )
@@ -32,7 +32,6 @@ def para_fine_test():
     else:
       Np         = rnd.randint(2,Nproc)
     Niter      = Np
-    run_cmd    = 'mpirun'
     Np_s       = '%0.2i' % (Np-1)
     Np_s_p1    = '%0.2i' % (Np)
 
