@@ -24,7 +24,7 @@ def para_compare_test(run_cmd):
   do_io = True
   be_verbose = False
   Np       = multiprocessing.cpu_count()
-  Ntests   = 10
+  Ntests   = 3
   Np_s     = '%0.2i' % (Np-1)
   Np_s_p1  = '%0.2i' % Np
   

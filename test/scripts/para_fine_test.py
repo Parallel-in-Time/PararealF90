@@ -21,7 +21,7 @@ def para_fine_test(run_cmd):
     Nx         = rnd.randint(16, 25)
     Ny         = rnd.randint(16, 25)
     Nz         = rnd.randint(16, 25)
-    N_fine     = rnd.randint(75, 100)
+    N_fine     = rnd.randint(40, 60)
     N_coarse   = rnd.randint(25, 30)
     
     Tend       = 0.2
