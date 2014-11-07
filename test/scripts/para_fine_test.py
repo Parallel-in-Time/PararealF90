@@ -38,7 +38,6 @@ def para_fine_test(run_cmd):
     Np_s_p1    = '%0.2i' % (Np)
 
     # Prepare
-    os.system('rm -f *.dat')
     generate_q0(Nx, Ny, Nz)
     build_namelist(nu, Nx, Ny, Nz, Np*N_fine, Np*N_coarse, Niter, Tend, do_io, be_verbose)
 
