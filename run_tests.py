@@ -14,9 +14,9 @@ with open("system.txt", "r") as rfile:
     runcmd = runcmd.rstrip()
     rfile.close()
 
-para_coarse_test(runcmd);
-para_fine_test(runcmd);
-para_compare_test(runcmd);
+para_coarse_test(system,runcmd);
+para_fine_test(system,runcmd);
+para_compare_test(system,runcmd);
 
 Np    = multiprocessing.cpu_count()
 tests = glob.glob('test/bin/*.out')

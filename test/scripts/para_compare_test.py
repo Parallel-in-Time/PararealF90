@@ -7,11 +7,12 @@
 import os, sys, numpy
 from build_namelist import build_namelist
 from generate_q0 import generate_q0
+from get_run_cmd import get_run_cmd
 import multiprocessing
 from termcolor import colored
 import random as rnd
 
-def para_compare_test(run_cmd):
+def para_compare_test(system, run_cmd):
   #
   nu = rnd.uniform(0.001, 0.009)
   Nx = rnd.randint(10,17)
@@ -24,7 +25,9 @@ def para_compare_test(run_cmd):
   do_io = True
   be_verbose = False
   Np       = multiprocessing.cpu_count()
-  Ntests   = 3
+  if (Np==1):
+    Np=2
+  Ntests   = 5
   Np_s     = '%0.2i' % (Np-1)
   Np_s_p1  = '%0.2i' % Np
   
@@ -35,9 +38,12 @@ def para_compare_test(run_cmd):
     #
     generate_q0(Nx, Ny, Nz)
     build_namelist(nu, Nx, Ny, Nz, N_fine, N_coarse, Niter, Tend, do_io, be_verbose)
-    os.system('OMP_NUM_THREADS=1 '+run_cmd+' -n '+str(Np)+' ./bin/run_parareal_mpi.out')
-    os.system('OMP_NUM_THREADS='+str(Np)+' '+run_cmd+' -n 1 ./bin/parareal_openmp_pipe.out')
-    os.system('OMP_NUM_THREADS='+str(Np)+' '+run_cmd+' -n 1 ./bin/parareal_openmp.out')
+    run_cmd_full = get_run_cmd(system, run_cmd, True, Np)
+    os.system(run_cmd_full+' ./bin/run_parareal_mpi.out')
+
+    run_cmd_full = get_run_cmd(system, run_cmd, False, Np)
+    os.system(run_cmd_full+' ./bin/parareal_openmp_pipe.out')
+    os.system(run_cmd_full+' ./bin/parareal_openmp.out')
     
     # Compare MPI to OpenMP
     Np_s = '%0.2i' % (Np)

@@ -6,11 +6,12 @@
 import os, sys, numpy
 from build_namelist import build_namelist
 from generate_q0 import generate_q0
+from get_run_cmd import get_run_cmd
 import random as rnd
 import multiprocessing
 from termcolor import colored
 
-def para_fine_test(run_cmd):
+def para_fine_test(system, run_cmd):
   Ntests = 5
   for nn in range(0,Ntests):
     sys.stdout.write('Running fine test %2i of %2i. \r' % (nn, Ntests) )
@@ -42,13 +43,15 @@ def para_fine_test(run_cmd):
     build_namelist(nu, Nx, Ny, Nz, Np*N_fine, Np*N_coarse, Niter, Tend, do_io, be_verbose)
 
     # Compute fine reference
-    os.system('OMP_NUM_THREADS=1 '+run_cmd+' -n 1 ./bin/run_timestepper.out F')
+    run_cmd_full = get_run_cmd(system, run_cmd, True, 1)
+    os.system(run_cmd_full+' ./bin/run_timestepper.out F')
 
     # Build namelist for Parareal
     build_namelist(nu, Nx, Ny, Nz,    N_fine,    N_coarse,    Np, Tend, do_io, be_verbose)
 
     # Parareal-MPI
-    os.system('OMP_NUM_THREADS=1 '+run_cmd+' -n '+str(Np)+' ./bin/run_parareal_mpi.out')
+    run_cmd_full = get_run_cmd(system, run_cmd, True, Np)
+    os.system(run_cmd_full+' ./bin/run_parareal_mpi.out')
     fser = open('qend.dat','r')
     fpar = open('q_final_'+Np_s+'_'+Np_s_p1+'_mpi.dat')
     max_err = 0.0
@@ -65,7 +68,8 @@ def para_fine_test(run_cmd):
       sys.exit(colored("ERROR: Parareal-MPI with Nit=Nproc and fine integrator produced NaN error.",'red'))
 
     # Parareal-OpenMP
-    os.system('OMP_NUM_THREADS='+str(Np)+' '+run_cmd+' -n '+str(Np)+' ./bin/parareal_openmp.out')
+    run_cmd_full = get_run_cmd(system, run_cmd, False, Np)
+    os.system(run_cmd_full+' ./bin/parareal_openmp.out')
     fser = open('qend.dat','r')
     fpar = open('q_final_'+Np_s+'_'+Np_s_p1+'_openmp.dat')
     max_err = 0.0
@@ -82,7 +86,8 @@ def para_fine_test(run_cmd):
       sys.exit(colored("ERROR: Parareal-OpenMP with Nit=Nproc and fine integrator produced NaN error.",'red'))
 
     # Parareal-OpenMP-pipe
-    os.system('OMP_NUM_THREADS='+str(Np)+' '+run_cmd+' -n '+str(Np)+' ./bin/parareal_openmp_pipe.out')
+    run_cmd_full = get_run_cmd(system, run_cmd, False, Np)
+    os.system(run_cmd_full+' ./bin/parareal_openmp_pipe.out')
     fser = open('qend.dat','r')
     fpar = open('q_final_'+Np_s+'_'+Np_s_p1+'_openmp_pipe.dat')
     max_err = 0.0
