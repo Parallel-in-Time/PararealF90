@@ -14,15 +14,18 @@ with open("system.txt", "r") as rfile:
     runcmd = runcmd.rstrip()
     rfile.close()
 
-para_coarse_test(system,runcmd);
+be_verbose = True
+Ntests = 1
+
+para_coarse_test(system,runcmd,be_verbose,Ntests);
 os.system('rm -f q_final*.dat')
 os.system('rm -f parameter.in')
 
-para_fine_test(system,runcmd);
+para_fine_test(system,runcmd,be_verbose,Ntests);
 os.system('rm -f q_final*.dat')
 os.system('rm -f parameter.in')
 
-para_compare_test(system,runcmd);
+para_compare_test(system,runcmd,be_verbose,Ntests);
 os.system('rm -f q_final*.dat')
 os.system('rm -f parameter.in')
 

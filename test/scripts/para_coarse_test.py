@@ -10,9 +10,8 @@ import random as rnd
 import multiprocessing
 from termcolor import colored
 
-def para_coarse_test(system, run_cmd):
+def para_coarse_test(system, run_cmd, be_verbose, Ntests):
   #
-  Ntests = 5
   for nn in range(0,Ntests):
     sys.stdout.write('Running coarse test %2i of %2i. \r' % (nn, Ntests) )
     sys.stdout.flush()
@@ -27,7 +26,6 @@ def para_coarse_test(system, run_cmd):
     Niter      = 0
     Tend       = 0.2
     do_io      = True
-    be_verbose = False
     Nproc      = multiprocessing.cpu_count()
     if (Nproc==1):
       Np = 2

@@ -11,8 +11,7 @@ import random as rnd
 import multiprocessing
 from termcolor import colored
 
-def para_fine_test(system, run_cmd):
-  Ntests = 5
+def para_fine_test(system, run_cmd, be_verbose, Ntests):
   for nn in range(0,Ntests):
     sys.stdout.write('Running fine test %2i of %2i. \r' % (nn, Ntests) )
     sys.stdout.flush()
@@ -27,7 +26,6 @@ def para_fine_test(system, run_cmd):
     
     Tend       = 0.2
     do_io      = True
-    be_verbose = False
     Nproc      = multiprocessing.cpu_count()
     if (Nproc==1):
       Np = 2
