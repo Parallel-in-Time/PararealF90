@@ -15,8 +15,16 @@ with open("system.txt", "r") as rfile:
     rfile.close()
 
 para_coarse_test(system,runcmd);
+os.system('rm -f q_final*.dat')
+os.system('rm -f parameter.in')
+
 para_fine_test(system,runcmd);
+os.system('rm -f q_final*.dat')
+os.system('rm -f parameter.in')
+
 para_compare_test(system,runcmd);
+os.system('rm -f q_final*.dat')
+os.system('rm -f parameter.in')
 
 Np    = multiprocessing.cpu_count()
 tests = glob.glob('test/bin/*.out')
