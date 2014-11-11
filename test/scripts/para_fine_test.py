@@ -44,6 +44,8 @@ def para_fine_test(system, run_cmd):
 
     # Compute fine reference
     run_cmd_full = get_run_cmd(system, run_cmd, True, 1)
+    if be_verbose:
+      print run_cmd_full
     os.system(run_cmd_full+' ./bin/run_timestepper.out F')
 
     # Build namelist for Parareal
@@ -51,6 +53,8 @@ def para_fine_test(system, run_cmd):
 
     # Parareal-MPI
     run_cmd_full = get_run_cmd(system, run_cmd, True, Np)
+    if be_verbose:
+      print run_cmd_full
     os.system(run_cmd_full+' ./bin/run_parareal_mpi.out')
     fser = open('qend.dat','r')
     fpar = open('q_final_'+Np_s+'_'+Np_s_p1+'_mpi.dat')
@@ -69,6 +73,8 @@ def para_fine_test(system, run_cmd):
 
     # Parareal-OpenMP
     run_cmd_full = get_run_cmd(system, run_cmd, False, Np)
+    if be_verbose:
+      print run_cmd_full
     os.system(run_cmd_full+' ./bin/parareal_openmp.out')
     fser = open('qend.dat','r')
     fpar = open('q_final_'+Np_s+'_'+Np_s_p1+'_openmp.dat')
@@ -87,6 +93,8 @@ def para_fine_test(system, run_cmd):
 
     # Parareal-OpenMP-pipe
     run_cmd_full = get_run_cmd(system, run_cmd, False, Np)
+    if be_verbose:
+      print run_cmd_full
     os.system(run_cmd_full+' ./bin/parareal_openmp_pipe.out')
     fser = open('qend.dat','r')
     fpar = open('q_final_'+Np_s+'_'+Np_s_p1+'_openmp_pipe.dat')
