@@ -20,8 +20,8 @@ def para_coarse_test(system, run_cmd, be_verbose, Ntests):
     Nx         = rnd.randint(16, 25)
     Ny         = rnd.randint(16, 25)
     Nz         = rnd.randint(16, 25)
-    N_fine     = rnd.randint(150, 250)
-    N_coarse   = rnd.randint(75, 125)
+    N_fine     = rnd.randint(40, 60)
+    N_coarse   = rnd.randint(25, 30)
 
     Niter      = 0
     Tend       = 0.2
