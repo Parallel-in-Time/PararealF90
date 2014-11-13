@@ -12,20 +12,21 @@ with open("system.txt", "r") as rfile:
     system = system.rstrip()
     runcmd = rfile.readline()
     runcmd = runcmd.rstrip()
+    max_cpu = int(rfile.readline())
     rfile.close()
 
-be_verbose = True
+be_verbose = False
 Ntests = 1
 
-para_coarse_test(system,runcmd,be_verbose,Ntests);
+para_coarse_test(system,runcmd,max_cpu,be_verbose,Ntests);
 os.system('rm -f q_final*.dat')
 os.system('rm -f parameter.in')
 
-para_fine_test(system,runcmd,be_verbose,Ntests);
+para_fine_test(system,runcmd,max_cpu,be_verbose,Ntests);
 os.system('rm -f q_final*.dat')
 os.system('rm -f parameter.in')
 
-para_compare_test(system,runcmd,be_verbose, 50);
+para_compare_test(system,runcmd,max_cpu,be_verbose, Ntests);
 os.system('rm -f q_final*.dat')
 os.system('rm -f parameter.in')
 

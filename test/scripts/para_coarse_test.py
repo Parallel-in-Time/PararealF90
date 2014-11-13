@@ -2,7 +2,7 @@
 # Verifies that all three version of Parareal reproduce the
 # coarse integrator if the number of iterations is zero
 #
-import os, numpy, sys
+import os, numpy, sys, math
 from build_namelist import build_namelist
 from generate_q0 import generate_q0
 from get_run_cmd import get_run_cmd
@@ -10,7 +10,7 @@ import random as rnd
 import multiprocessing
 from termcolor import colored
 
-def para_coarse_test(system, run_cmd, be_verbose, Ntests):
+def para_coarse_test(system, run_cmd, max_cpu, be_verbose, Ntests):
   #
   for nn in range(0,Ntests):
     sys.stdout.write('Running coarse test %2i of %2i. \r' % (nn, Ntests) )
@@ -26,11 +26,11 @@ def para_coarse_test(system, run_cmd, be_verbose, Ntests):
     Niter      = 0
     Tend       = 0.2
     do_io      = True
-    Nproc      = multiprocessing.cpu_count()
-    if (Nproc==1):
+    #
+    if (max_cpu==1):
       Np = 2
     else:
-      Np         = rnd.randint(2,Nproc)
+      Np         = rnd.randint(2,max_cpu)
     Np_s       = '%0.2i' % (Np-1)
     Np_s_p1    = '%0.2i' % (Np)
 

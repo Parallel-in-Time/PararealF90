@@ -12,7 +12,7 @@ import multiprocessing
 from termcolor import colored
 import random as rnd
 
-def para_compare_test(system, run_cmd, be_verbose, Ntests):
+def para_compare_test(system, run_cmd, max_cpu, be_verbose, Ntests):
   #
   nu = rnd.uniform(0.001, 0.009)
   Nx = rnd.randint(10,17)
@@ -23,9 +23,11 @@ def para_compare_test(system, run_cmd, be_verbose, Ntests):
   Niter = 1
   Tend  = 0.2
   do_io = True
-  Np       = multiprocessing.cpu_count()
-  if (Np==1):
-    Np=2
+  if (max_cpu==1):
+    Np = 2
+  else:
+    Np = rnd.randint(2,max_cpu)
+  
   Np_s     = '%0.2i' % (Np-1)
   Np_s_p1  = '%0.2i' % Np
   
