@@ -25,7 +25,7 @@ para_fine_test(system,runcmd,be_verbose,Ntests);
 os.system('rm -f q_final*.dat')
 os.system('rm -f parameter.in')
 
-para_compare_test(system,runcmd,be_verbose,Ntests);
+para_compare_test(system,runcmd,be_verbose, 50);
 os.system('rm -f q_final*.dat')
 os.system('rm -f parameter.in')
 

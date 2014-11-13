@@ -1,4 +1,4 @@
-F90 = mpif90
+F90 = ftn
 
 FCFLAGS = -cpp -O3 -fopenmp -Wtabs -ffree-line-length-none -Wall -fbackslash
 
