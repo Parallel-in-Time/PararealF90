@@ -13,6 +13,13 @@ What is this repository for?
 How do I get set up?
 --------------------
 
+
+To build, need files
+  - preprocessor.f90
+  - makefile.defs
+  - system.txt
+
+
 * Summary of set up
 * Configuration
 * Dependencies
