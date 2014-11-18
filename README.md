@@ -17,8 +17,11 @@ How do I get set up?
 To build, need files
   - preprocessor.f90
   - makefile.defs
-  - system.txt
 
+To run, need file
+  - system.defs
+
+Multiple examples are provided. Recommendation is to use a symbolic link to the correct one.
 
 * Summary of set up
 * Configuration

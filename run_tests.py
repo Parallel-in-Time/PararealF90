@@ -7,7 +7,7 @@ from para_fine_test import para_fine_test
 from para_coarse_test import para_coarse_test
 import multiprocessing
 
-with open("system.txt", "r") as rfile:
+with open("system.defs", "r") as rfile:
     system = rfile.readline()
     system = system.rstrip()
     runcmd = rfile.readline()
