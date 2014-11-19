@@ -11,6 +11,9 @@ IMPLICIT NONE
 
 INCLUDE 'mpif.h'
 
+PRIVATE
+PUBLIC :: InitializePararealMPI, FinalizePararealMPI, PararealMPI
+
 !> @todo docu
 INTEGER, PARAMETER :: Nthreads = 1, & ! In MPI version, don't need multiple threads
     order_adv_c = 1, order_diff_c = 2, order_adv_f = 5, order_diff_f = 4

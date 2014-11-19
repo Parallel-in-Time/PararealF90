@@ -8,12 +8,19 @@ USE timestepper, only : Euler, Rk3Ssp, InitializeTimestepper, FinalizeTimesteppe
 
 IMPLICIT NONE
 
+PRIVATE
+PUBLIC :: InitializePararealOpenMP, FinalizePararealOpenMP, PararealOpenMP
+
+!> @todo docu
 INTEGER, PARAMETER :: order_adv_c = 1, order_diff_c = 2, order_adv_f = 5, order_diff_f = 4
 
+!> @todo docu
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: Q, GQ, Qend
 
+!> @todo docu
 DOUBLE PRECISION :: dt_coarse, dt_fine, dt_slice, timer_all, T0, T1, timer_coarse, timer_comm
 
+!> @todo docu
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: tstart_myslice, tend_myslice, timer_fine
     
 INTEGER :: k, Nthreads, nt
