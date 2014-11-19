@@ -96,11 +96,6 @@ CONTAINS
       WRITE(*,'(A, I2)') '--- Running MPI parareal, no. of processes: ', Nproc
     END IF
 
-    timer_all    = MPI_WTIME()
-    timer_fine   = 0.0
-    timer_coarse = 0.0
-    timer_comm   = 0.0
-
     ! Divide time interval [0,T] into Nproc many timeslices
     dt_slice  = Tend/DBLE(Nproc)
     dt_fine   = dt_slice/DBLE(N_fine)
@@ -120,6 +115,11 @@ CONTAINS
     END IF
 
     ! --- START PARAREAL --- !
+
+    timer_all    = MPI_WTIME()
+    timer_fine   = 0.0
+    timer_coarse = 0.0
+    timer_comm   = 0.0
 
     T0 = MPI_WTIME()
 
@@ -167,8 +167,8 @@ CONTAINS
       ! Qend <- F(y^(k-1)_n) - G(y^(k-1)_n)
       Qend = Q - GQ
       
-       T1 = MPI_WTIME()
-       timer_fine = timer_fine + (T1-T0)
+      T1 = MPI_WTIME()
+      timer_fine = timer_fine + (T1-T0)
 
       ! Fetch updated value from previous process
       IF(myrank>0) THEN

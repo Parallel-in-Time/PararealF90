@@ -18,17 +18,25 @@ INTEGER, PARAMETER :: order_adv_c = 1, order_diff_c = 2, order_adv_f = 5, order_
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: Q, GQ, Qend
 
 !> @todo docu
-DOUBLE PRECISION :: dt_coarse, dt_fine, dt_slice, timer_all, T0, T1, timer_coarse, timer_comm
+DOUBLE PRECISION :: dt_coarse
+
+!> @todo docu
+DOUBLE PRECISION :: dt_fine
+
+!> @todo docu
+DOUBLE PRECISION :: dt_slice
 
 !> @todo docu
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: tstart_myslice, tend_myslice, timer_fine
-    
+
+! Internal variables to be used for timers
+DOUBLE PRECISION :: timer_all, T0, T1, timer_coarse, timer_comm
+
 INTEGER :: k, Nthreads, nt
      
 LOGICAL :: do_io, be_verbose
 
 CHARACTER(len=64) :: filename
-
 
 TYPE parareal_parameter
   INTEGER Nx, Ny, Nz
