@@ -9,15 +9,15 @@ Nx = 32
 Ny = 33
 Nz = 34
 dt_fine   = 1.0/200
-dt_coarse = 1.0/8
-Niter = 3
-Tend  = 1.0
+dt_coarse = 1.0/20
+Niter = 1
+Tend  = 2.0
 do_io = True
-be_verbose = False
+be_verbose = True
 #
 generate_q0(Nx, Ny, Nz)
 #Nproc = [2, 4, 8]
-Nproc = [16]
+Nproc = [4]
 
 # read the run command to use plus possible options
 with open("system.defs", "r") as rfile:
@@ -27,8 +27,8 @@ with open("system.defs", "r") as rfile:
     runcmd = runcmd.rstrip()
     rfile.close()
 for np in Nproc:
-  types = [ 'mpi', 'openmp', 'openmp_pipe' ]
-  #types = [ 'mpi' ]
+  #types = [ 'mpi', 'openmp', 'openmp_pipe' ]
+  types = [ 'openmp' ]
   timemesh = generate_timemesh(0.0, Tend, dt_fine, dt_coarse, np)
   Nfine = timemesh.get('Nfine')
   Ncoarse = timemesh.get('Ncoarse')
