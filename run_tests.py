@@ -30,7 +30,10 @@ para_compare_test(system,runcmd,max_cpu,be_verbose, Ntests);
 os.system('rm -f q_final*.dat')
 os.system('rm -f parameter.in')
 
-Np    = multiprocessing.cpu_count()
-tests = glob.glob('test/bin/*.out')
-for file in tests:
-  os.system('OMP_NUM_THREADS='+str(Np)+' '+runcmd+' -n 1 '+file)
+if str(sys.argv[0]=='nof90'):
+  print 'Not running F90 tests...'
+else:
+  Np    = multiprocessing.cpu_count()
+  tests = glob.glob('test/bin/*.out')
+  for file in tests:
+    os.system('OMP_NUM_THREADS='+str(Np)+' '+runcmd+' -n 1 '+file)

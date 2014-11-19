@@ -31,8 +31,6 @@ OPEN(unit=20, FILE='parameter.in', ACTION='read', STATUS='old')
 READ(20,NML=param)
 CLOSE(20)
 
-timer_all = OMP_GET_WTIME()
-
 Nthreads = OMP_GET_MAX_THREADS()
 !call omp_set_num_threads(1)
 
@@ -86,9 +84,6 @@ DO nt=0,Nthreads-1
 END DO
 !$OMP END PARALLEL DO
 
-dt_slice  = Tend/DBLE(Nthreads)
-dt_fine   = dt_slice/DBLE(N_fine)
-dt_coarse = dt_slice/DBLE(N_coarse)
 IF(be_verbose) THEN
     WRITE(*,'(A, F9.5)') 'Time slice length:  ', dt_slice
     WRITE(*,'(A, F9.5)') 'Fine step length:   ', dt_fine
@@ -100,6 +95,10 @@ END IF
 OPEN(unit=20, FILE='q0.dat', ACTION='read', STATUS='old')
 READ(20, '(F35.25)') Q0
 CLOSE(20)
+
+! --- START PARAREAL --- !
+
+timer_all = OMP_GET_WTIME()
 
 Q(:,:,:,0) = Q0
 
@@ -209,6 +208,8 @@ DO k=1,Niter
 END DO
 !$OMP END PARALLEL
 
+timer_all = OMP_GET_WTIME() - timer_all
+
 IF(do_io) THEN
     DO nt=0,Nthreads-1
         CALL OMP_DESTROY_LOCK(nlocks(nt))
@@ -218,9 +219,8 @@ IF(do_io) THEN
         CLOSE(nt)
     END DO
 END IF
-CALL FinalizeTimestepper()
 
-timer_all = OMP_GET_WTIME() - timer_all
+CALL FinalizeTimestepper()
 
 IF(do_io) THEN
     DO nt=0,Nthreads-1

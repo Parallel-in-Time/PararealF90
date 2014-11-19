@@ -26,14 +26,20 @@ time_total = numpy.zeros(3)
 coverage   = numpy.zeros(3)
 
 for tt in range(0,3):
-    time_fine[tt]   = numpy.amax(fine[tt,:])
-    time_coarse[tt] = numpy.amax(coarse[tt,:])
-    time_comm[tt]   = numpy.amax(comm[tt,:])
-    sum            = fine[tt,:] + coarse[tt,:] + comm[tt,:]
-    temp           = total[tt,:]
-    time_total[tt] = numpy.amax(temp)
-    time_sum[tt]   = numpy.amax(sum)
-    coverage[tt]   = time_sum[tt]/time_total[tt]
+  time_fine[tt]   = fine[tt,Nprocs-1]
+  time_coarse[tt] = coarse[tt,Nprocs-1]
+  time_comm[tt]   = comm[tt,Nprocs-1]
+  time_sum[tt]    = time_fine[tt] + time_coarse[tt] + time_comm[tt]
+  time_total[tt]  = total[tt,Nprocs-1]
+  coverage[tt]    = time_sum[tt]/time_total[tt]
+  #    time_fine[tt]   = numpy.amax(fine[tt,:])
+  #  time_coarse[tt] = numpy.amax(coarse[tt,:])
+  #  time_comm[tt]   = numpy.amax(comm[tt,:])
+  #  sum            = fine[tt,:] + coarse[tt,:] + comm[tt,:]
+  #  temp           = total[tt,:]
+  #  time_total[tt] = numpy.amax(temp)
+  #  time_sum[tt]   = numpy.amax(sum)
+  #  coverage[tt]   = time_sum[tt]/time_total[tt]
 
 print ("Timings:         MPI  --  OpenMp -- OpenMp_pipe")
 print ("Total time:   %8.5f - %8.5f - %8.5f" % (time_total[0], time_total[1], time_total[2]) )
