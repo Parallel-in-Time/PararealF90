@@ -1,5 +1,5 @@
 import numpy
-Nprocs = 4
+Nprocs = 8
 total  = numpy.zeros((3,Nprocs))
 fine   = numpy.zeros((3,Nprocs))
 coarse = numpy.zeros((3,Nprocs))
