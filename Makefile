@@ -23,3 +23,6 @@ clean:
 	rm -f scripts/*.pyc
 	rm -f *.out
 	rm -f submit_*.sh
+
+cleandata:
+	rm -f *.dat
