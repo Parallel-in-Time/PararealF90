@@ -12,12 +12,11 @@ INTEGER, PARAMETER :: order_adv_c = 1, order_diff_c = 2, order_adv_f = 5, order_
 
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: Q, GQ, Qend
 
-DOUBLE PRECISION :: nu, dx, dy, dz, Tend, dt_coarse, dt_fine, dt_slice, timer_all, &
-        T0, T1, timer_coarse, timer_comm
+DOUBLE PRECISION :: dt_coarse, dt_fine, dt_slice, timer_all, T0, T1, timer_coarse, timer_comm
 
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: tstart_myslice, tend_myslice, timer_fine
     
-INTEGER :: Nx, Ny, Nz, k, N_fine, N_coarse, Niter, Nthreads, nt
+INTEGER :: k, Nthreads, nt
      
 LOGICAL :: do_io, be_verbose
 

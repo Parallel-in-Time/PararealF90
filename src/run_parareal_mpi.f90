@@ -11,14 +11,14 @@ LOGICAL :: do_io, be_verbose
 
 DOUBLE PRECISION :: nu, dx, dy, dz, Tend
 
-INTEGER :: Nx, Ny, Nz, N_fine, N_coarse, Niter, ierr, mpi_thread_provided
+INTEGER :: Nx, Ny, Nz, N_fine, N_coarse, Niter, ierr
 
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:) :: Q
 
 !> @todo docu
 NAMELIST /param/ nu, Nx, Ny, Nz, N_fine, N_coarse, Niter, Tend, do_io, be_verbose
 
-! CODE:
+! -- CODE: --
 
 ! Read parameters
 OPEN(unit=20, FILE='parameter.in', ACTION='read', STATUS='old')
@@ -31,7 +31,7 @@ dz = DBLE(1.0)/DBLE(Nz)
 dx = DBLE(1.0)/DBLE(Nx)
 
 ! Initialize
-CALL MPI_INIT_THREAD(MPI_THREAD_FUNNELED, mpi_thread_provided, ierr)
+CALL MPI_INIT(ierr)
 CALL InitializePararealMPI(nu, Nx, Ny, Nz)
 
 ! Load initial data

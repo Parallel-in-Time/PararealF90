@@ -39,7 +39,7 @@ for np in Nproc:
           if type=="mpi":
               os.system("time mpirun -n "+str(np)+" bin/run_parareal_"+type+".out")
           elif type=="openmp":
-              os.system("time OMP_NUM_THREADS="+str(np)+" mpirun -n 1 bin/parareal_"+type+".out")
+              os.system("time OMP_NUM_THREADS="+str(np)+" mpirun -n 1 bin/run_parareal_"+type+".out")
           elif type=="openmp_pipe":
               os.system("time OMP_NUM_THREADS="+str(np)+" mpirun -n 1 bin/parareal_"+type+".out")
       else:    
