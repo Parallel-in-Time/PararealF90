@@ -45,5 +45,5 @@ for np in Nproc:
       else:    
           jobname="parareal_"+type+"_Np"+str(np)
           build_runscript(np, jobname, type, system)
-          os.system("sbatch submit_"+type+"_Np"+str(np)+".sh")
+#          os.system("sbatch submit_"+type+"_Np"+str(np)+".sh")
   
