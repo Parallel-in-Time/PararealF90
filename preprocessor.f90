@@ -1,1 +1,1 @@
-#define linear 0
+#define linear 1

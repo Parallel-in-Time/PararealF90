@@ -1,6 +1,6 @@
 PROGRAM run_parareal_mpi
 
-USE parareal_mpi, only: InitializePararealMPI, FinalizePararealMPI, PararealMPI;
+USE parareal_mpi, only: InitializePararealMPI, FinalizePararealMPI, PararealMPI
 
 IMPLICIT NONE
 
