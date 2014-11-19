@@ -27,8 +27,8 @@ with open("system.defs", "r") as rfile:
     runcmd = runcmd.rstrip()
     rfile.close()
 for np in Nproc:
-  #types = [ 'mpi', 'openmp', 'openmp_pipe' ]
-  types = [ 'mpi' ]
+  types = [ 'mpi', 'openmp', 'openmp_pipe' ]
+  #types = [ 'mpi' ]
   timemesh = generate_timemesh(0.0, Tend, dt_fine, dt_coarse, np)
   Nfine = timemesh.get('Nfine')
   Ncoarse = timemesh.get('Ncoarse')
