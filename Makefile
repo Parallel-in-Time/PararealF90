@@ -26,3 +26,4 @@ clean:
 
 cleandata:
 	rm -f *.dat
+	rm -f *.out

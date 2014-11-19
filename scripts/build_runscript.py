@@ -35,11 +35,11 @@ def build_runscript(Nproc,jobname,type,system):
 
         elif system=="rosa":
             if type=="mpi":
-                myfile.write('OMP_NUM_THREADS=1 aprun -n '+str(Nproc)+' bin/parareal_mpi.out \n')
+                myfile.write('OMP_NUM_THREADS=1 aprun -n '+str(Nproc)+' -d 1 '+cwd+'/bin/run_parareal_mpi.out \n')
             elif type=="openmp":
-                myfile.write('OMP_NUM_THREADS='+str(Nproc)+' aprun -n 1 -d '+str(Nproc)+' bin/parareal_openmp.out \n')
+                myfile.write('OMP_NUM_THREADS='+str(Nproc)+' aprun -n 1 -d '+str(Nproc)+' '+cwd+'/bin/parareal_openmp.out \n')
             elif type=="openmp_pipe":
-                myfile.write('OMP_NUM_THREADS='+str(Nproc)+' aprun -n 1 -d '+str(Nproc)+' bin/parareal_openmp_pipe.out \n')
+                myfile.write('OMP_NUM_THREADS='+str(Nproc)+' aprun -n 1 -d '+str(Nproc)+' '+cwd+'/bin/parareal_openmp_pipe.out \n')
 
         elif system=="mac":
             print "No SLURM on Mac, no runscript needed..."          
