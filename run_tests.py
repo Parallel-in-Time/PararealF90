@@ -30,7 +30,12 @@ para_compare_test(system,runcmd,max_cpu,be_verbose, Ntests);
 os.system('rm -f q_final*.dat')
 os.system('rm -f parameter.in')
 
-if str(sys.argv[0]=='nof90'):
+if len(sys.argv)==1:
+  sysarg1=""
+else:
+  sysarg1 = sys.argv[1]
+
+if sysarg1=="nof90":
   print 'Not running F90 tests...'
 else:
   Np    = multiprocessing.cpu_count()
