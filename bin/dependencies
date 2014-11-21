@@ -7,3 +7,4 @@ DEP+=../obj/boundaries.o
 DEP+=../obj/timestepper.o
 DEP+=../obj/parareal_mpi.o
 DEP+=../obj/parareal_openmp.o
+DEP+=../obj/parareal_openmp_pipe.o

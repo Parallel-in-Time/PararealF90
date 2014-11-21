@@ -1,4 +1,4 @@
-! >
+!>
 !! @todo docu
 !!
 MODULE parareal_openmp
