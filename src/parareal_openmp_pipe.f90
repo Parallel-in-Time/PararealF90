@@ -71,6 +71,7 @@ CONTAINS
     ALLOCATE(Qend( -2:Nx+3,-2:Ny+3,-2:Nz+3, 0:Nthreads-1))
     ALLOCATE(GQ(   -2:Nx+3,-2:Ny+3,-2:Nz+3, 0:Nthreads-1))
 
+    ! First-touch allocation of auxiliary buffers
 
     !$OMP PARALLEL DO schedule(static)
     DO nt=0,Nthreads-1
@@ -97,31 +98,28 @@ CONTAINS
     INTEGER,                                  INTENT(IN)    :: N_fine, N_coarse, Niter
     LOGICAL,                                  INTENT(IN)    :: do_io, be_verbose
 
-
     ! Divide time interval [0,T] into Nproc many timeslices
     dt_slice  = Tend/DBLE(Nthreads)
     dt_fine   = dt_slice/DBLE(N_fine)
     dt_coarse = dt_slice/DBLE(N_coarse)
 
-
-    IF (be_verbose) THEN
-        WRITE(*,'(A, I2)') '--- Running OpenMP-pipe parareal, no. of threads: ', Nthreads
-    END IF
-
+    ! Compute timeslices
     DO nt=0,Nthreads-1
         tstart_myslice(nt) = DBLE(nt)*dt_slice
         tend_myslice(nt)   = DBLE(nt+1)*dt_slice
-
-        IF (be_verbose) THEN
-            WRITE(*,'(A, I2, A, F5.3, A, F5.3)') 'Thread ', nt, ' from ', tstart_myslice(nt), ' to ', tend_myslice(nt)
-        END IF
-
     END DO
 
-    IF(be_verbose) THEN
+    IF (be_verbose) THEN
+        WRITE(*,'(A, I2)') '--- Running OpenMP-pipe parareal, no. of threads: ', Nthreads
+
         WRITE(*,'(A, F9.5)') 'Time slice length:  ', dt_slice
         WRITE(*,'(A, F9.5)') 'Fine step length:   ', dt_fine
-        WRITE(*,'(A, F9.5)') 'Coarse step length: ', dt_coarse   
+        WRITE(*,'(A, F9.5)') 'Coarse step length: ', dt_coarse
+
+        DO nt=0,Nthreads-1
+            WRITE(*,'(A, I2, A, F5.3, A, F5.3)') 'Thread ', nt, ' from ', tstart_myslice(nt), ' to ', tend_myslice(nt)
+        END DO
+
     END IF
 
     ! --- START PARAREAL --- !
@@ -136,10 +134,10 @@ CONTAINS
 
     thread_nr = omp_get_thread_num()
 
+    T0 = OMP_GET_WTIME()
+
     !$OMP DO schedule(static)
     DO nt=0,Nthreads-1
-
-        T0 = OMP_GET_WTIME()
 
         Q(:,:,:,nt) = Q(:,:,:,0)
 
@@ -158,10 +156,10 @@ CONTAINS
         ! Qend(nt) <- G(y^0_nt) = y^0_(nt+1)    
         Qend(:,:,:,nt) = GQ(:,:,:,nt)
 
-        timer_coarse(thread_nr) = timer_coarse(thread_nr) + OMP_GET_WTIME() - T0    
-
     END DO
     !$OMP END DO NOWAIT
+
+    timer_coarse(thread_nr) = timer_coarse(thread_nr) + OMP_GET_WTIME() - T0
 
     DO k=1,Niter
 
@@ -217,9 +215,10 @@ CONTAINS
 
             timer_coarse(thread_nr) = timer_coarse(thread_nr) + OMP_GET_WTIME() - T0
 
+            T0 = OMP_GET_WTIME()
+
             IF (nt<Nthreads-1) THEN
                 ! Q(nt+1) = Qend(nt) = y^k_(nt+1)
-                T0 = OMP_GET_WTIME()
 
                 ! Update value in Q(nt+1), set lock to avoid starting updating it while
                 ! thread nt+1 is still busy writing the update fine value in it (in call to F above)
@@ -227,8 +226,9 @@ CONTAINS
                 Q(:,:,:,nt+1) = Qend(:,:,:,nt)
                 CALL OMP_UNSET_LOCK(nlocks(nt+1))
             
-                timer_comm(thread_nr) = timer_comm(thread_nr) + OMP_GET_WTIME() - T0
             END IF
+
+            timer_comm(thread_nr) = timer_comm(thread_nr) + OMP_GET_WTIME() - T0
 
             !$OMP END ORDERED
 

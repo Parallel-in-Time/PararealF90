@@ -33,7 +33,7 @@ DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: tstart_myslice, tend_myslice, tim
 DOUBLE PRECISION :: timer_all, T0, T1, timer_coarse, timer_comm
 
 INTEGER :: k, Nthreads, nt
-     
+
 CHARACTER(len=64) :: filename
 
 TYPE parareal_parameter
@@ -66,7 +66,7 @@ CONTAINS
 
     CALL InitializeTimestepper(nu, Nx, Ny, Nz, Nthreads)
 
-    ! First-touch allocation of auxiliary buffers; computing time slices
+    ! First-touch allocation of auxiliary buffers
 
     !$OMP PARALLEL DO schedule(static)
     DO nt=0,Nthreads-1
