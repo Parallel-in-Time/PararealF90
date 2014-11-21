@@ -46,7 +46,7 @@ def para_compare_test(system, run_cmd, max_cpu, be_verbose, Ntests):
     run_cmd_full = get_run_cmd(system, run_cmd, False, Np)
     if be_verbose:
       print run_cmd_full    
-    os.system(run_cmd_full+' ./bin/parareal_openmp_pipe.out')
+    os.system(run_cmd_full+' ./bin/run_parareal_openmp_pipe.out')
     os.system(run_cmd_full+' ./bin/run_parareal_openmp.out')
     
     # Compare MPI to OpenMP
