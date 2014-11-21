@@ -34,8 +34,6 @@ DOUBLE PRECISION :: timer_all, T0, T1, timer_coarse, timer_comm
 
 INTEGER :: k, Nthreads, nt
      
-LOGICAL :: do_io, be_verbose
-
 CHARACTER(len=64) :: filename
 
 TYPE parareal_parameter

@@ -21,9 +21,9 @@ DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: tstart_myslice, tend_myslice, &
     timer_fine, timer_coarse, timer_comm
     
 INTEGER :: k, Nthreads, nt, thread_nr
-INTEGER(kind=OMP_LOCK_KIND), DIMENSION(:), ALLOCATABLE :: nlocks
 
-LOGICAL :: do_io, be_verbose
+!> @todo docu
+INTEGER(kind=OMP_LOCK_KIND), DIMENSION(:), ALLOCATABLE :: nlocks
 
 CHARACTER(len=64) :: filename
 
@@ -41,10 +41,6 @@ CONTAINS
     INTEGER, INTENT(IN) :: Nx, Ny, Nz
 
     Nthreads = OMP_GET_MAX_THREADS()
-
-    IF (be_verbose) THEN
-        WRITE(*,'(A, I2)') '--- Running OpenMP-pipe parareal, no. of threads: ', Nthreads
-    END IF
 
     param%Nx = Nx
     param%Ny = Ny
@@ -95,6 +91,11 @@ CONTAINS
     dt_fine   = dt_slice/DBLE(N_fine)
     dt_coarse = dt_slice/DBLE(N_coarse)
 
+
+    IF (be_verbose) THEN
+        WRITE(*,'(A, I2)') '--- Running OpenMP-pipe parareal, no. of threads: ', Nthreads
+    END IF
+    
     DO nt=0,Nthreads-1
         tstart_myslice(nt) = DBLE(nt)*dt_slice
         tend_myslice(nt)   = DBLE(nt+1)*dt_slice
