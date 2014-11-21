@@ -95,7 +95,7 @@ CONTAINS
     IF (be_verbose) THEN
         WRITE(*,'(A, I2)') '--- Running OpenMP-pipe parareal, no. of threads: ', Nthreads
     END IF
-    
+
     DO nt=0,Nthreads-1
         tstart_myslice(nt) = DBLE(nt)*dt_slice
         tend_myslice(nt)   = DBLE(nt+1)*dt_slice
@@ -267,6 +267,7 @@ CONTAINS
       DEALLOCATE(timer_comm)
       DEALLOCATE(tstart_myslice)
       DEALLOCATE(tend_myslice)
+      DEALLOCATE(nlocks)
   END SUBROUTINE FinalizePararealOpenMP_Pipe
 
 END MODULE parareal_openmp_pipe
