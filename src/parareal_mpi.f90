@@ -4,12 +4,15 @@
 !! \\( y^{k+1}_{n+1} = G(y^{k+1}_{n}) + F(y^k_n) - G(y^k_n) \\)
 MODULE parareal_mpi
 
-USE omp_lib
+!USE omp_lib
 USE timestepper, only : Euler, Rk3Ssp, InitializeTimestepper, FinalizeTimestepper
 
 IMPLICIT NONE
 
 INCLUDE 'mpif.h'
+
+PRIVATE
+PUBLIC :: InitializePararealMPI, FinalizePararealMPI, PararealMPI
 
 !> @todo docu
 INTEGER, PARAMETER :: Nthreads = 1, & ! In MPI version, don't need multiple threads
@@ -81,7 +84,7 @@ CONTAINS
   SUBROUTINE PararealMPI(Q_initial, Tend, N_fine, N_coarse, Niter, dx, dy, dz, do_io, be_verbose)
 
     DOUBLE PRECISION, DIMENSION(-2:,-2:,-2:), INTENT(INOUT) :: Q_initial
-    DOUBLE PRECISION, INTENT(IN) :: Tend, dx, dy, dz
+    DOUBLE PRECISION,                         INTENT(IN) :: Tend, dx, dy, dz
     INTEGER,                                  INTENT(IN)    :: N_fine, N_coarse, Niter
     LOGICAL,                                  INTENT(IN)    :: do_io, be_verbose
 
@@ -92,11 +95,6 @@ CONTAINS
     IF ((myrank==0) .AND. (be_verbose)) THEN
       WRITE(*,'(A, I2)') '--- Running MPI parareal, no. of processes: ', Nproc
     END IF
-
-    timer_all    = MPI_WTIME()
-    timer_fine   = 0.0
-    timer_coarse = 0.0
-    timer_comm   = 0.0
 
     ! Divide time interval [0,T] into Nproc many timeslices
     dt_slice  = Tend/DBLE(Nproc)
@@ -117,6 +115,11 @@ CONTAINS
     END IF
 
     ! --- START PARAREAL --- !
+
+    timer_all    = MPI_WTIME()
+    timer_fine   = 0.0
+    timer_coarse = 0.0
+    timer_comm   = 0.0
 
     T0 = MPI_WTIME()
 
@@ -164,8 +167,8 @@ CONTAINS
       ! Qend <- F(y^(k-1)_n) - G(y^(k-1)_n)
       Qend = Q - GQ
       
-       T1 = MPI_WTIME()
-       timer_fine = timer_fine + (T1-T0)
+      T1 = MPI_WTIME()
+      timer_fine = timer_fine + (T1-T0)
 
       ! Fetch updated value from previous process
       IF(myrank>0) THEN
@@ -225,14 +228,14 @@ CONTAINS
     ! Return final value in Q_initial
     Q_initial = Qend
 
+    timer_all = MPI_WTIME() - timer_all
+
     IF(do_io) THEN
         WRITE(filename, '(A,I0.2,A,I0.2,A)') 'q_final_', myrank, '_', Nproc, '_mpi.dat'
         OPEN(UNIT=myrank, FILE=filename, ACTION='write', STATUS='replace')
         WRITE(myrank, '(F35.25)') Qend(1:param%Nx, 1:param%Ny, 1:param%Nz)
         CLOSE(myrank)
     END IF
-
-    timer_all = MPI_WTIME() - timer_all
 
     IF(do_io) THEN
         WRITE(filename, '(A,I0.2,A,I0.2,A)') 'timings_mpi', myrank, '_', Nproc, '.dat'

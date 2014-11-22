@@ -9,15 +9,15 @@ Nx = 32
 Ny = 33
 Nz = 34
 dt_fine   = 1.0/200
-dt_coarse = 1.0/8
-Niter = 3
-Tend  = 1.0
+dt_coarse = 1.0/20
+Niter = 1
+Tend  = 2.0
 do_io = True
 be_verbose = False
 #
 generate_q0(Nx, Ny, Nz)
 #Nproc = [2, 4, 8]
-Nproc = [16]
+Nproc = [2]
 
 # read the run command to use plus possible options
 with open("system.defs", "r") as rfile:
@@ -28,7 +28,7 @@ with open("system.defs", "r") as rfile:
     rfile.close()
 for np in Nproc:
   types = [ 'mpi', 'openmp', 'openmp_pipe' ]
-  #types = [ 'mpi' ]
+  #types = [ 'openmp' ]
   timemesh = generate_timemesh(0.0, Tend, dt_fine, dt_coarse, np)
   Nfine = timemesh.get('Nfine')
   Ncoarse = timemesh.get('Ncoarse')
@@ -39,9 +39,9 @@ for np in Nproc:
           if type=="mpi":
               os.system("time mpirun -n "+str(np)+" bin/run_parareal_"+type+".out")
           elif type=="openmp":
-              os.system("time OMP_NUM_THREADS="+str(np)+" mpirun -n 1 bin/parareal_"+type+".out")
+              os.system("time OMP_NUM_THREADS="+str(np)+" mpirun -n 1 bin/run_parareal_"+type+".out")
           elif type=="openmp_pipe":
-              os.system("time OMP_NUM_THREADS="+str(np)+" mpirun -n 1 bin/parareal_"+type+".out")
+              os.system("time OMP_NUM_THREADS="+str(np)+" mpirun -n 1 bin/run_parareal_"+type+".out")
       else:    
           jobname="parareal_"+type+"_Np"+str(np)
           build_runscript(np, jobname, type, system)

@@ -1,17 +1,15 @@
-PROGRAM run_parareal_mpi
+PROGRAM run_parareal_openmp
 
-USE parareal_mpi, only: InitializePararealMPI, FinalizePararealMPI, PararealMPI
+USE parareal_openmp, only: InitializePararealOpenMP, FinalizePararealOpenMP, PararealOpenMP
 
 IMPLICIT NONE
-
-INCLUDE 'mpif.h'
 
 !> @todo docu
 LOGICAL :: do_io, be_verbose
 
 DOUBLE PRECISION :: nu, dx, dy, dz, Tend
 
-INTEGER :: Nx, Ny, Nz, N_fine, N_coarse, Niter, ierr
+INTEGER :: Nx, Ny, Nz, N_fine, N_coarse, Niter
 
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:) :: Q
 
@@ -31,8 +29,7 @@ dz = DBLE(1.0)/DBLE(Nz)
 dx = DBLE(1.0)/DBLE(Nx)
 
 ! Initialize
-CALL MPI_INIT(ierr)
-CALL InitializePararealMPI(nu, Nx, Ny, Nz)
+CALL InitializePararealOpenMP(nu, Nx, Ny, Nz)
 
 ! Load initial data
 ALLOCATE(Q(-2:Nx+3,-2:Ny+3,-2:Nz+3))
@@ -40,11 +37,10 @@ OPEN(unit=20, FILE='q0.dat', ACTION='read', STATUS='old')
 READ(20, '(F35.25)') Q
 CLOSE(20)
 
-CALL PararealMPI(Q, Tend, N_fine, N_coarse, Niter, dx, dy, dz, do_io, be_verbose)
+CALL PararealOpenMP(Q, Tend, N_fine, N_coarse, Niter, dx, dy, dz, do_io, be_verbose)
 
 ! Finalize
-CALL FinalizePararealMPI;
-CALL MPI_FINALIZE(ierr)
+CALL FinalizePararealOpenMP;
 
 
-END PROGRAM run_parareal_mpi
+END PROGRAM run_parareal_openmp
