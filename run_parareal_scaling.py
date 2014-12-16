@@ -30,9 +30,9 @@ with open("system.defs", "r") as rfile:
 if system=="mac":
   os.system("time bin/run_timestepper.out F")
 else:
-  print jobname="fine_serial"
+  jobname="fine_serial"
   build_runscript(1, jobname, "serial_f", system)
-  os.system("sbatch submit_serial_f.sh")
+  os.system("sbatch submit_serial_f_Np1.sh")
 
 #
 for np in Nproc:
@@ -54,4 +54,4 @@ for np in Nproc:
           jobname="parareal_"+type+"_Np"+str(np)
           build_runscript(np, jobname, type, system)
           os.system("sbatch submit_"+type+"_Np"+str(np)+".sh")
-  os.system('mv timings*.dat data/')
+#  os.system('mv timings*.dat data/')

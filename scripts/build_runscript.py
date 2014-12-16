@@ -32,7 +32,7 @@ def build_runscript(Nproc,jobname,type,system):
                 myfile.write('OMP_NUM_THREADS='+str(Nproc)+' mpirun -n 1 '+cwd+'/bin/run_parareal_openmp.out \n')
             elif type=="openmp_pipe":
                 myfile.write('OMP_NUM_THREADS='+str(Nproc)+' mpirun -n 1 '+cwd+'/bin/run_parareal_openmp_pipe.out \n')
-            elif type="serial_f":
+            elif type=="serial_f":
               myfile.write('mpirun -n 1 '+cwd+'/bin/run_timestepper.out F \n')
 
         elif system=="rosa":
@@ -42,7 +42,7 @@ def build_runscript(Nproc,jobname,type,system):
                 myfile.write('OMP_NUM_THREADS='+str(Nproc)+' aprun -n 1 -d '+str(Nproc)+' -cc=0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30 '+cwd+'/bin/run_parareal_openmp.out \n')
             elif type=="openmp_pipe":
                 myfile.write('OMP_NUM_THREADS='+str(Nproc)+' aprun -n 1 -d '+str(Nproc)+' -cc=0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30 '+cwd+'/bin/run_parareal_openmp_pipe.out \n')
-            elif type="serial_f":
+            elif type=="serial_f":
                 myfile.write('aprun -n 1 '+cwd+'/bin/run_timestepper.out F \n')
 
         elif system=="daint":
@@ -52,7 +52,7 @@ def build_runscript(Nproc,jobname,type,system):
                 myfile.write('OMP_NUM_THREADS='+str(Nproc)+' aprun -n 1 -d '+str(Nproc)+' '+cwd+'/bin/run_parareal_openmp.out \n')
             elif type=="openmp_pipe":
                 myfile.write('OMP_NUM_THREADS='+str(Nproc)+' aprun -n 1 -d '+str(Nproc)+' '+cwd+'/bin/run_parareal_openmp_pipe.out \n')
-            elif type="serial_f":
+            elif type=="serial_f":
                 myfile.write('aprun -n 1 '+cwd+'/bin/run_timestepper.out F \n')
 
         elif system=="mac":
