@@ -7,7 +7,7 @@
 !> \date 28 October, 2014
 PROGRAM run_timestepper
 
-USE omp_lib
+USE omp_lib, only : OMP_GET_WTIME
 USE timestepper, only : Euler, Rk3Ssp, InitializeTimestepper, FinalizeTimestepper
 
 IMPLICIT NONE
@@ -19,10 +19,12 @@ DOUBLE PRECISION, PARAMETER :: pi = 3.1415926535897932_8 ! underscore indicates 
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:) :: Q
 
 CHARACTER(len=32) :: arg
-DOUBLE PRECISION :: nu, Tend, dx, dy, dz
+DOUBLE PRECISION :: nu, Tend, dx, dy, dz, T0, T1
 INTEGER :: Nx, Ny, Nz, N_fine, N_coarse, Niter, method, order_adv, order_diff, &
     ierr, mpi_thread_provided, Nthreads
 LOGICAL :: do_io, be_verbose
+
+CHARACTER(len=64) :: filename
 
 !>
 NAMELIST /param/ nu, Nx, Ny, Nz, N_fine, N_coarse, Niter, Tend, do_io, be_verbose
@@ -74,17 +76,26 @@ IF (be_verbose) THEN
     WRITE(*,'(A, F9.5)') 'Fine step length:   ', Tend/DBLE(N_fine)
     WRITE(*,'(A, F9.5)') 'Coarse step length: ', Tend/DBLE(N_coarse)
 END IF
-    
+
+T0 = OMP_GET_WTIME()
 IF (method==1) THEN
     CALL Euler(Q, DBLE(0.0), Tend, N_coarse, dx, dy, dz, order_adv, order_diff)
 ELSE IF (method==3) THEN
     CALL Rk3Ssp(Q, DBLE(0.0), Tend, N_fine, dx, dy, dz, order_adv, order_diff)
 END IF
+T1 = OMP_GET_WTIME()
 
-OPEN(UNIT=10, FILE='qend.dat', ACTION='write', STATUS='replace')
-WRITE(10, '(F35.25)') Q(1:Nx,1:Ny,1:Nz)
-CLOSE(10)
+IF (do_io) THEN
+  OPEN(UNIT=10, FILE='qend.dat', ACTION='write', STATUS='replace')
+  WRITE(10, '(F35.25)') Q(1:Nx,1:Ny,1:Nz)
+  CLOSE(10)
+END IF
 
+IF (do_io) THEN
+  WRITE(filename, '(A)') 'timings_serial_fine.dat'
+  OPEN(UNIT=10, FILE=filename, ACTION='write', STATUS='replace')
+  WRITE(10, '(F8.2)') T1-T0
+END IF
 ! Finalize
 CALL FinalizeTimestepper
 CALL MPI_FINALIZE(ierr)
