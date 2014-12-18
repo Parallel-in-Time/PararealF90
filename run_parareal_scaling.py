@@ -6,9 +6,9 @@ from build_runscript import build_runscript
 from generate_timemesh import generate_timemesh
 nu = 0.005
 Nx = 32
-Ny = 33
-Nz = 34
-dt_fine   = 1.0/200
+Ny = 32
+Nz = 32
+dt_fine   = 1.0/50
 dt_coarse = 1.0/20
 Niter = 1
 Tend  = 2.0
@@ -16,7 +16,7 @@ do_io = True
 be_verbose = False
 #
 generate_q0(Nx, Ny, Nz)
-Nproc = [2, 4, 8]
+Nproc = [2, 4, 6, 8]
 
 # read the run command to use plus possible options
 with open("system.defs", "r") as rfile:
@@ -25,6 +25,11 @@ with open("system.defs", "r") as rfile:
     runcmd = rfile.readline()
     runcmd = runcmd.rstrip()
     rfile.close()
+
+timemesh = generate_timemesh(0.0, Tend, dt_fine, dt_coarse, 1)
+Nfine = timemesh.get('Nfine')
+Ncoarse = timemesh.get('Ncoarse')
+build_namelist(nu, Nx, Ny, Nz, Nfine, Ncoarse, Niter, Tend, do_io, be_verbose)
 
 # Run serial reference
 if system=="mac":
