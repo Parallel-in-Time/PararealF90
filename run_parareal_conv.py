@@ -8,15 +8,15 @@ nu = 0.005
 Nx = 32
 Ny = 33
 Nz = 34
-dt_fine   = 1.0/200
-dt_coarse = 1.0/20
+dt_fine   = 1.0/200.0
+dt_coarse = 1.0/20.0
 Niter = 1
 Tend  = 2.0
 do_io = True
 be_verbose = False
 #
 generate_q0(Nx, Ny, Nz)
-Nproc = [2, 4, 8]
+Nproc = 2
 
 # read the run command to use plus possible options
 with open("system.defs", "r") as rfile:
@@ -27,6 +27,10 @@ with open("system.defs", "r") as rfile:
     rfile.close()
 
 # Run serial reference
+timemesh = generate_timemesh(0.0, Tend, dt_fine, dt_coarse, Nproc)
+Nfine = timemesh.get('Nfine')
+Ncoarse = timemesh.get('Ncoarse')
+build_namelist(nu, Nx, Ny, Nz, Nfine, Ncoarse, Niter, Tend, do_io, be_verbose)
 if system=="mac":
   os.system("time bin/run_timestepper.out F")
 else:
@@ -35,9 +39,9 @@ else:
   os.system("sbatch submit_serial_f_Np1.sh")
 
 #
-for np in Nproc:
+for Niter in range(1,2):
   types = [ 'mpi', 'openmp', 'openmp_pipe' ]
-  timemesh = generate_timemesh(0.0, Tend, dt_fine, dt_coarse, np)
+  timemesh = generate_timemesh(0.0, Tend, dt_fine, dt_coarse, Nproc)
   Nfine = timemesh.get('Nfine')
   Ncoarse = timemesh.get('Ncoarse')
   build_namelist(nu, Nx, Ny, Nz, Nfine, Ncoarse, Niter, Tend, do_io, be_verbose)
@@ -45,13 +49,13 @@ for np in Nproc:
       type=types.pop(0)
       if system=="mac":
           if type=="mpi":
-              os.system("time mpirun -n "+str(np)+" bin/run_parareal_"+type+".out")
+              os.system("time mpirun -n "+str(Nproc)+" bin/run_parareal_"+type+".out")
           elif type=="openmp":
-              os.system("time OMP_NUM_THREADS="+str(np)+" mpirun -n 1 bin/run_parareal_"+type+".out")
+              os.system("time OMP_NUM_THREADS="+str(Nproc)+" mpirun -n 1 bin/run_parareal_"+type+".out")
           elif type=="openmp_pipe":
-              os.system("time OMP_NUM_THREADS="+str(np)+" mpirun -n 1 bin/run_parareal_"+type+".out")
+              os.system("time OMP_NUM_THREADS="+str(Nproc)+" mpirun -n 1 bin/run_parareal_"+type+".out")
       else:    
-          jobname="parareal_"+type+"_Np"+str(np)
+          jobname="parareal_"+type+"_Np"+str(Nproc)
           build_runscript(np, jobname, type, system)
-          os.system("sbatch submit_"+type+"_Np"+str(np)+".sh")
+          os.system("sbatch submit_"+type+"_Np"+str(Nproc)+".sh")
 #  os.system('mv timings*.dat data/')
