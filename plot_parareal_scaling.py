@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 fs = 18
 
 Nprocs = numpy.array([2, 4, 6, 8])
+Niter  = 1
 timers  = numpy.zeros([3,Nprocs.size])
 speedup = numpy.zeros([3,Nprocs.size])
 
@@ -13,6 +14,8 @@ f = open(filename,'r')
 time_serial_f = float(f.readline())
 f.close
 
+niter_s = '%0.2i' % Niter
+
 types  = [ 'mpi', 'openmp', 'openmp_pipe' ]
 for tt in range(0,3):
   type = types.pop(0)
@@ -20,7 +23,7 @@ for tt in range(0,3):
     np     = Nprocs[ii]
     nps    = '%0.2i' % np
     nps_m1 = '%0.2i' % (np-1)
-    filename = "timings_"+type+nps_m1+"_"+nps+".dat"
+    filename = "timings_"+type+niter_s+"_"+nps_m1+"_"+nps+".dat"
     f = open(filename,'r')
     total_time  = float(f.readline())
     fine_time   = float(f.readline())
