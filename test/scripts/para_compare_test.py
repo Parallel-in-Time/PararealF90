@@ -30,6 +30,7 @@ def para_compare_test(system, run_cmd, max_cpu, be_verbose, Ntests):
   
   Np_s     = '%0.2i' % (Np-1)
   Np_s_p1  = '%0.2i' % Np
+  Niter_s  = '%0.2i' % Niter
   
   for nn in range(0,Ntests):
     sys.stdout.write('Running comparison test %2i of %2i. \r' % (nn, Ntests) )
@@ -53,8 +54,8 @@ def para_compare_test(system, run_cmd, max_cpu, be_verbose, Ntests):
     Np_s = '%0.2i' % (Np)
     for nt in range(0,Np):
       nt_s = '%0.2i' % nt
-      fmpi    = open('q_final_'+nt_s+'_'+Np_s+'_mpi.dat')
-      fopenmp = open('q_final_'+nt_s+'_'+Np_s+'_openmp.dat')
+      fmpi    = open('q_final_'+Niter_s+'_'+nt_s+'_'+Np_s+'_mpi.dat')
+      fopenmp = open('q_final_'+Niter_s+'_'+nt_s+'_'+Np_s+'_openmp.dat')
       max_err = 0.0
       for i in range(0,Nx):
         for j in range(0,Ny):
@@ -73,8 +74,8 @@ def para_compare_test(system, run_cmd, max_cpu, be_verbose, Ntests):
     Np_s = '%0.2i' % (Np)
     for nt in range(0,Np):
       nt_s = '%0.2i' % nt
-      fmpi    = open('q_final_'+nt_s+'_'+Np_s+'_mpi.dat')
-      fopenmp = open('q_final_'+nt_s+'_'+Np_s+'_openmp_pipe.dat')
+      fmpi    = open('q_final_'+Niter_s+'_'+nt_s+'_'+Np_s+'_mpi.dat')
+      fopenmp = open('q_final_'+Niter_s+'_'+nt_s+'_'+Np_s+'_openmp_pipe.dat')
       max_err = 0.0
       for i in range(0,Nx):
         for j in range(0,Ny):

@@ -34,7 +34,8 @@ def para_fine_test(system, run_cmd, max_cpu, be_verbose, Ntests):
     Niter      = Np
     Np_s       = '%0.2i' % (Np-1)
     Np_s_p1    = '%0.2i' % (Np)
-
+    Niter_s    = '%0.2i' % (Niter)
+    
     # Prepare
     generate_q0(Nx, Ny, Nz)
     build_namelist(nu, Nx, Ny, Nz, Np*N_fine, Np*N_coarse, Niter, Tend, do_io, be_verbose)
@@ -54,7 +55,7 @@ def para_fine_test(system, run_cmd, max_cpu, be_verbose, Ntests):
       print run_cmd_full
     os.system(run_cmd_full+' ./bin/run_parareal_mpi.out')
     fser = open('qend.dat','r')
-    fpar = open('q_final_'+Np_s+'_'+Np_s_p1+'_mpi.dat')
+    fpar = open('q_final_'+Niter_s+'_'+Np_s+'_'+Np_s_p1+'_mpi.dat')
     max_err = 0.0
     for i in range(0,Nx):
       for j in range(0,Ny):
@@ -74,7 +75,7 @@ def para_fine_test(system, run_cmd, max_cpu, be_verbose, Ntests):
       print run_cmd_full
     os.system(run_cmd_full+' ./bin/run_parareal_openmp.out')
     fser = open('qend.dat','r')
-    fpar = open('q_final_'+Np_s+'_'+Np_s_p1+'_openmp.dat')
+    fpar = open('q_final_'+Niter_s+'_'+Np_s+'_'+Np_s_p1+'_openmp.dat')
     max_err = 0.0
     for i in range(0,Nx):
       for j in range(0,Ny):
@@ -94,7 +95,7 @@ def para_fine_test(system, run_cmd, max_cpu, be_verbose, Ntests):
       print run_cmd_full
     os.system(run_cmd_full+' ./bin/run_parareal_openmp_pipe.out')
     fser = open('qend.dat','r')
-    fpar = open('q_final_'+Np_s+'_'+Np_s_p1+'_openmp_pipe.dat')
+    fpar = open('q_final_'+Niter_s+'_'+Np_s+'_'+Np_s_p1+'_openmp_pipe.dat')
     max_err = 0.0
     for i in range(0,Nx):
       for j in range(0,Ny):

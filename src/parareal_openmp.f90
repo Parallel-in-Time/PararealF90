@@ -215,18 +215,16 @@ CONTAINS
     timer_all = OMP_GET_WTIME() - timer_all
 
     IF(do_io) THEN
+
         DO nt=0,Nthreads-1
-            WRITE(filename, '(A,I0.2,A,I0.2,A)') 'q_final_', nt, '_', Nthreads, '_openmp.dat'
+            WRITE(filename, '(A,I0.2,A,I0.2,A,I0.2,A)') 'q_final_', Niter, '_', nt, '_', Nthreads, '_openmp.dat'
             OPEN(unit=nt, FILE=filename, ACTION='write', STATUS='replace')
             WRITE(nt, '(F35.25)') Qend(1:param%Nx, 1:param%Ny, 1:param%Nz, nt)
             CLOSE(nt)
         END DO
-    END IF
 
-
-    IF(do_io) THEN
         DO nt=0,Nthreads-1
-            WRITE(filename, '(A,I0.2,A,I0.2,A)') 'timings_openmp', nt, '_', Nthreads, '.dat'
+            WRITE(filename, '(A,I0.2,A,I0.2,A,I0.2,A)') 'timings_openmp', Niter, '_', nt, '_', Nthreads, '.dat'
             OPEN(unit=nt, FILE=filename, ACTION='write', STATUS='replace')
             WRITE(nt, '(F8.2)') timer_all
             WRITE(nt, '(F8.2)') timer_fine(nt)

@@ -231,14 +231,12 @@ CONTAINS
     timer_all = MPI_WTIME() - timer_all
 
     IF(do_io) THEN
-        WRITE(filename, '(A,I0.2,A,I0.2,A)') 'q_final_', myrank, '_', Nproc, '_mpi.dat'
+        WRITE(filename, '(A,I0.2,A,I0.2,A,I0.2,A)') 'q_final_', Niter, '_', myrank, '_', Nproc, '_mpi.dat'
         OPEN(UNIT=myrank, FILE=filename, ACTION='write', STATUS='replace')
         WRITE(myrank, '(F35.25)') Qend(1:param%Nx, 1:param%Ny, 1:param%Nz)
         CLOSE(myrank)
-    END IF
 
-    IF(do_io) THEN
-        WRITE(filename, '(A,I0.2,A,I0.2,A)') 'timings_mpi', myrank, '_', Nproc, '.dat'
+        WRITE(filename, '(A,I0.2,A,I0.2,A,I0.2,A)') 'timings_mpi', Niter, '_', myrank, '_', Nproc, '.dat'
         OPEN(UNIT=myrank, FILE=filename, ACTION='write', STATUS='replace')
         WRITE(myrank, '(F8.2)') timer_all
         WRITE(myrank, '(F8.2)') timer_fine
