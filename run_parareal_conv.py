@@ -16,7 +16,7 @@ do_io = True
 be_verbose = False
 #
 generate_q0(Nx, Ny, Nz)
-Nproc = 2
+Nproc = 8
 
 # read the run command to use plus possible options
 with open("system.defs", "r") as rfile:
@@ -40,7 +40,8 @@ else:
 
 #
 for Niter in range(1,Nproc):
-  types = [ 'mpi', 'openmp', 'openmp_pipe' ]
+  #types = [ 'mpi', 'openmp', 'openmp_pipe' ]
+  types = ['mpi']
   timemesh = generate_timemesh(0.0, Tend, dt_fine, dt_coarse, Nproc)
   Nfine = timemesh.get('Nfine')
   Ncoarse = timemesh.get('Ncoarse')
