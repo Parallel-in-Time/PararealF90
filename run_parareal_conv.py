@@ -39,7 +39,7 @@ else:
   os.system("sbatch submit_serial_f_Np1.sh")
 
 #
-for Niter in range(1,2):
+for Niter in range(1,Nproc):
   types = [ 'mpi', 'openmp', 'openmp_pipe' ]
   timemesh = generate_timemesh(0.0, Tend, dt_fine, dt_coarse, Nproc)
   Nfine = timemesh.get('Nfine')

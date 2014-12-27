@@ -86,12 +86,14 @@ END IF
 T1 = OMP_GET_WTIME()
 
 IF (do_io) THEN
-  OPEN(UNIT=10, FILE='qend.dat', ACTION='write', STATUS='replace')
+  IF (arg=='C') THEN
+    OPEN(UNIT=10, FILE='q_final_coarse.dat', ACTION='write', STATUS='replace')
+  ELSE IF (arg=='F') THEN
+    OPEN(UNIT=10, FILE='q_final_fine.dat', ACTION='write', STATUS='replace')
+  END IF
   WRITE(10, '(F35.25)') Q(1:Nx,1:Ny,1:Nz)
   CLOSE(10)
-END IF
 
-IF (do_io) THEN
   WRITE(filename, '(A)') 'timings_serial_fine.dat'
   OPEN(UNIT=10, FILE=filename, ACTION='write', STATUS='replace')
   WRITE(10, '(F8.2)') T1-T0

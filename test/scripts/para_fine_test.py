@@ -54,7 +54,7 @@ def para_fine_test(system, run_cmd, max_cpu, be_verbose, Ntests):
     if be_verbose:
       print run_cmd_full
     os.system(run_cmd_full+' ./bin/run_parareal_mpi.out')
-    fser = open('qend.dat','r')
+    fser = open('q_final_fine.dat','r')
     fpar = open('q_final_'+Niter_s+'_'+Np_s+'_'+Np_s_p1+'_mpi.dat')
     max_err = 0.0
     for i in range(0,Nx):
@@ -74,7 +74,7 @@ def para_fine_test(system, run_cmd, max_cpu, be_verbose, Ntests):
     if be_verbose:
       print run_cmd_full
     os.system(run_cmd_full+' ./bin/run_parareal_openmp.out')
-    fser = open('qend.dat','r')
+    fser = open('q_final_fine.dat','r')
     fpar = open('q_final_'+Niter_s+'_'+Np_s+'_'+Np_s_p1+'_openmp.dat')
     max_err = 0.0
     for i in range(0,Nx):
@@ -94,7 +94,7 @@ def para_fine_test(system, run_cmd, max_cpu, be_verbose, Ntests):
     if be_verbose:
       print run_cmd_full
     os.system(run_cmd_full+' ./bin/run_parareal_openmp_pipe.out')
-    fser = open('qend.dat','r')
+    fser = open('q_final_fine.dat','r')
     fpar = open('q_final_'+Niter_s+'_'+Np_s+'_'+Np_s_p1+'_openmp_pipe.dat')
     max_err = 0.0
     for i in range(0,Nx):
