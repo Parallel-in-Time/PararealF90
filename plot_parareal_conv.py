@@ -32,7 +32,7 @@ for niter in range(1,Nproc):
   Npara = np.size(y_para)
   assert Npara == Nfine, 'Mismatch in length of serial and parallel solution.'
   diff = y_fine - y_para
-  defect[niter-1] = np.linalg.norm(diff)
+  defect[niter-1] = np.linalg.norm(diff, np.inf)
 
 for niter in range(1,Nproc):
   print ('Defect of Parareal to fine method after %1i iterations: %6.3e' % (niter,defect[niter-1]))
@@ -61,5 +61,5 @@ for niter in range(2,Nproc):
       y_para = np.append(y_para, [float(line)])
   fobj.close()
   update = y_para - y_para_old
-  print ('Update of Parareal in iteration %1i: %6.3e' % (niter,np.linalg.norm(update)))
+  print ('Update of Parareal in iteration %1i: %6.3e' % (niter,np.linalg.norm(update, np.inf)/np.linalg.norm(y_para, np.inf)))
   y_para_old = y_para

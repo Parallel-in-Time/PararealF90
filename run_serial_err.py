@@ -5,11 +5,11 @@ from generate_q0 import generate_q0
 from build_runscript import build_runscript
 from generate_timemesh import generate_timemesh
 nu = 0.01
-Nx = 16
-Ny = 16
-Nz = 16
+Nx = 32
+Ny = 32
+Nz = 32
 dt_fine   = 1.0/200.0
-dt_coarse = 1.0/40.0
+dt_coarse = 1.0/80.0
 Niter = 1
 Tend  = 2.0
 do_io = True
