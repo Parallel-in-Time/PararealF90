@@ -4,10 +4,10 @@ from build_namelist import build_namelist
 from generate_q0 import generate_q0
 from build_runscript import build_runscript
 from generate_timemesh import generate_timemesh
-nu = 0.005
-Nx = 32
-Ny = 33
-Nz = 34
+nu = 0.01
+Nx = 16
+Ny = 16
+Nz = 16
 dt_fine   = 1.0/200.0
 dt_coarse = 1.0/40.0
 Niter = 1
@@ -27,7 +27,7 @@ with open("system.defs", "r") as rfile:
     rfile.close()
 
 # Run serial reference
-timemesh = generate_timemesh(0.0, Tend, dt_fine, dt_coarse, Nproc)
+timemesh = generate_timemesh(0.0, Tend, dt_fine, dt_coarse, 1)
 Nfine = timemesh.get('Nfine')
 Ncoarse = timemesh.get('Ncoarse')
 build_namelist(nu, Nx, Ny, Nz, Nfine, Ncoarse, Niter, Tend, do_io, be_verbose)
