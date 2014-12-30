@@ -4,16 +4,10 @@ from build_namelist import build_namelist
 from generate_q0 import generate_q0
 from build_runscript import build_runscript
 from generate_timemesh import generate_timemesh
-nu = 0.005
-Nx = 32
-Ny = 32
-Nz = 32
-dt_fine   = 1.0/50
-dt_coarse = 1.0/20
-Niter = 1
-Tend  = 2.0
-do_io = True
-be_verbose = False
+from get_parameter import get_parameter
+
+nu, Nx, Ny, Nz, dt_fine, dt_coarse, Niter, Tend, do_io, be_verbose = get_parameter()
+
 #
 generate_q0(Nx, Ny, Nz)
 Nproc = [2, 4, 6, 8]
