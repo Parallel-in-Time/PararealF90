@@ -36,12 +36,12 @@ if system=="mac":
   os.system('mv q_final_fine.dat q_final_fine_ref.dat')
 else:
   jobname="fine_serial"
-  build_runscript(1, jobname, "serial_f", system)
+  build_runscript(1, jobname, "serial_f_ref", system)
   # append line to rename output file
-  with open('submit_serial_f_Np1.sh','w') as fileobj:
+  with open('submit_serial_f_ref_Np1.sh','a') as fileobj:
     fileobj.write("mv q_final_fine.dat q_final_fine_ref.dat \n")
     fileobj.close()
-  os.system("sbatch submit_serial_f_Np1.sh")
+  os.system("sbatch submit_serial_f_ref_Np1.sh")
 
 # Run serial fine scheme with normal time step
 timemesh = generate_timemesh(0.0, Tend, dt_fine, dt_coarse, 1)
@@ -63,6 +63,6 @@ build_namelist(nu, Nx, Ny, Nz, Nfine, Ncoarse, Niter, Tend, do_io, be_verbose)
 if system=="mac":
   os.system("time bin/run_timestepper.out C")
 else:
-  jobname="fine_serial"
-  build_runscript(1, jobname, "serial_f", system)
+  jobname="coarse_serial"
+  build_runscript(1, jobname, "serial_g", system)
   os.system("sbatch submit_serial_g_Np1.sh")
