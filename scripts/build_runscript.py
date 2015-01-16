@@ -35,7 +35,7 @@ def build_runscript(Nproc,jobname,type,system):
             elif type=="serial_f":
               myfile.write('mpirun -n 1 '+cwd+'/bin/run_timestepper.out F \n')
             elif type=="serial_g":
-              myfile.write('mpirun -n 1 '+cwd+'/bin/run_timestepper.out G \n')
+              myfile.write('mpirun -n 1 '+cwd+'/bin/run_timestepper.out C \n')
     
         elif system=="rosa":
             if type=="mpi":
@@ -47,7 +47,7 @@ def build_runscript(Nproc,jobname,type,system):
             elif type=="serial_f":
                 myfile.write('aprun -n 1 '+cwd+'/bin/run_timestepper.out F \n')
             elif type=="serial_g":
-                myfile.write('aprun -n 1 '+cwd+'/bin/run_timestepper.out G \n')
+                myfile.write('aprun -n 1 '+cwd+'/bin/run_timestepper.out C \n')
 
         elif system=="daint":
             if type=="mpi":
