@@ -15,13 +15,17 @@ INTEGER :: Nx, Ny, Nz, N_fine, N_coarse, Niter, ierr
 
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:) :: Q
 
+CHARACTER(len=32) :: param_file
+
 !> @todo docu
 NAMELIST /param/ nu, Nx, Ny, Nz, N_fine, N_coarse, Niter, Tend, do_io, be_verbose
 
 ! -- CODE: --
 
+CALL GET_COMMAND_ARGUMENT(1,param_file)
+
 ! Read parameters
-OPEN(unit=20, FILE='parameter.in', ACTION='read', STATUS='old')
+OPEN(unit=20, FILE=param_file, ACTION='read', STATUS='old')
 READ(20,NML=param)
 CLOSE(20)
 

@@ -18,7 +18,7 @@ DOUBLE PRECISION, PARAMETER :: pi = 3.1415926535897932_8 ! underscore indicates 
 
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:) :: Q
 
-CHARACTER(len=32) :: arg
+CHARACTER(len=32) :: arg, param_file
 DOUBLE PRECISION :: nu, Tend, dx, dy, dz, T0, T1
 INTEGER :: Nx, Ny, Nz, N_fine, N_coarse, Niter, method, order_adv, order_diff, &
     ierr, mpi_thread_provided, Nthreads
@@ -35,13 +35,14 @@ NAMELIST /param/ nu, Nx, Ny, Nz, N_fine, N_coarse, Niter, Tend, do_io, be_verbos
 
 Nthreads=1
 
+CALL GET_COMMAND_ARGUMENT(1, param_file)
 ! Read parameter
-OPEN(UNIT=20, FILE='parameter.in', ACTION='read', STATUS='old')
+OPEN(UNIT=20, FILE=param_file, ACTION='read', STATUS='old')
 READ(20,NML=param)
 CLOSE(20)
 
 ! Command line arguments: C = run coarse method, F = run fine method
-CALL GET_COMMAND_ARGUMENT(1, arg)
+CALL GET_COMMAND_ARGUMENT(2, arg)
 IF (arg=='C') THEN
     method     = 1
     order_adv  = 1

@@ -10,7 +10,7 @@ nu, Nx, Ny, Nz, dt_fine, dt_coarse, Niter, Tend, do_io, be_verbose = get_paramet
 
 #
 generate_q0(Nx, Ny, Nz)
-Nproc = [2, 4, 6, 8]
+Nproc = [4, 8]
 
 # read the run command to use plus possible options
 with open("system.defs", "r") as rfile:
@@ -35,7 +35,8 @@ else:
 
 #
 for np in Nproc:
-  types = [ 'mpi', 'openmp', 'openmp_pipe' ]
+  #types = [ 'mpi', 'openmp', 'openmp_pipe' ]
+  types = ['mpi']
   timemesh = generate_timemesh(0.0, Tend, dt_fine, dt_coarse, np)
   Nfine = timemesh.get('Nfine')
   Ncoarse = timemesh.get('Ncoarse')

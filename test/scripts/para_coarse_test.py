@@ -44,7 +44,7 @@ def para_coarse_test(system, run_cmd, max_cpu, be_verbose, Ntests):
     run_cmd_full = get_run_cmd(system, run_cmd, True, 1)
     if be_verbose:
       print run_cmd_full
-    os.system(run_cmd_full+' ./bin/run_timestepper.out C')
+    os.system(run_cmd_full+' ./bin/run_timestepper.out parameter.in C')
 
     # Build namelist for Parareal
     build_namelist(nu, Nx, Ny, Nz,    N_fine,    N_coarse,     0, Tend, do_io, be_verbose)
@@ -53,7 +53,7 @@ def para_coarse_test(system, run_cmd, max_cpu, be_verbose, Ntests):
     run_cmd_full = get_run_cmd(system, run_cmd, True, Np)
     if be_verbose:
       print run_cmd_full
-    os.system('OMP_NUM_THREADS=1 '+run_cmd+' -n '+str(Np)+' ./bin/run_parareal_mpi.out')
+    os.system('OMP_NUM_THREADS=1 '+run_cmd+' -n '+str(Np)+' ./bin/run_parareal_mpi.out parameter.in')
     fser = open('q_final_coarse.dat')
     fpar = open('q_final_'+Niter_s+'_'+Np_s+'_'+Np_s_p1+'_mpi.dat')
     max_err = 0.0
@@ -73,7 +73,7 @@ def para_coarse_test(system, run_cmd, max_cpu, be_verbose, Ntests):
     run_cmd_full = get_run_cmd(system, run_cmd, False, Np)
     if be_verbose:
       print run_cmd_full
-    os.system(run_cmd_full+' ./bin/run_parareal_openmp.out')
+    os.system(run_cmd_full+' ./bin/run_parareal_openmp.out parameter.in')
     fser = open('q_final_coarse.dat','r')
     fpar = open('q_final_'+Niter_s+'_'+Np_s+'_'+Np_s_p1+'_openmp.dat')
     max_err = 0.0
@@ -93,7 +93,7 @@ def para_coarse_test(system, run_cmd, max_cpu, be_verbose, Ntests):
     run_cmd_full = get_run_cmd(system, run_cmd, False, Np)
     if be_verbose:
       print run_cmd_full
-    os.system(run_cmd_full+' ./bin/run_parareal_openmp_pipe.out')
+    os.system(run_cmd_full+' ./bin/run_parareal_openmp_pipe.out parameter.in')
     fser = open('q_final_coarse.dat','r')
     fpar = open('q_final_'+Niter_s+'_'+Np_s+'_'+Np_s_p1+'_openmp_pipe.dat')
     max_err = 0.0
