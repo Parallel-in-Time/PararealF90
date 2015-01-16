@@ -7,7 +7,7 @@ def build_runscript(Nproc,jobname,type,system,param_file="parameter.in"):
         myfile.write("#SBATCH --nodes=1 \n")
         if type in ("mpi", "serial_f", "serial_g", "serial_f_ref"):
             myfile.write("#SBATCH --ntasks="+str(Nproc)+"\n")
-            myfile.write("#SBATCH --ntasks-per-node="+str(Nproc)+"\n")
+            myfile.write("#SBATCH --ntasks-per-node="+str(Nproc)+"\n")
             myfile.write("#SBATCH --cpus-per-task=1 \n")
         elif type in ("openmp","openmp_pipe"):
             myfile.write("#SBATCH --ntasks=1 \n")
