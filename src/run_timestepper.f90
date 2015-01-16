@@ -95,7 +95,11 @@ IF (do_io) THEN
   CLOSE(10)
 END IF
 
-WRITE(filename, '(A)') 'timings_serial_fine.dat'
+IF (arg=='C') THEN
+  WRITE(filename, '(A)') 'timings_serial_coarse.dat'
+ELSE IF (arg=='F') THEN
+  WRITE(filename, '(A)') 'timings_serial_fine.dat'
+END IF
 OPEN(UNIT=10, FILE=filename, ACTION='write', STATUS='replace')
 WRITE(10, '(F8.2)') T1-T0
 
