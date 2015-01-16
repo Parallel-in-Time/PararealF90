@@ -59,7 +59,7 @@ def build_runscript(Nproc,jobname,type,system):
             elif type=="serial_f":
                 myfile.write('aprun -n 1 '+cwd+'/bin/run_timestepper.out F \n')
             elif type=="serial_g":
-                myfile.write('aprun -n 1 '+cwd+'/bin/run_timestepper.out G \n')
+                myfile.write('aprun -n 1 '+cwd+'/bin/run_timestepper.out C \n')
 
         elif system=="mac":
             print "No SLURM on Mac, no runscript needed..."
