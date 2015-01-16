@@ -51,6 +51,6 @@ for Niter in range(1,Nproc):
               os.system("time OMP_NUM_THREADS="+str(Nproc)+" mpirun -n 1 bin/run_parareal_"+type+".out")
       else:    
           jobname="parareal_"+type+"_Np"+str(Nproc)
-          build_runscript(np, jobname, type, system)
+          build_runscript(Nproc, jobname, type, system)
           os.system("sbatch submit_"+type+"_Np"+str(Nproc)+".sh")
 #  os.system('mv timings*.dat data/')

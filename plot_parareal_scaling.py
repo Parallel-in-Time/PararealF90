@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 fs = 18
 
 Nprocs = numpy.array([2, 4, 6, 8])
-Niter  = 1
+Niter  = 2
 timers  = numpy.zeros([3,Nprocs.size])
 speedup = numpy.zeros([3,Nprocs.size])
 
@@ -53,5 +53,28 @@ plt.ylim([ymin, ymax])
 
 # Saveing figure
 fig.savefig('Speedup.pdf', dpi=300)
+
+plt.show()
+
+fig = plt.figure(figsize=(8,8))
+
+plt.plot(Nprocs, timers[0,:], linewidth=1.0, marker='^', markersize=fs, color='b', label='MPI')
+plt.plot(Nprocs, timers[1,:], linewidth=1.0, marker='<', markersize=fs, color='g', label='OpenMP')
+plt.plot(Nprocs, timers[2,:], linewidth=.0, marker='>', markersize=fs, color='r', label='OpenMP(pipe)')
+plt.plot(Nprocs, time_serial_f + 0.0*timers[0,:], linewidth=2.0, color='k')
+nodes = list(Nprocs)
+#ymin = 0
+#ymax = max(map(max,speedup))+1.0
+
+plt.xlabel('Number of cores', fontsize=fs)
+plt.ylabel('Runtime [sec.]', fontsize=fs)
+plt.xticks(Nprocs, fontsize=fs)
+plt.yticks(fontsize=fs)
+plt.grid(True)
+plt.legend(loc='upper right')
+#plt.ylim([ymin, ymax])
+
+# Saveing figure
+fig.savefig('Runtime.pdf', dpi=300)
 
 plt.show()

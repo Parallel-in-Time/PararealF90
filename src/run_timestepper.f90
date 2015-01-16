@@ -93,11 +93,12 @@ IF (do_io) THEN
   END IF
   WRITE(10, '(F35.25)') Q(1:Nx,1:Ny,1:Nz)
   CLOSE(10)
-
-  WRITE(filename, '(A)') 'timings_serial_fine.dat'
-  OPEN(UNIT=10, FILE=filename, ACTION='write', STATUS='replace')
-  WRITE(10, '(F8.2)') T1-T0
 END IF
+
+WRITE(filename, '(A)') 'timings_serial_fine.dat'
+OPEN(UNIT=10, FILE=filename, ACTION='write', STATUS='replace')
+WRITE(10, '(F8.2)') T1-T0
+
 ! Finalize
 CALL FinalizeTimestepper
 CALL MPI_FINALIZE(ierr)

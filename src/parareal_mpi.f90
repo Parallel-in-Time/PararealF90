@@ -235,15 +235,15 @@ CONTAINS
         OPEN(UNIT=myrank, FILE=filename, ACTION='write', STATUS='replace')
         WRITE(myrank, '(F35.25)') Qend(1:param%Nx, 1:param%Ny, 1:param%Nz)
         CLOSE(myrank)
-
-        WRITE(filename, '(A,I0.2,A,I0.2,A,I0.2,A)') 'timings_mpi', Niter, '_', myrank, '_', Nproc, '.dat'
-        OPEN(UNIT=myrank, FILE=filename, ACTION='write', STATUS='replace')
-        WRITE(myrank, '(F8.2)') timer_all
-        WRITE(myrank, '(F8.2)') timer_fine
-        WRITE(myrank, '(F8.2)') timer_coarse
-        WRITE(myrank, '(F8.2)') timer_comm
-        CLOSE(myrank)
     END IF
+
+    WRITE(filename, '(A,I0.2,A,I0.2,A,I0.2,A)') 'timings_mpi', Niter, '_', myrank, '_', Nproc, '.dat'
+    OPEN(UNIT=myrank, FILE=filename, ACTION='write', STATUS='replace')
+    WRITE(myrank, '(F8.2)') timer_all
+    WRITE(myrank, '(F8.2)') timer_fine
+    WRITE(myrank, '(F8.2)') timer_coarse
+    WRITE(myrank, '(F8.2)') timer_comm
+    CLOSE(myrank)
 
   END SUBROUTINE PararealMPI
 
