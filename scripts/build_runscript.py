@@ -33,7 +33,7 @@ def build_runscript(Nproc,jobname,type,system,param_file="parameter.in"):
             elif type=="openmp_pipe":
                 myfile.write('OMP_NUM_THREADS='+str(Nproc)+' mpirun -n 1 '+cwd+'/bin/run_parareal_openmp_pipe.out '+param_file+' \n')
             elif type in ("serial_f","serial_f_ref"):
-              myfile.write('mpirun -n 1 '+cwd+'/bin/run_timestepper.out '+param_file'+'F \n')
+              myfile.write('mpirun -n 1 '+cwd+'/bin/run_timestepper.out '+param_file+' F \n')
             elif type=="serial_g":
               myfile.write('mpirun -n 1 '+cwd+'/bin/run_timestepper.out '+param_file+' C \n')
     

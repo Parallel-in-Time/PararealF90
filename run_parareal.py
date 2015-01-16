@@ -10,7 +10,7 @@ nu, Nx, Ny, Nz, dt_fine, dt_coarse, Niter, Tend, do_io, be_verbose = get_paramet
 #
 generate_q0(Nx, Ny, Nz)
 #Nproc = [2, 4, 8]
-Nproc = [2]
+Nproc = [8]
 
 # read the run command to use plus possible options
 with open("system.defs", "r") as rfile:
@@ -20,8 +20,8 @@ with open("system.defs", "r") as rfile:
     runcmd = runcmd.rstrip()
     rfile.close()
 for np in Nproc:
-  types = [ 'mpi', 'openmp', 'openmp_pipe' ]
-  #types = [ 'openmp' ]
+  #types = [ 'mpi', 'openmp', 'openmp_pipe' ]
+  types = [ 'openmp' ]
   timemesh = generate_timemesh(0.0, Tend, dt_fine, dt_coarse, np)
   Nfine = timemesh.get('Nfine')
   Ncoarse = timemesh.get('Ncoarse')
