@@ -23,14 +23,15 @@ with open("system.defs", "r") as rfile:
 timemesh = generate_timemesh(0.0, Tend, dt_fine, dt_coarse, 1)
 Nfine = timemesh.get('Nfine')
 Ncoarse = timemesh.get('Ncoarse')
-build_namelist(nu, Nx, Ny, Nz, Nfine, Ncoarse, Niter, Tend, do_io, be_verbose)
+param_file = "param_fine_ref.in"
+build_namelist(nu, Nx, Ny, Nz, Nfine, Ncoarse, Niter, Tend, do_io, be_verbose, param_file)
 
 # Run serial reference
 if system=="mac":
-  os.system("time bin/run_timestepper.out F")
+  os.system("time bin/run_timestepper.out "+param_file+" F")
 else:
   jobname="fine_serial"
-  build_runscript(1, jobname, "serial_f", system)
+  build_runscript(1, jobname, "serial_f", system, param_file)
   os.system("sbatch submit_serial_f_Np1.sh")
 
 #
@@ -40,18 +41,19 @@ for np in Nproc:
   timemesh = generate_timemesh(0.0, Tend, dt_fine, dt_coarse, np)
   Nfine = timemesh.get('Nfine')
   Ncoarse = timemesh.get('Ncoarse')
-  build_namelist(nu, Nx, Ny, Nz, Nfine, Ncoarse, Niter, Tend, do_io, be_verbose)
   for ii in range(0,len(types)):
       type=types.pop(0)
+      param_file = "param_para_"+type+"_Np"+str(np)+".in"
+      build_namelist(nu, Nx, Ny, Nz, Nfine, Ncoarse, Niter, Tend, do_io, be_verbose, param_file)
       if system=="mac":
           if type=="mpi":
-              os.system("time mpirun -n "+str(np)+" bin/run_parareal_"+type+".out")
+              os.system("time mpirun -n "+str(np)+" bin/run_parareal_"+type+".out "+param_file)
           elif type=="openmp":
-              os.system("time OMP_NUM_THREADS="+str(np)+" mpirun -n 1 bin/run_parareal_"+type+".out")
+              os.system("time OMP_NUM_THREADS="+str(np)+" mpirun -n 1 bin/run_parareal_"+type+".out "+param_file)
           elif type=="openmp_pipe":
-              os.system("time OMP_NUM_THREADS="+str(np)+" mpirun -n 1 bin/run_parareal_"+type+".out")
+              os.system("time OMP_NUM_THREADS="+str(np)+" mpirun -n 1 bin/run_parareal_"+type+".out "+param_file)
       else:    
           jobname="parareal_"+type+"_Np"+str(np)
-          build_runscript(np, jobname, type, system)
+          build_runscript(np, jobname, type, system, param_file)
           os.system("sbatch submit_"+type+"_Np"+str(np)+".sh")
 #  os.system('mv timings*.dat data/')
