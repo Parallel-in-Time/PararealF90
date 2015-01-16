@@ -1,5 +1,5 @@
-def build_namelist(nu, Nx, Ny, Nz, N_fine, N_coarse, Niter, Tend, do_io, be_verbose):
-    with open("parameter.in", "w") as myfile:
+def build_namelist(nu, Nx, Ny, Nz, N_fine, N_coarse, Niter, Tend, do_io, be_verbose, param_file="parameter.in"):
+    with open(param_file, "w") as myfile:
         myfile.write("&param \n")
         myfile.write("nu="+str(nu)+"\n")
         myfile.write("Nx="+str(Nx)+"\n")
