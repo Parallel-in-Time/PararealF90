@@ -36,7 +36,7 @@ if system=="mac":
   os.system('mv q_final_fine.dat q_final_fine_ref.dat')
 else:
   jobname="fine_serial"
-  build_runscript(1, jobname, "serial_f_ref", system)
+  build_runscript(1, jobname, "serial_f", system)
   # append line to rename output file
   with open('submit_serial_f_ref_Np1.sh','a') as fileobj:
     fileobj.write("mv q_final_fine.dat q_final_fine_ref.dat \n")
