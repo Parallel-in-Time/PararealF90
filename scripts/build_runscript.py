@@ -12,7 +12,8 @@ def build_runscript(Nproc,jobname,type,system,param_file="parameter.in"):
         elif type in ("openmp","openmp_pipe"):
             myfile.write("#SBATCH --ntasks=1 \n")
             myfile.write("#SBATCH --ntasks-per-node=1 \n")
-            myfile.write("#SBATCH --cpus-per-task="+str(Nproc)+"\n")
+            if system!="cub":
+              myfile.write("#SBATCH --cpus-per-task="+str(Nproc)+"\n")
         else:
             print "build_runscript: Encountered unknown type: "+type
         
