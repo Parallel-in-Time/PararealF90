@@ -39,7 +39,7 @@ if system=="mac":
   os.system("time bin/run_timestepper.out "+param_file+" C")
 else:
   jobname="coarse_serial"
-  build_runscript(1, jobname, "coarse_f", system, param_file)
+  build_runscript(1, jobname, "serial_g", system, param_file)
   os.system("sbatch submit_seria_g_Np1.sh")
 
 for np in Nproc:
