@@ -40,7 +40,7 @@ if system=="mac":
 else:
   jobname="coarse_serial"
   build_runscript(1, jobname, "serial_g", system, param_file)
-  os.system("sbatch submit_seria_g_Np1.sh")
+  os.system("sbatch submit_serial_g_Np1.sh")
 
 for np in Nproc:
   types = [ 'mpi', 'openmp', 'openmp_pipe' ]
