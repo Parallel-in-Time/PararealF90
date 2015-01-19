@@ -10,7 +10,7 @@ nu, Nx, Ny, Nz, dt_fine, dt_coarse, Niter, Tend, do_io, be_verbose = get_paramet
 
 #
 generate_q0(Nx, Ny, Nz)
-Nproc = [4, 8]
+Nproc = [2, 4, 6, 8]
 
 # read the run command to use plus possible options
 with open("system.defs", "r") as rfile:
@@ -34,10 +34,17 @@ else:
   build_runscript(1, jobname, "serial_f", system, param_file)
   os.system("sbatch submit_serial_f_Np1.sh")
 
-#
+# To compute coarse-to-fine ratio, run also coarse propagator
+if system=="mac":
+  os.system("time bin/run_timestepper.out "+param_file+" C")
+else:
+  jobname="coarse_serial"
+  build_runscript(1, jobname, "coarse_f", system, param_file)
+  os.system("sbatch submit_seria_g_Np1.sh")
+
 for np in Nproc:
-  #types = [ 'mpi', 'openmp', 'openmp_pipe' ]
-  types = ['mpi']
+  types = [ 'mpi', 'openmp', 'openmp_pipe' ]
+  #types = ['mpi']
   timemesh = generate_timemesh(0.0, Tend, dt_fine, dt_coarse, np)
   Nfine = timemesh.get('Nfine')
   Ncoarse = timemesh.get('Ncoarse')

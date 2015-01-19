@@ -7,12 +7,20 @@ Nprocs = numpy.array([2, 4, 6, 8])
 Niter  = 2
 timers  = numpy.zeros([3,Nprocs.size])
 speedup = numpy.zeros([3,Nprocs.size])
+bound   = numpy.zeros([1,Nprocs.size])
 
 # Load serial runtime first
 filename = "timings_serial_fine.dat"
 f = open(filename,'r')
 time_serial_f = float(f.readline())
 f.close
+
+# Load coarse runtime
+filename = "timings_serial_coarse.dat"
+f = open(filename, 'r')
+time_serial_g = float(f.readline())
+f.close
+g_to_f = time_serial_g/time_serial_f
 
 niter_s = '%0.2i' % Niter
 
@@ -32,13 +40,14 @@ for tt in range(0,3):
     timers[tt,ii] = fine_time + coarse_time + comm_time
     f.close()
     speedup[tt,ii] = time_serial_f/timers[tt,ii]
+    bound[0,ii]    = 1.0/( (1.0 + float(Niter)/float(np))*g_to_f + float(Niter)/float(np))
 
 fig = plt.figure(figsize=(8,8))
 
 plt.plot(Nprocs, speedup[0,:], linewidth=0, marker='^', markersize=fs, color='b', label='MPI')
 plt.plot(Nprocs, speedup[1,:], linewidth=0, marker='<', markersize=fs, color='g', label='OpenMP')
 plt.plot(Nprocs, speedup[2,:], linewidth=0, marker='>', markersize=fs, color='r', label='OpenMP(pipe)')
-
+plt.plot(Nprocs, bound[0,:], linewidth=1.0, color='k', label='Bound')
 nodes = list(Nprocs)
 ymin = 0
 ymax = max(map(max,speedup))+1.0
