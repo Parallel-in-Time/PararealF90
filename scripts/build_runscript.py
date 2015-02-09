@@ -63,7 +63,7 @@ def build_runscript(Nproc,jobname,type,system,param_file="parameter.in"):
             elif type=="serial_g":
                 myfile.write('aprun -n 1 '+cwd+'/bin/run_timestepper.out '+param_file+' C \n')
             # add command to rename generated RUR resource utilization log
-            myfile.write("mv rur.$SLURM_JOB_IDEA "+filename+".rur")
+            myfile.write("echo \"mv rur.$SLURM_JOB_ID "+filename+".rur \" >> rename.sh")
         elif system=="mac":
             print "No SLURM on Mac, no runscript needed..."
 

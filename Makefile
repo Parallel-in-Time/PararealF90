@@ -30,3 +30,6 @@ cleandata:
 	rm -f *.sh
 	rm -f *.in
 	rm -f rur.*
+	rm -f *.rur
+	rm -f *.out
+	rm -f submit_*.sh

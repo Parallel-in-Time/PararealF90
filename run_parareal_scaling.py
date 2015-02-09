@@ -10,7 +10,14 @@ nu, Nx, Ny, Nz, dt_fine, dt_coarse, Niter, Tend, do_io, be_verbose = get_paramet
 
 #
 generate_q0(Nx, Ny, Nz)
-Nproc = [2, 4, 6, 8]
+Nproc = [2, 4, 6, 8, 10, 12, 24]
+
+# Prepare generation of a bash script to rename RUR output...
+# These log files are identified using the JobID. Running rename.sh after all jobs are finished will
+# rename these from something like rur.123456 into e.g. serial_f_Np1.rur
+os.system("rm -f rename.sh")
+os.system("touch rename.sh")
+os.system("chmod u=rwx rename.sh")
 
 # read the run command to use plus possible options
 with open("system.defs", "r") as rfile:
@@ -44,7 +51,7 @@ else:
 
 for np in Nproc:
   types = [ 'mpi', 'openmp', 'openmp_pipe' ]
-  #types = ['mpi']
+  #types = ['openmp_pipe']
   timemesh = generate_timemesh(0.0, Tend, dt_fine, dt_coarse, np)
   Nfine = timemesh.get('Nfine')
   Ncoarse = timemesh.get('Ncoarse')
@@ -64,3 +71,7 @@ for np in Nproc:
           build_runscript(np, jobname, type, system, param_file)
           os.system("sbatch submit_"+type+"_Np"+str(np)+".sh")
 #  os.system('mv timings*.dat data/')
+print ""
+print "=========================================================================================="
+print "REMEMBER: Execute script rename.sh after all jobs completed to rename RUR output files ..."
+print "=========================================================================================="
