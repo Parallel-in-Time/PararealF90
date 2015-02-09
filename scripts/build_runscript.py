@@ -50,7 +50,7 @@ def build_runscript(Nproc,jobname,type,system,param_file="parameter.in"):
             elif type=="serial_g":
                 myfile.write('aprun -n 1 '+cwd+'/bin/run_timestepper.out '+param_file+' C \n')
 
-        elif system=="daint":
+        elif system in ("daint","dora"):
             if type=="mpi":
                 myfile.write('OMP_NUM_THREADS=1 aprun -n '+str(Nproc)+' -d 1 '+cwd+'/bin/run_parareal_mpi.out '+param_file+' \n')
             elif type=="openmp":
