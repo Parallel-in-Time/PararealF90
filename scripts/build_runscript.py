@@ -1,6 +1,7 @@
 import os
 def build_runscript(Nproc,jobname,type,system,param_file="parameter.in"):
-    with open("submit_"+type+"_Np"+str(Nproc)+".sh", "w") as myfile:
+    filename = type+"_Np"+str(Nproc)
+    with open("submit_"+filename+".sh", "w") as myfile:
 
         myfile.write("#!/bin/bash \n")
         myfile.write("#SBATCH --job-name="+jobname+"\n")
@@ -61,7 +62,8 @@ def build_runscript(Nproc,jobname,type,system,param_file="parameter.in"):
                 myfile.write('aprun -n 1 '+cwd+'/bin/run_timestepper.out '+param_file+' F \n')
             elif type=="serial_g":
                 myfile.write('aprun -n 1 '+cwd+'/bin/run_timestepper.out '+param_file+' C \n')
-
+            # add command to rename generated RUR resource utilization log
+            myfile.write("mv rur.$SLURM_JOB_IDEA "+filename+".rur")
         elif system=="mac":
             print "No SLURM on Mac, no runscript needed..."
 
