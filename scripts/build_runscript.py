@@ -17,7 +17,7 @@ def build_runscript(Nproc,jobname,type,system,param_file="parameter.in"):
         else:
             print "build_runscript: Encountered unknown type: "+type
         
-        myfile.write("#SBATCH --time=00:05:00 \n")
+        myfile.write("#SBATCH --time=00:01:00 \n")
         myfile.write("#SBATCH --mail-user=daniel.ruprecht@usi.ch \n")
         myfile.write("#SBATCH --output="+jobname+".out \n")
         myfile.write("echo JobID $SLURM_JOB_ID \n")

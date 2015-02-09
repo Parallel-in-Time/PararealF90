@@ -29,3 +29,4 @@ cleandata:
 	rm -f *.out
 	rm -f *.sh
 	rm -f *.in
+	rm -f rur.*
