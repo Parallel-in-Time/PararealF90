@@ -1,5 +1,5 @@
 !>
-!! @todo docu
+!! This module contains the functions for the discrete advection operator. A first order upwind discretization is used for the coarse method, a 5th order WENO for the fine.
 !!
 MODULE advection
 
@@ -13,7 +13,10 @@ PUBLIC :: GetRHSAdvection, InitializeAdvection, FinalizeAdvection
 
 CONTAINS
 
-    !> @todo docu
+    !> Function to evaluate the discrete advection operator.
+    !! @param[in] Q The solution Q
+    !! @param[out] RQ The discrete advection operator applied to Q.
+    !! @param[in] order Either 1 for upwind or 5 for WENO5.
     SUBROUTINE GetRHSAdvection(Q, RQ, dx, dy, dz, i_start, i_end, j_start, j_end, k_start, k_end, order)
 
         DOUBLE PRECISION, DIMENSION(param%i_min:, param%j_min:, param%k_min:), INTENT(IN)  :: Q
@@ -46,9 +49,15 @@ CONTAINS
 
     END SUBROUTINE GetRHSAdvection
 
-    !> @todo
-    !! @param[in]
-    !! @param[in]
+    !> Initializes the advection module and allocates required memory in the fluxes module.
+    !! @param[in] i_min Minimum index in x direction
+    !! @param[in] i_max Maximum index in x direction
+    !! @param[in] j_min Minimum index in y direction
+    !! @param[in] j_max Maximum index in y direction
+    !! @param[in] k_min Minimun index in z direction
+    !! @param[in] k_max Maximum index in z direction
+    !! @param[in] Nthreads Number of OpenMP threads. Set to 1 when using MPI.
+    !! @param[in] echo_on If true, the code produces a bunch of status messages during runtime.
     SUBROUTINE InitializeAdvection(i_min, i_max, j_min, j_max, k_min, k_max, Nthreads, echo_on)
     
         INTEGER, INTENT(IN) :: Nthreads, i_min, i_max, j_min, j_max, k_min, k_max
@@ -58,15 +67,14 @@ CONTAINS
 
     END SUBROUTINE InitializeAdvection
 
-    !> @todo
+    !> Finalizes the advection module and deallocates memory in the fluxes module.
     SUBROUTINE FinalizeAdvection()
         CALL FinalizeFluxes
     END SUBROUTINE FinalizeAdvection
 
-    !> For computed fluxes, compute the flux divergence @todo
+    !> For computed fluxes f(q), compute the flux divergence
     !! \\( f(q)_x + f(q)_y + f(q)_z \\)
-    !! @param[in]
-    !! @param[out]
+    !! @param[out] RQ the divergence of the flux f(Q)
     SUBROUTINE GetFluxDivergence(RQ, dx, dy, dz)
     
         DOUBLE PRECISION, DIMENSION(param%i_min:, param%j_min:, param%k_min:), INTENT(OUT) :: RQ

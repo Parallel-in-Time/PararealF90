@@ -1,5 +1,5 @@
 !>
-!! @todo docu
+!! This module handles the diffusion terms in the equation. It provides a second and fourth order centred discretization of
 !!
 !! \\( \\Delta q = q_{xx} + q_{yy} + q_{zz} \\)
 !!
@@ -9,28 +9,28 @@ IMPLICIT NONE
 
 PUBLIC :: GetRHSDiffusion, InitializeDiffusion
 
-!> @todo docu
 TYPE diffusion_parameter
     INTEGER :: i_min, i_max, j_min, j_max, k_min, k_max
     DOUBLE PRECISION :: nu
 END TYPE
 
-!> @todo
 TYPE(diffusion_parameter) :: param
 
-!> @todo docu
+!> Finite difference weight in the fourth order centred stencil
 DOUBLE PRECISION, PARAMETER :: w1 = 1.0_8/12.0_8
 
-!> @todo docu
+!> Finite difference weight in the fourth order centred stencil
 DOUBLE PRECISION, PARAMETER :: w2 = 4.0_8/3.0_8
 
-!> @todo docu
+!> Finite difference weight in the fourth order centred stencil
 DOUBLE PRECISION, PARAMETER :: w3 = 5.0_8/2.0_8
 
 CONTAINS
 
-    !> @todo docu
-    !! param[in] Q
+    !> Computes the contribution from the diffusive terms to the right hand side of the initial value problem.
+    !! param[in] Q The solution
+    !! param[out] RQ Discrete diffusion operator applied to Q
+    !! param[in] order Either two or four.
     SUBROUTINE GetRHSDiffusion(Q, RQ, dx, dy, dz, i_start, i_end, j_start, j_end, k_start, k_end, order)
         DOUBLE PRECISION, DIMENSION(param%i_min:, param%j_min:, param%k_min:), INTENT(IN)  :: Q
         DOUBLE PRECISION, DIMENSION(param%i_min:, param%j_min:, param%k_min:), INTENT(OUT) :: RQ
@@ -90,7 +90,7 @@ CONTAINS
         
     END SUBROUTINE GetRHSDiffusion
 
-    !> @todo docu
+    !> Initialize the diffusion module
     SUBROUTINE InitializeDiffusion(i_min, i_max, j_min, j_max, k_min, k_max, nu)
     
         DOUBLE PRECISION, INTENT(IN) :: nu        

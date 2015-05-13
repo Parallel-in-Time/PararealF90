@@ -1,5 +1,5 @@
 !>
-!! @todo docu
+!! This module handles the ghost-cells at the boundaries.
 !!
 MODULE boundaries
 
@@ -8,18 +8,16 @@ IMPLICIT NONE
 PRIVATE
 PUBLIC :: periodic, InitializeBoundaries, FinalizeBoundaries
 
-!> @todo docu
 TYPE boundaries_parameter
     INTEGER :: i_max, j_max, k_max
 END TYPE
 
-!> @todo docu
 TYPE(boundaries_parameter) :: param
 
 CONTAINS
 
-    !> @todo docu
-    !! @param[inout]
+    !> Fills the ghost-cells with values representing a periodic boundary condition.
+    !! @param[inout] Q A 3D array where the interior values are up to date. The function then fills the values at the boundaries.
     SUBROUTINE periodic(Q)
         DOUBLE PRECISION, DIMENSION(-2:,-2:,-2:), INTENT(INOUT) :: Q
         
@@ -89,7 +87,7 @@ CONTAINS
                          
     END SUBROUTINE periodic
 
-    !> @todo docu
+    !> Initializes the boundaries module
     SUBROUTINE InitializeBoundaries(i_max, j_max, k_max)
         INTEGER, INTENT(IN) :: i_max, j_max, k_max
         
@@ -99,7 +97,7 @@ CONTAINS
         
     END SUBROUTINE InitializeBoundaries
 
-    !> @todo docu
+    !> Finalize the boundary module
     SUBROUTINE FinalizeBoundaries
       ! Nothing to DEALLOCATE here.
     END SUBROUTINE FinalizeBoundaries
