@@ -1,7 +1,5 @@
 !>
-!! @todo complete docu
-!!
-!! \\( q_t + f(q)_x + g(q)_y + h(q)_z = 0 \\)
+!! Provides routines to update fluxes based on a first order upwind discretization.
 MODULE upwind
 
 USE omp_lib,       only : omp_get_thread_num
@@ -16,7 +14,8 @@ PUBLIC :: UpwindFluxes
 
 CONTAINS
 
-    !> @todo complete docu
+    !> Updates the fluxes in x, y and z direction for the provided solution. Note that the fluxes are not returned here.
+    !> @param[in] Q Solution
     SUBROUTINE UpwindFluxes(Q)
     
         DOUBLE PRECISION, DIMENSION(param%i_min:, param%j_min:, param%k_min:), &
@@ -29,7 +28,8 @@ CONTAINS
 
     END SUBROUTINE UpwindFluxes
 
-    !> Updates the horizontal fluxes using first order upwinding @todo complete docu
+    !> Updates the horizontal fluxes in x direction using first order upwinding
+    !> @param[in] Q Solution
     SUBROUTINE UpdateFluxI(Q)
         
         DOUBLE PRECISION, DIMENSION(param%i_min:, param%j_min:, param%k_min:), &
@@ -70,8 +70,9 @@ CONTAINS
         END DO
                 
     END SUBROUTINE UpdateFluxI
-    
-    !> Update vertical fluxes using first order upwinding @complete docu
+
+    !> Updates the horizontal fluxes in y direction using first order upwinding
+    !> @param[in] Q Solution
     SUBROUTINE UpdateFluxJ(Q)
     
         DOUBLE PRECISION, DIMENSION(param%i_min:, param%j_min:, param%k_min:), &
@@ -106,7 +107,8 @@ CONTAINS
     
     END SUBROUTINE UpdateFluxJ
 
-    !> @todo docu
+    !> Updates the horizontal fluxes in z direction using first order upwinding
+    !> @param[in] Q Solution
     SUBROUTINE UpdateFluxK(Q)
     
         DOUBLE PRECISION, DIMENSION(param%i_min:, param%j_min:, param%k_min:), &

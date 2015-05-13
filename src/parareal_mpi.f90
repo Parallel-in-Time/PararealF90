@@ -1,10 +1,12 @@
 !>
-!! @todo docu
+!! Provides an MPI-based implementation of the parallel-in-time Parareal method introduced by Lions, Maday and Turinici in 2001.
+!! Denote the fine propagator by \\( F \\) and the coarse propagator by \\( G \\). Then the Parareal iteration reads
 !!
 !! \\( y^{k+1}_{n+1} = G(y^{k+1}_{n}) + F(y^k_n) - G(y^k_n) \\)
+!!
+!! Here, communication of \\( y^{k+1}_{n+1} \\) to the next time slice is done via MPI.
 MODULE parareal_mpi
 
-!USE omp_lib
 USE timestepper, only : Euler, Rk3Ssp, InitializeTimestepper, FinalizeTimestepper
 
 IMPLICIT NONE
@@ -14,35 +16,35 @@ INCLUDE 'mpif.h'
 PRIVATE
 PUBLIC :: InitializePararealMPI, FinalizePararealMPI, PararealMPI
 
-!> @todo docu
-INTEGER, PARAMETER :: Nthreads = 1, & ! In MPI version, don't need multiple threads
-    order_adv_c = 1, order_diff_c = 2, order_adv_f = 5, order_diff_f = 4
+!> For the MPI version, each MPI process runs only a single OpenMP thread
+INTEGER, PARAMETER :: Nthreads = 1
 
-!> @todo docu
+INTEGER, PARAMETER :: order_adv_c = 1, order_diff_c = 2, order_adv_f = 5, order_diff_f = 4
+
+!> Three buffers for the solution used in Parareal
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:) :: Q, GQ, Qend
 
-!> @todo docu
+!> Time step of the coarse propagator
 DOUBLE PRECISION :: dt_coarse
 
-!> @todo docu
+!> Time step of the fine propagator
 DOUBLE PRECISION :: dt_fine
 
-!> @todo docu
+!> Length of each time slice
 DOUBLE PRECISION :: dt_slice
 
-!> @todo docu
+!> Start point of the time slice handled by this MPI process
 DOUBLE PRECISION :: tstart_myslice
 
-!> @todo docu
+!> End time of the time slice handled by this MPI process
 DOUBLE PRECISION :: tend_myslice
 
 ! Internal variables to be used for timers.
 DOUBLE PRECISION :: timer_coarse, timer_fine, timer_comm, timer_all, T0, T1
 
-!> @todu docu
+! A number of MPI-related status variables
 INTEGER :: mpi_thread_provided, dim, ierr, k, Nproc, myrank, recv_status(MPI_STATUS_SIZE), send_status(MPI_STATUS_SIZE)
 
-!> @todo docu
 CHARACTER(len=64) :: filename
 
 
@@ -54,7 +56,7 @@ TYPE(parareal_parameter) :: param
 
 CONTAINS
 
-  !> @todo docu
+  !> Initialize the Parareal module and all used modules
   SUBROUTINE InitializePararealMPI(nu, Nx, Ny, Nz)
     DOUBLE PRECISION, INTENT(IN) :: nu
     INTEGER, INTENT(IN) :: Nx, Ny, Nz
@@ -72,7 +74,7 @@ CONTAINS
 
   END SUBROUTINE InitializePararealMPI
 
-  !> @todo docu
+  !> Finalize Parareal and used modules
   SUBROUTINE FinalizePararealMPI()
     DEALLOCATE(Q)
     DEALLOCATE(GQ)
@@ -80,7 +82,14 @@ CONTAINS
     CALL FinalizeTimestepper()
   END SUBROUTINE FinalizePararealMPI
 
-  !> @todo docu
+  !> Key routine to run Parareal with MPI.
+  !> @param[in] Q_initial Initial value
+  !> @param[in] Tend Final simulation time
+  !> @param[in] N_fine Number of fine steps *per time slice*
+  !> @param[in] N_coarse Number of coarse steps *per time slice*
+  !> @param[in] Niter Number of Parareal iterations
+  !> @param[in] do_io Whether to perform IO or not
+  !> @param[in] be_verbose If true, Parareal gives several status messages that can aid in debugging
   SUBROUTINE PararealMPI(Q_initial, Tend, N_fine, N_coarse, Niter, dx, dy, dz, do_io, be_verbose)
 
     DOUBLE PRECISION, DIMENSION(-2:,-2:,-2:), INTENT(INOUT) :: Q_initial

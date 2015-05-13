@@ -1,5 +1,5 @@
 !>
-!! @todo docu
+!! This module computes the advective manages the buffers that store the advective fluxes in x, z and z direction. It is used by the modules for upwind and weno5 discretization of the advective part \\( F_{\\text{adv}} \\) to avoid double allocation.
 !!
 MODULE fluxes
 
@@ -7,37 +7,36 @@ USE omp_lib, only : omp_get_num_threads
 
 IMPLICIT NONE
 
-!> @todo docu
+!> A collection of parameters needed by the advection modules
 TYPE advection_parameter
     INTEGER :: Nthreads, i_start, i_end, j_start, j_end, k_start, k_end
     INTEGER :: i_min, i_max, j_min, j_max, k_min, k_max
     LOGICAL :: echo_on
 END TYPE
 
-!> @todo docu
 TYPE(advection_parameter) :: param
 
-!> Define buffers storing the interface fluxes in x, y and z direction @todo docu
+!> Buffer for interface fluxes in x direction
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: FluxI
 
-!> @todo docu
+!> Buffer for interface fluxes in y direction
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: FluxJ
 
-!> @todo docu
+!> Buffer for interface fluxes in z direction
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: FluxK
 
-!> Define buffers storing the horizontal cell and interface flux values @todo add docu
+!> Buffer for cell values in x direction
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: FluxI_Cell
 
-!> @todo docu
+!> Buffer for cell values in y direction
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: FluxJ_Cell
 
-!> @todo docu
+!> Buffer for cell values in z direction
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: FluxK_Cell
 
 CONTAINS
 
-    !> Initialization routine
+    !> Initializes the module and allocates the needed buffers.
     SUBROUTINE InitializeFluxes(i_min, i_max, j_min, j_max, k_min, k_max, Nthreads, echo_on)
     
         INTEGER, INTENT(IN) :: Nthreads, i_min, i_max, j_min, j_max, k_min, k_max
@@ -86,7 +85,7 @@ CONTAINS
         
     END SUBROUTINE InitializeFluxes
 
-    !>
+    !> Deallocates buffers and finalizes module.
     SUBROUTINE FinalizeFluxes()
 
         ! Deallocate all buffers in this module

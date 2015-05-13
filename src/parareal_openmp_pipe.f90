@@ -14,16 +14,16 @@ PUBLIC :: InitializePararealOpenMP_Pipe, FinalizePararealOpenMP_Pipe, PararealOp
 !> @todo docu
 INTEGER, PARAMETER :: order_adv_c = 1, order_diff_c = 2, order_adv_f = 5, order_diff_f = 4
 
-!> @todo docu
+!> Three solution buffers used in Parareal
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: Q, GQ, Qend
 
-!> @todo docu
+!> Coarse time step
 DOUBLE PRECISION :: dt_coarse
 
-!> @todo docu
+!> Fine time step
 DOUBLE PRECISION :: dt_fine
 
-!> @todo docu
+!> Lenth of time slice
 DOUBLE PRECISION :: dt_slice
 
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: tstart_myslice, tend_myslice, &
@@ -34,7 +34,7 @@ DOUBLE PRECISION :: timer_all, T0, T1
 
 INTEGER :: k, Nthreads, nt, thread_nr
 
-!> @todo docu
+!> For the OpenMP version with pipelining, the communication/update steps need to be manually coordinated with OpenMP locks
 INTEGER(kind=OMP_LOCK_KIND), DIMENSION(:), ALLOCATABLE :: nlocks
 
 CHARACTER(len=64) :: filename
@@ -91,7 +91,14 @@ CONTAINS
 
   END SUBROUTINE InitializePararealOpenMP_Pipe
 
-  !> @todo docu
+  !> Key routine to run Parareal with OpenMP and pipelining.
+  !> @param[in] Q_initial Initial value
+  !> @param[in] Tend Final simulation time
+  !> @param[in] N_fine Number of fine steps *per time slice*
+  !> @param[in] N_coarse Number of coarse steps *per time slice*
+  !> @param[in] Niter Number of Parareal iterations
+  !> @param[in] do_io Whether to perform IO or not
+  !> @param[in] be_verbose If true, Parareal gives several status messages that can aid in debugging
   SUBROUTINE PararealOpenMP_Pipe(Q_initial, Tend, N_fine, N_coarse, Niter, dx, dy, dz, do_io, be_verbose)
     DOUBLE PRECISION, DIMENSION(-2:,-2:,-2:), INTENT(INOUT) :: Q_initial
     DOUBLE PRECISION,                         INTENT(IN)    :: Tend, dx, dy, dz
@@ -245,7 +252,6 @@ CONTAINS
 
     IF(do_io) THEN
         DO nt=0,Nthreads-1
-            CALL OMP_DESTROY_LOCK(nlocks(nt))
             WRITE(filename, '(A,I0.2,A,I0.2,A,I0.2,A)') 'q_final_', Niter, '_', nt, '_', Nthreads, '_openmp_pipe.dat'
             OPEN(unit=nt, FILE=filename, ACTION='write', STATUS='replace')
             WRITE(nt, '(F35.25)') Qend(1:param%Nx, 1:param%Ny, 1:param%Nz, nt)
@@ -265,7 +271,7 @@ CONTAINS
 
   END SUBROUTINE PararealOpenMP_Pipe
 
-  !> @todo docu
+  !> Finalize module and deallocate buffers
   SUBROUTINE FinalizePararealOpenMP_Pipe()
       CALL FinalizeTimestepper()
       DEALLOCATE(Q)
@@ -276,6 +282,9 @@ CONTAINS
       DEALLOCATE(timer_comm)
       DEALLOCATE(tstart_myslice)
       DEALLOCATE(tend_myslice)
+      DO nt=0,Nthreads-1
+        CALL OMP_DESTROY_LOCK(nlocks(nt))
+      END DO
       DEALLOCATE(nlocks)
   END SUBROUTINE FinalizePararealOpenMP_Pipe
 

@@ -33,6 +33,7 @@ CONTAINS
         param%k_start = k_start
         param%k_end   = k_end
 
+        ! Update fluxes according to selected order
         SELECT CASE (order)
         
             CASE (1)
@@ -44,7 +45,7 @@ CONTAINS
                 STOP
         END SELECT
                 
-       ! Compute flux divergence
+       ! Right hand side \\( F_{\\text{adv}} \\) is given by the flux divergence
         CALL GetFluxDivergence(RQ, dx, dy, dz)
 
     END SUBROUTINE GetRHSAdvection

@@ -1,15 +1,6 @@
 !>
-!! @todo complete docu
+!! Updates fluxes using a fifth order WENO5 scheme
 !!
-!! \\( q_t + f(q)_x + g(q)_y + h(q)_z = 0 \\)
-!!
-!! depending on preprocessor flag
-!!
-!! \\( f(q) = g(q) = h(q) = c q \\) (linear advection)
-!!
-!! or
-!!
-!! \\( f(q) = g(q) = h(q) = \\frac{1}{2} q^2 \\) (nonlinear advection)
 MODULE weno5
 
 USE omp_lib, only : omp_get_thread_num
@@ -22,29 +13,25 @@ IMPLICIT NONE
 PRIVATE
 PUBLIC :: WenoFluxes
 
-!> @todo add docu
+! The following parameter are weights and coefficients used in the WENO5 scheme
+
 DOUBLE PRECISION, PARAMETER, DIMENSION(3) :: weights_plus = (/ 0.3_8, 0.6_8, 0.1_8 /)
 
-!> @todo add docu
 DOUBLE PRECISION, PARAMETER, DIMENSION(5) :: stencil_weights = (/ 2.0_8, 5.0_8, -1.0_8, -7.0_8, 11.0_8 /)*(1.0_8/6.0_8)
 
-!> @todo add docu
 DOUBLE PRECISION, PARAMETER :: coeff_1 = 13.0_8/12.0_8
 
-!> @todo add docu
 DOUBLE PRECISION, PARAMETER :: coeff_2 = 1.0_8/4.0_8
 
-!> @todo add docu
 DOUBLE PRECISION, PARAMETER :: weno_tol = 1.0e-6_8
 
-!> @todo add docu
 DOUBLE PRECISION, PARAMETER :: weno_n   = 2.0_8
 
 CONTAINS
 
     !>
-    !! @todo add docu
-    !! @param[in]
+    !! Updates the fluxes based on a WENO5 scheme
+    !! @param[in] Q Solution
     SUBROUTINE WenoFluxes(Q)
     
         DOUBLE PRECISION, DIMENSION(param%i_min:, param%j_min:, param%k_min:), INTENT(IN)  :: Q
@@ -75,13 +62,13 @@ CONTAINS
     END SUBROUTINE WenoFluxes
         
     !>
-    !! @todo add docu
-    !! @param[in] Qcell
-    !! @param[in] max_vel
+    !! Updates flux in x direction
+    !! @param[in] Qcell Buffer with cell values
+    !! @param[in] max_vel Maximum velocity, used for flux splitting
     SUBROUTINE UpdateFluxI(Qcell, max_vel)
         
         DOUBLE PRECISION, DIMENSION(param%i_min:,param%j_min:,param%k_min:), INTENT(IN) :: Qcell
-        DOUBLE PRECISION,                                                                      INTENT(IN) :: max_vel
+        DOUBLE PRECISION,                                                    INTENT(IN) :: max_vel
         
         DOUBLE PRECISION, DIMENSION(6) :: Qcell_local, Fcell_local
         INTEGER :: i, j, k, thread_nr
@@ -129,13 +116,13 @@ CONTAINS
     END SUBROUTINE UpdateFluxI
     
     !>
-    !! @todo add docu
-    !! @param[in] Qcell
-    !! @param[in] max_vel
+    !! Updates flux in y direction
+    !! @param[in] Qcell Buffer with cell values
+    !! @param[in] max_vel Maximum velocity, used for flux splitting
     SUBROUTINE UpdateFluxJ(Qcell, max_vel)
     
         DOUBLE PRECISION, DIMENSION(param%i_min:,param%j_min:,param%k_min:), INTENT(IN) :: Qcell
-        DOUBLE PRECISION,                                                                      INTENT(IN) :: max_vel
+        DOUBLE PRECISION,                                                    INTENT(IN) :: max_vel
         
         DOUBLE PRECISION, DIMENSION(6) :: Qcell_local, Fcell_local
         INTEGER :: i, j, k, thread_nr
@@ -176,13 +163,13 @@ CONTAINS
     END SUBROUTINE UpdateFluxJ
 
     !>
-    !! @todo add docu
-    !! @param[in] Qcell
-    !! @param[in] max_vel
+    !! Updates flux in z direction
+    !! @param[in] Qcell Buffer with cell values
+    !! @param[in] max_vel Maximum velocity, used for flux splitting
     SUBROUTINE UpdateFluxK(Qcell, max_vel)
 
         DOUBLE PRECISION, DIMENSION(param%i_min:,param%j_min:,param%k_min:), INTENT(IN) :: Qcell
-        DOUBLE PRECISION,                                                              INTENT(IN) :: max_vel
+        DOUBLE PRECISION,                                                    INTENT(IN) :: max_vel
         
         DOUBLE PRECISION, DIMENSION(6) :: Qcell_local, Fcell_local
         INTEGER :: i, j, k, thread_nr
@@ -231,11 +218,11 @@ CONTAINS
 !
     
     !> Moves all values in Qcell_local and Fcell_local one index down and inserts new
-    !! values at index 6. @todo complete docu
-    !! @param[in] Qcell_new
-    !! @param[in] Fcell_new
-    !! @param[inout] Qcell_local
-    !! @param[inout] Fcell_local
+    !! values at index 6.
+    !! @param[in] Qcell_new New cell value to be added
+    !! @param[in] Fcell_new New flux value to be added
+    !! @param[inout] Qcell_local Old array of cell values to which Qcell_new will be added
+    !! @param[inout] Fcell_local Old array of flux values to which Fcell_new will be added
     PURE SUBROUTINE ShiftLocalValues(Qcell_local, Fcell_local, Qcell_new, Fcell_new)
 
     DOUBLE PRECISION, DIMENSION(6), INTENT(INOUT) :: Qcell_local, Fcell_local
@@ -255,10 +242,11 @@ CONTAINS
                 
     END SUBROUTINE ShiftLocalValues
     
-    !> This routine performs the actual reconstruction of the interface values
-    !! @todo complete doc
-    !! @param[in]
-    !! @param[out] Fint
+    !> This routine performs the actual reconstruction of an interface value
+    !! @param[in] Qcell_local Six cell values, three to each side of the interface
+    !! @param[in] Fcell_local Six flux values, three to each side of the interface
+    !! @param[in] local_vel Local velocity to be used for possible local flux splitting
+    !! @param[out] Fint Reconstructed interface value
     FUNCTION ReconstructInterfaceValue(Qcell_local, Fcell_local, local_vel) RESULT(Fint)
     
         DOUBLE PRECISION, DIMENSION(6) :: Qcell_local, Fcell_local
@@ -281,7 +269,7 @@ CONTAINS
         
         CONTAINS
         
-            !> Local Lax-Friedrichs flux-splitting @todo complete docu
+            !> Local Lax-Friedrichs flux-splitting
             PURE SUBROUTINE GetLocalFluxSplit(Qcell_local, Fcell_local, local_vel, Fcell_plus, Fcell_minus)
     
                 DOUBLE PRECISION, DIMENSION(6), INTENT(IN)  :: Qcell_local, Fcell_local
@@ -295,7 +283,7 @@ CONTAINS
             END SUBROUTINE GetLocalFluxSplit
     
             !> In this routine, the WENO magic happens: The three candidate stencils are
-            !! calculated, the smoothness measures beta and then the final weights @todo complete docu
+            !! calculated, the smoothness measures beta and then the final weights
             PURE SUBROUTINE GetWenoInterfaceValue(Fcell_plus, Fcell_minus, Fint_plus, Fint_minus)
         
                 DOUBLE PRECISION, DIMENSION(5), INTENT(IN)  :: Fcell_plus, Fcell_minus

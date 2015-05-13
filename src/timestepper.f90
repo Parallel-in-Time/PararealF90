@@ -1,8 +1,17 @@
 !>
-!! @todo docu
+!! This module provides two time stepping methods to solve the initial value problem
 !!
-!! \\( q_t = F(q) \\)
+!! \\( q_t = F(q) = F_{\\text{adv}}(q) + F_{\\text{diff}}(q) \\)
 !!
+!! Depending on the preprocessor flag *linear*, the right hand side stems either from Burger's equation
+!!
+!! \\( F(q) = -q \\cdot \\nabla q + \\nu \\Delta q \\)
+!!
+!! or a linear advection diffusion equation
+!!
+!! \\( F(q) = -\\nabla q + \\nu \Delta q \\)
+!!
+!! The contributions to \\( F \\) from advection and diffusion are computed in the corresponding modules.
 MODULE timestepper
 
 USE omp_lib,   only : omp_get_thread_num
@@ -16,20 +25,26 @@ PRIVATE
 PUBLIC :: Euler, Rk3Ssp, InitializeTimestepper, FinalizeTimestepper
 
 
-!> @todo docu
-DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: Q_aux, FQ
+!> Auxiliary buffer holding intermediate solutions in the stage computations for the 3rd order RK-SSP
+DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: Q_aux
 
-!> @todo docu
+!> Buffer holding the values \\( F(q) \\)
+DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: FQ
+
 TYPE timestepper_parameter
     INTEGER :: i_max, j_max, k_max
 END TYPE
 
-!> @todo docu
 TYPE(timestepper_parameter) :: param
 
 CONTAINS
 
-    !> @todo docu
+    !> Forward Euler method. In every step, it computes \\( F_{\\text{adv}} \\) and \\( F_{\\text{diff}} \\) and performs the update
+    !> \\( Q_{n+1} = Q_{n} + \\Delta t F(Q_n) \\).
+    !> @param[inout] Q Initial value which is then overwritten with the solution after completing the time stepping
+    !> @param[in] T0 Starting time
+    !> @param[in] T1 Final time
+    !> @param[in] Nsteps Number of time steps to take from T0 to T1
     SUBROUTINE Euler(Q, T0, T1, Nsteps, dx, dy, dz, order_adv, order_diff)
     
         DOUBLE PRECISION, DIMENSION(-2:,-2:,-2:), INTENT(INOUT) :: Q
@@ -44,10 +59,11 @@ CONTAINS
         
         DO n=1,Nsteps
 
-            CALL periodic(Q)           
+            CALL periodic(Q)
 
             CALL GetRHSAdvection(Q, FQ(:,:,:,thread_nr), dx, dy, dz, 1, param%i_max, 1, param%j_max, 1, param%k_max, order_adv)
             CALL GetRHSDiffusion(Q, FQ(:,:,:,thread_nr), dx, dy, dz, 1, param%i_max, 1, param%j_max, 1, param%k_max, order_diff)
+
             Q = Q + dt*FQ(:,:,:,thread_nr)
             
         END DO
@@ -55,8 +71,11 @@ CONTAINS
     END SUBROUTINE Euler
     
     !> Third order strong stability preserving Runge-Kutta scheme from Shu and Osher (1988),
-    !! see e.g. Durran, "Numerical Methods for Fluid Dynamics", pp. 55f
-    !! @todo add docu
+    !> see e.g. Durran, "Numerical Methods for Fluid Dynamics", pp. 55f
+    !> @param[inout] Q Initial value which is then overwritten with the solution after completing the time stepping
+    !> @param[in] T0 Starting time
+    !> @param[in] T1 Final time
+    !> @param[in] Nsteps Number of time steps to take from T0 to T1
     SUBROUTINE Rk3Ssp(Q, T0, T1, Nsteps, dx, dy, dz, order_adv, order_diff)
     
         DOUBLE PRECISION, DIMENSION(:,:,:), INTENT(INOUT) :: Q
@@ -93,7 +112,7 @@ CONTAINS
             
     END SUBROUTINE Rk3Ssp
 
-    !> @todo docu
+    !> Initialize the time stepper. Also initializes the modules required to compute the right hand side \\( F(q) \\)
     SUBROUTINE InitializeTimestepper(nu, i_max, j_max, k_max, nthreads)
     
         DOUBLE PRECISION, INTENT(IN) :: nu
@@ -122,7 +141,7 @@ CONTAINS
         
     END SUBROUTINE InitializeTimestepper
 
-    !> @todo docu
+    !> Finalize the time stepper and all used modules.
     SUBROUTINE FinalizeTimestepper()
             CALL FinalizeAdvection
             CALL FinalizeBoundaries

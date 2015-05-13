@@ -1,5 +1,6 @@
 !>
-!! @todo docu
+!! A OpenMP based implementation of the parallel-in-time Parareal method. Here, solutions on all time slices are hold in shared memory so that a thread computing a time slice can fetch the update 
+!! computed by its predecessor directly from the shared memory without the need for message passing.
 !!
 MODULE parareal_openmp
 
@@ -11,22 +12,22 @@ IMPLICIT NONE
 PRIVATE
 PUBLIC :: InitializePararealOpenMP, FinalizePararealOpenMP, PararealOpenMP
 
-!> @todo docu
+!> Fixed orders of spatial discretization
 INTEGER, PARAMETER :: order_adv_c = 1, order_diff_c = 2, order_adv_f = 5, order_diff_f = 4
 
-!> @todo docu
+!> Three temporary buffers needed in Parareal. The last dimension corresponds to the number of threads so that each thread operators on its own part of a global solution buffer
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: Q, GQ, Qend
 
-!> @todo docu
+!> Coarse time step
 DOUBLE PRECISION :: dt_coarse
 
-!> @todo docu
+!> Fine time step
 DOUBLE PRECISION :: dt_fine
 
-!> @todo docu
+!> Time slice length
 DOUBLE PRECISION :: dt_slice
 
-!> @todo docu
+!> Arrays holding the start and end times of each time slice
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: tstart_myslice, tend_myslice, timer_fine
 
 ! Internal variables to be used for timers
@@ -44,8 +45,8 @@ TYPE(parareal_parameter) :: param
 
 CONTAINS
 
-  !> @todo docu
-  !!
+  !>
+  !! Initialize and allocate required memory
   SUBROUTINE InitializePararealOpenMP(nu, Nx, Ny, Nz)
     DOUBLE PRECISION, INTENT(IN) :: nu
     INTEGER, INTENT(IN) :: Nx, Ny, Nz
@@ -79,9 +80,14 @@ CONTAINS
 
   END SUBROUTINE InitializePararealOpenMP
 
-
-  !>
-  !! @todo docu
+  !> Key routine to run Parareal with OpenMP and no pipelining
+  !> @param[in] Q_initial Initial value
+  !> @param[in] Tend Final simulation time
+  !> @param[in] N_fine Number of fine steps *per time slice*
+  !> @param[in] N_coarse Number of coarse steps *per time slice*
+  !> @param[in] Niter Number of Parareal iterations
+  !> @param[in] do_io Whether to perform IO or not
+  !> @param[in] be_verbose If true, Parareal gives several status messages that can aid in debugging
   SUBROUTINE PararealOpenMP(Q_initial, Tend, N_fine, N_coarse, Niter, dx, dy, dz, do_io, be_verbose)
 
     DOUBLE PRECISION, DIMENSION(-2:,-2:,-2:), INTENT(INOUT) :: Q_initial
@@ -161,6 +167,8 @@ CONTAINS
         
         ! Run fine integrator
         ! Q(nt) <- F(y^(k-1)_nt)
+
+        ! NOTE: In the non-pipelined version, only the fine propagator F is parallelized
         
         !$OMP PARALLEL DO schedule(static) private(T0, T1)
         DO nt=0,Nthreads-1
@@ -236,8 +244,8 @@ CONTAINS
 
   END SUBROUTINE PararealOpenMP
 
-  !> @todo docu
-  !!
+  !>
+  !! Finalize and deallocate buffers
   SUBROUTINE FinalizePararealOpenMP()
       CALL FinalizeTimestepper()
       DEALLOCATE(Q)
