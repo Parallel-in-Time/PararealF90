@@ -1,5 +1,7 @@
 !>
-!! @todo docu
+!! A OpenMP based implementation of the parallel-in-time Parareal method with pipelining Here, solutions on all time slices are hold in shared memory so that a thread computing a time slice can 
+!! fetch the update computed by its predecessor directly from the shared memory without the need for message passing. While in the non-pipelined version only the fine propagator is evaluated in
+!! parallel, here the different threads work more like processes in the MPI implementation. OpenMP locks are set and released manually to ensure the necessary synchronization.
 !!
 MODULE parareal_openmp_pipe
 
@@ -11,7 +13,7 @@ IMPLICIT NONE
 PRIVATE
 PUBLIC :: InitializePararealOpenMP_Pipe, FinalizePararealOpenMP_Pipe, PararealOpenMP_Pipe
 
-!> @todo docu
+!> Fixed orders of spatial discretization
 INTEGER, PARAMETER :: order_adv_c = 1, order_diff_c = 2, order_adv_f = 5, order_diff_f = 4
 
 !> Three solution buffers used in Parareal
@@ -47,7 +49,7 @@ TYPE(parareal_parameter) :: param
 
 CONTAINS
 
-  !> @todo docu
+  !> Initialize and allocate needed buffers
   SUBROUTINE InitializePararealOpenMP_Pipe(nu, Nx, Ny, Nz)
     DOUBLE PRECISION, INTENT(IN) :: nu
     INTEGER, INTENT(IN) :: Nx, Ny, Nz
