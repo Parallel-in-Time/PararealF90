@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 
 fs = 18
 
-Nprocs = numpy.array([2, 4, 6, 8, 12, 24])
+Nprocs = numpy.array([2, 4, 6, 8])
 Niter  = 2
 timers  = numpy.zeros([3,Nprocs.size])
 speedup = numpy.zeros([3,Nprocs.size])

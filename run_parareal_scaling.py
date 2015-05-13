@@ -10,7 +10,7 @@ nu, Nx, Ny, Nz, dt_fine, dt_coarse, Niter, Tend, do_io, be_verbose = get_paramet
 
 #
 generate_q0(Nx, Ny, Nz)
-Nproc = [2, 4, 6, 8, 10, 12, 24]
+Nproc = [2, 4, 6, 8]
 
 # Prepare generation of a bash script to rename RUR output...
 # These log files are identified using the JobID. Running rename.sh after all jobs are finished will
@@ -51,7 +51,7 @@ else:
 
 for np in Nproc:
   types = [ 'mpi', 'openmp', 'openmp_pipe' ]
-  #types = ['openmp_pipe']
+  #types = ['openmp']
   timemesh = generate_timemesh(0.0, Tend, dt_fine, dt_coarse, np)
   Nfine = timemesh.get('Nfine')
   Ncoarse = timemesh.get('Ncoarse')
@@ -61,11 +61,11 @@ for np in Nproc:
       build_namelist(nu, Nx, Ny, Nz, Nfine, Ncoarse, Niter, Tend, do_io, be_verbose, param_file)
       if system=="mac":
           if type=="mpi":
-              os.system("time mpirun -n "+str(np)+" bin/run_parareal_"+type+".out "+param_file)
+              os.system("time "+runcmd+" -n "+str(np)+" bin/run_parareal_"+type+".out "+param_file)
           elif type=="openmp":
-              os.system("time OMP_NUM_THREADS="+str(np)+" mpirun -n 1 bin/run_parareal_"+type+".out "+param_file)
+              os.system("time OMP_NUM_THREADS="+str(np)+" "+runcmd+" -n 1 bin/run_parareal_"+type+".out "+param_file)
           elif type=="openmp_pipe":
-              os.system("time OMP_NUM_THREADS="+str(np)+" mpirun -n 1 bin/run_parareal_"+type+".out "+param_file)
+              os.system("time OMP_NUM_THREADS="+str(np)+" "+runcmd+" -n 1 bin/run_parareal_"+type+".out "+param_file)
       else:    
           jobname="parareal_"+type+"_Np"+str(np)
           build_runscript(np, jobname, type, system, param_file)

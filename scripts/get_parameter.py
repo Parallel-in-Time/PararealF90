@@ -8,5 +8,5 @@ def get_parameter():
   Niter = 2
   Tend  = 4.0
   do_io = False
-  be_verbose = True
+  be_verbose = False
   return nu, Nx, Ny, Nz, dt_fine, dt_coarse, Niter, Tend, do_io, be_verbose
