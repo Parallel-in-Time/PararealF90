@@ -22,9 +22,10 @@ with open("system.defs", "r") as rfile:
 
 # Run serial reference
 timemesh = generate_timemesh(0.0, Tend, dt_fine, dt_coarse, 1)
-Nfine = timemesh.get('Nfine')
-Ncoarse = timemesh.get('Ncoarse')
+Nfine    = timemesh.get('Nfine')
+Ncoarse  = timemesh.get('Ncoarse')
 build_namelist(nu, Nx, Ny, Nz, Nfine, Ncoarse, Niter, Tend, do_io, be_verbose)
+
 if system=="mac":
   os.system("time bin/run_timestepper.out F")
 else:
@@ -44,11 +45,11 @@ for Niter in range(1,Nproc):
       type=types.pop(0)
       if system=="mac":
           if type=="mpi":
-              os.system("time mpirun -n "+str(Nproc)+" bin/run_parareal_"+type+".out")
+              os.system("time "+runcmd+" -n "+str(Nproc)+" bin/run_parareal_"+type+".out")
           elif type=="openmp":
-              os.system("time OMP_NUM_THREADS="+str(Nproc)+" mpirun -n 1 bin/run_parareal_"+type+".out")
+              os.system("time OMP_NUM_THREADS="+str(Nproc)+" "+runcmd+" -n 1 bin/run_parareal_"+type+".out")
           elif type=="openmp_pipe":
-              os.system("time OMP_NUM_THREADS="+str(Nproc)+" mpirun -n 1 bin/run_parareal_"+type+".out")
+              os.system("time OMP_NUM_THREADS="+str(Nproc)+" "+runcmd+" -n 1 bin/run_parareal_"+type+".out")
       else:    
           jobname="parareal_"+type+"_Np"+str(Nproc)
           build_runscript(Nproc, jobname, type, system)

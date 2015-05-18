@@ -1,4 +1,5 @@
 DEP=../obj/fluxes.o 
+DEP+=../obj/params.o
 DEP+=../obj/upwind.o 
 DEP+=../obj/weno5.o 
 DEP+=../obj/advection.o

@@ -1,36 +1,16 @@
 PROGRAM run_parareal_openmp
 
 USE parareal_openmp, only: InitializePararealOpenMP, FinalizePararealOpenMP, PararealOpenMP
+USE params, only : Nx, Ny, Nz, dx, dy, dz, nu, N_coarse, N_fine, Niter, Tend, do_io, be_verbose, ReadParameter
 
 IMPLICIT NONE
 
-!> @todo docu
-LOGICAL :: do_io, be_verbose
-
-DOUBLE PRECISION :: nu, dx, dy, dz, Tend
-
-INTEGER :: Nx, Ny, Nz, N_fine, N_coarse, Niter
-
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:) :: Q
 
-CHARACTER(len=32) :: param_file
-
-!> @todo docu
-NAMELIST /param/ nu, Nx, Ny, Nz, N_fine, N_coarse, Niter, Tend, do_io, be_verbose
 
 ! -- CODE: --
 
-CALL GET_COMMAND_ARGUMENT(1,param_file)
-
-! Read parameters
-OPEN(unit=20, FILE=param_file, ACTION='read', STATUS='old')
-READ(20,NML=param)
-CLOSE(20)
-
-! Computational domain is unit cube
-dy = DBLE(1.0)/DBLE(Ny)
-dz = DBLE(1.0)/DBLE(Nz)
-dx = DBLE(1.0)/DBLE(Nx)
+CALL ReadParameter()
 
 ! Initialize
 CALL InitializePararealOpenMP(nu, Nx, Ny, Nz)
