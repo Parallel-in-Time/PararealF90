@@ -1,7 +1,15 @@
-Parareal F90 {#mainpage}
+Parareal F90 
 ============
 
-The code is published under a (FreeBSD License](https://www.freebsd.org/copyright/freebsd-license.html].
+The code is published under a FreeBSD License, see https://www.freebsd.org/copyright/freebsd-license.html.
+
+Should you use this code or parts of it for the preparation of a scientific publication, please cite it using
+
+@misc{pararealf90,
+	title={Parareal{F90}},
+	author={Ruprecht, Daniel},
+	howpublished={https://github.com/Parallel-in-Time/PararealF90}
+}	
 
 License text
 ------------
