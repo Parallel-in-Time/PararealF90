@@ -1,5 +1,6 @@
 PROGRAM timestepper_test
 
+USE omp_lib, only : OMP_SET_NUM_THREADS
 USE timestepper, only : Euler, Rk3Ssp, InitializeTimestepper, FinalizeTimestepper
 
 IMPLICIT NONE
@@ -12,14 +13,17 @@ DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: Q, Qref
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: err_v, dt_v, convrate
 
 DOUBLE PRECISION :: dt, dx, dy, dz, x, y, z, T0, T1, Tend
-INTEGER :: Nx, Ny, Nz, Nthreads, i, j, k, Nsteps, order_adv, nt, &
+INTEGER :: Nx, Ny, Nz, i, j, k, Nsteps, order_adv, nt, &
     mpi_thread_provided, ierr, method, kk, oodt, order_diff
-    
+
+! Too many threads will slow down this test significantly
+INTEGER, PARAMETER :: Nthreads = 2
+
 INTEGER, DIMENSION(7) :: N_v = (/ 260, 270, 280, 290, 300, 310, 620 /)
 
 CALL MPI_INIT_THREAD(MPI_THREAD_FUNNELED, mpi_thread_provided, ierr)
 
-Nthreads = 1
+CALL OMP_SET_NUM_THREADS(Nthreads)
 Tend     = 0.2
 
 DO method = 1,3,2
