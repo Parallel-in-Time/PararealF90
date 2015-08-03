@@ -1,0 +1,1 @@
+#define linear 0

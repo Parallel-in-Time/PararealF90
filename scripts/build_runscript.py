@@ -1,0 +1,77 @@
+import os
+def build_runscript(Nproc, jobname, type, system, param_file="parameter.in", sample_number=-1):
+
+    # For running multiple samples with identical configuration, add #Sample_ in front of filename
+    if (sample_number==-1):
+      filename = type+"_Np"+str(Nproc)
+    else:
+      filename = str(sample_number)+"_"+type+"_Np"+str(Nproc)
+      
+    with open("submit_"+filename+".sh", "w") as myfile:
+
+        myfile.write("#!/bin/bash \n")
+        myfile.write("#SBATCH --job-name="+jobname+"\n")
+        myfile.write("#SBATCH --nodes=1 \n")
+        if type in ("mpi", "serial_f", "serial_g", "serial_f_ref"):
+            myfile.write("#SBATCH --ntasks="+str(Nproc)+"\n")
+            myfile.write("#SBATCH --ntasks-per-node="+str(Nproc)+"\n")
+            myfile.write("#SBATCH --cpus-per-task=1 \n")
+        elif type in ("openmp","openmp_pipe"):
+            myfile.write("#SBATCH --ntasks=1 \n")
+            myfile.write("#SBATCH --ntasks-per-node=1 \n")
+            if system!="cub":
+              myfile.write("#SBATCH --cpus-per-task="+str(Nproc)+"\n")
+        else:
+            print "build_runscript: Encountered unknown type: "+type
+        
+        myfile.write("#SBATCH --time=00:01:00 \n")
+        myfile.write("#SBATCH --mail-user=daniel.ruprecht@usi.ch \n")
+        myfile.write("#SBATCH --output="+jobname+".out \n")
+        myfile.write("echo JobID $SLURM_JOB_ID \n")
+        myfile.write("echo Nodes $SLURM_NNODES \n")
+        myfile.write("echo Tasks $SLURM_NTASKS \n")
+
+        cwd = os.getcwd()
+        
+        if system=="cub":
+            if type=="mpi":
+                myfile.write('OMP_NUM_THREADS=1 mpirun -n '+str(Nproc)+' '+cwd+'/bin/run_parareal_mpi.out '+param_file+' \n')
+            elif type=="openmp":
+                myfile.write('OMP_NUM_THREADS='+str(Nproc)+' mpirun -n 1 '+cwd+'/bin/run_parareal_openmp.out '+param_file+' \n')
+            elif type=="openmp_pipe":
+                myfile.write('OMP_NUM_THREADS='+str(Nproc)+' mpirun -n 1 '+cwd+'/bin/run_parareal_openmp_pipe.out '+param_file+' \n')
+            elif type in ("serial_f","serial_f_ref"):
+              myfile.write('mpirun -n 1 '+cwd+'/bin/run_timestepper.out '+param_file+' F \n')
+            elif type=="serial_g":
+              myfile.write('mpirun -n 1 '+cwd+'/bin/run_timestepper.out '+param_file+' C \n')
+    
+        elif system=="rosa":
+            if type=="mpi":
+                myfile.write('OMP_NUM_THREADS=1 aprun -n '+str(Nproc)+' -d 1 '+cwd+'/bin/run_parareal_mpi.out '+param_file+' \n')
+            elif type=="openmp":
+                myfile.write('OMP_NUM_THREADS='+str(Nproc)+' aprun -n 1 -d '+str(Nproc)+' -cc=0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30 '+cwd+'/bin/run_parareal_openmp.out '+param_file+' \n')
+            elif type=="openmp_pipe":
+                myfile.write('OMP_NUM_THREADS='+str(Nproc)+' aprun -n 1 -d '+str(Nproc)+' -cc=0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30 '+cwd+'/bin/run_parareal_openmp_pipe.out '+param_file+' \n')
+            elif type in ("serial_f","serial_f_ref"):
+                myfile.write('aprun -n 1 '+cwd+'/bin/run_timestepper.out '+param_file+' F \n')
+            elif type=="serial_g":
+                myfile.write('aprun -n 1 '+cwd+'/bin/run_timestepper.out '+param_file+' C \n')
+
+        elif system in ("daint","dora"):
+            if type=="mpi":
+                myfile.write('OMP_NUM_THREADS=1 aprun -n '+str(Nproc)+' -d 1 '+cwd+'/bin/run_parareal_mpi.out '+param_file+' \n')
+            elif type=="openmp":
+                myfile.write('OMP_NUM_THREADS='+str(Nproc)+' aprun -n 1 -d '+str(Nproc)+' '+cwd+'/bin/run_parareal_openmp.out '+param_file+' \n')
+            elif type=="openmp_pipe":
+                myfile.write('OMP_NUM_THREADS='+str(Nproc)+' aprun -n 1 -d '+str(Nproc)+' '+cwd+'/bin/run_parareal_openmp_pipe.out '+param_file+' \n')
+            elif type in ("serial_f","serial_f_ref"):
+                myfile.write('aprun -n 1 '+cwd+'/bin/run_timestepper.out '+param_file+' F \n')
+            elif type=="serial_g":
+                myfile.write('aprun -n 1 '+cwd+'/bin/run_timestepper.out '+param_file+' C \n')
+            # add command to rename generated RUR resource utilization log
+            myfile.write("echo \"mv rur.$SLURM_JOB_ID "+filename+".rur \" >> rename.sh")
+        elif system=="mac":
+            print "No SLURM on Mac, no runscript needed..."
+
+        else:
+            print "build_runscript: Encountered unknown string for system: "+system
