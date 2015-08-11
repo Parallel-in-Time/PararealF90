@@ -14,7 +14,7 @@ def extract_energy(line):
 # Main part of script
 #
 
-fs = 12
+fs = 8
 Nsamples = 50
 
 #Nprocs  = numpy.array([2, 4, 6, 8, 12, 24])

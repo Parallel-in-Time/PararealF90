@@ -2,11 +2,16 @@ import numpy
 from matplotlib import pyplot as plt
 from pylab import rcParams
 
-fs = 12
+fs = 8
 
 Nsamples   = 4
-#Nprocs     = numpy.array([2, 4, 6, 8, 10, 12, 24])
-Nprocs     = numpy.array([2, 4, 6, 8])
+
+machine = "cub"
+
+if machine=="dora":
+  Nprocs     = numpy.array([2, 4, 6, 8, 10, 12, 24])
+if machine=="cub":
+  Nprocs     = numpy.array([2, 4, 6, 8])
 Niter      = 4
 timers     = numpy.zeros([3, Nprocs.size, Nsamples])
 timers_avg = numpy.zeros([3, Nprocs.size])
@@ -85,12 +90,14 @@ ymax  = max(map(max,speedup))+1.0
 
 plt.xlabel('Number of cores', fontsize=fs)
 plt.ylabel('Speedup', fontsize=fs, labelpad=2)
-plt.xticks(Nprocs, fontsize=fs)
-#plt.xticks([2,6,10,14,18,22], fontsize=fs)
+if machine=="dora":
+  plt.xticks([2,6,10,14,18,22], fontsize=fs)
+if machine=="cub":
+  plt.xticks(Nprocs, fontsize=fs)
 
 plt.yticks(fontsize=fs)
 plt.grid(True)
-plt.legend(loc='upper left', fontsize=fs, prop={'size':fs-3})
+plt.legend(loc='upper left', fontsize=fs, prop={'size':fs})
 plt.ylim([ymin, ymax])
 
 # Saveing figure
@@ -104,26 +111,31 @@ plt.plot(Nprocs, timers_avg[1,:], linewidth=1.0, marker='<', markersize=fs, colo
 plt.plot(Nprocs, timers_avg[2,:], linewidth=1.0, marker='>', markersize=fs, color='r', label='OpenMP(pipe)')
 plt.plot(Nprocs, time_serial_f + 0.0*timers_avg[0,:], linewidth=1.0, color='k')
 nodes = list(Nprocs)
-#ymin = 0
 ymax = max(map(max,timers_avg))+1.0
  
 NN = Nprocs[ numpy.size(Nprocs) - 2] - 0.75
   
-plt.gca().annotate('Serial runtime', xy=( NN, 1.075*time_serial_f), xytext=( NN, 1.075*time_serial_f ), fontsize=fs-4)
+plt.gca().annotate('Serial runtime', xy=( NN, 1.075*time_serial_f), xytext=( NN, 1.075*time_serial_f ), fontsize=fs-1)
 plt.gca().set_yscale('log')
 #plt.gca().set_xscale('log')
 plt.xlabel('Number of cores', fontsize=fs)
 plt.ylabel('Runtime [sec.] (log-scaled)', fontsize=fs, labelpad=2)
+
 plt.tick_params(axis='both', which='major', labelsize=fs)
+
 plt.gca().set_ylim([2.0, 50.0])
-plt.gca().set_xticks(Nprocs)
-#plt.xticks([2,6,10,14,18,22], fontsize=fs)
+if machine=="dora":
+  plt.gca().set_xticks([2,6,10,14,18,22])
+if machine=="cub":
+  plt.gca().set_xticks(Nprocs)
 plt.gca().set_yticks([5, 10, 20, 50])
 plt.gca().set_yticklabels(["5", "10", "20", "50"])
 plt.gca().get_yaxis().get_major_formatter().labelOnlyBase = False
 plt.grid(True)
-#plt.legend(loc='upper right', prop={'size':fs-3})
-plt.legend(loc='lower left', prop={'size':fs-3})
+if machine=="dora":
+  plt.legend(loc='upper right', prop={'size':fs})
+if machine=="cub":
+  plt.legend(loc='lower left', prop={'size':fs})
 
 # Saveing figure
 fig.savefig('Runtime.pdf',bbox_inches='tight')

@@ -2,7 +2,8 @@
 import numpy
 from matplotlib import pyplot as plt
 from pylab import rcParams
-fs = 12
+
+fs = 8
 
 # Two functions to be used below
 def extract_memory(line):
