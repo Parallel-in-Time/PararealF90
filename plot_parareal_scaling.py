@@ -6,7 +6,7 @@ fs = 8
 
 Nsamples   = 4
 
-machine = "cub"
+machine = "dora"
 
 if machine=="dora":
   Nprocs     = numpy.array([2, 4, 6, 8, 10, 12, 24])
@@ -88,8 +88,8 @@ nodes = list(Nprocs)
 ymin  = 0
 ymax  = max(map(max,speedup))+1.0
 
-plt.xlabel('Number of cores', fontsize=fs)
-plt.ylabel('Speedup', fontsize=fs, labelpad=2)
+plt.xlabel(r'Number of cores $P$', fontsize=fs)
+plt.ylabel(r'Speedup $s(P)$', fontsize=fs, labelpad=2)
 if machine=="dora":
   plt.xticks([2,6,10,14,18,22], fontsize=fs)
 if machine=="cub":
@@ -118,7 +118,7 @@ NN = Nprocs[ numpy.size(Nprocs) - 2] - 0.75
 plt.gca().annotate('Serial runtime', xy=( NN, 1.075*time_serial_f), xytext=( NN, 1.075*time_serial_f ), fontsize=fs-1)
 plt.gca().set_yscale('log')
 #plt.gca().set_xscale('log')
-plt.xlabel('Number of cores', fontsize=fs)
+plt.xlabel(r'Number of cores $P$', fontsize=fs)
 plt.ylabel('Runtime [sec.] (log-scaled)', fontsize=fs, labelpad=2)
 
 plt.tick_params(axis='both', which='major', labelsize=fs)
