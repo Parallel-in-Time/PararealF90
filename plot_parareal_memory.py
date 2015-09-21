@@ -72,5 +72,6 @@ ax.set_xticklabels( ('2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '22
 ax.tick_params(axis='both', which='major', labelsize=fs)
 ax.set_xlabel(r'Number of cores $P$', fontsize=fs)
 ax.set_ylabel(r'Memory in MByte $m(P)$', fontsize=fs, labelpad=5)
+ax.set_ylim([0, 350])
 plt.show()
 fig.savefig('Memory.pdf', bbox_inches='tight')
