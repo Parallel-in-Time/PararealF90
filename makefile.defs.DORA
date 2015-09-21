@@ -1,6 +1,7 @@
 F90 = ftn
 
-FCFLAGS = -cpp -O3 -fopenmp -Wtabs -ffree-line-length-none -Wall -fbackslash
+#FCFLAGS = -cpp -O3 -fopenmp -Wtabs -ffree-line-length-none -Wall -fbackslash
+FCFLAGS = -O3 -h omp -F
 
 # Flags useful for debugging
 #FCFLAGS += -g -frecursive -ffree-form -frange-check -fbacktrace -fvar-tracking -C -Wconversion -fimplicit-none -Warray-temporaries -Wcharacter-truncation -Wline-truncation -fcheck=all -fbounds-check
