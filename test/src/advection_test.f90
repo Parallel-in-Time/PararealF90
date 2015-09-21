@@ -86,7 +86,7 @@ IF (do_test(1)) THEN
             CALL OMP_SET_NUM_THREADS(nt)
 
             ! fill Q with constant random value
-            q_val = RAND(1)
+            CALL RANDOM_NUMBER(q_val)
     
             !$OMP PARALLEL DO schedule(static)
             DO i=0,nt-1
