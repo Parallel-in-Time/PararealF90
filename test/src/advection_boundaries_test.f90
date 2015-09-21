@@ -13,16 +13,31 @@ IMPLICIT NONE
 DOUBLE PRECISION, PARAMETER :: pi = 3.1415926535897932_8 ! underscore indicates rounding to real(8) precision
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:,:) :: Q, RQ, Qbc, RQbc
 DOUBLE PRECISION :: dx, dy, dz, x, y, z
-INTEGER :: Nx, Ny, Nz, i, j, k, order, Nthreads, nt, seed, time1(8)
+INTEGER :: Nx, Ny, Nz, i, j, k, order, Nthreads, nt, seed_size, clock
+INTEGER, PARAMETER :: N_min = 6, N_max = 128
 
-CALL DATE_AND_TIME(values=time1)
-seed = 1000*time1(7)+time1(8)
-CALL SRAND(seed)
+INTEGER, ALLOCATABLE, DIMENSION(:) :: seed
+REAL :: random_real
+
+CALL RANDOM_SEED(size = seed_size)
+ALLOCATE(seed(seed_size))
+CALL SYSTEM_CLOCK(count = clock)
+seed = clock +  37 * (/ (i - 1, i = 1, seed_size) /)
+CALL RANDOM_SEED(put = seed)
+DEALLOCATE(seed)
 
 ! Generate random values of Nx, Ny, Nz that are at least 6, to exclude too small domains
-Nx = 6 + INT( RAND()*128 )
-Ny = 6 + INT( RAND()*128 )
-Nz = 6 + INT( RAND()*128 )
+CALL RANDOM_NUMBER(random_real)
+Nx = N_min + FLOOR( (N_max+1-N_min)*random_real )
+CALL RANDOM_NUMBER(random_real)
+Ny = N_min + FLOOR( (N_max+1-N_min)*random_real )
+CALL RANDOM_NUMBER(random_real)
+Nz = N_min + FLOOR( (N_max+1-N_min)*random_real )
+
+write(*,*), Nx
+write(*,*), Ny
+write(*,*), Nz
+
 Nthreads = 8
 
 ALLOCATE(Q(   -2:Nx+3,-2:Ny+3,-2:Nz+3,0:Nthreads-1))
