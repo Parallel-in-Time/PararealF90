@@ -34,10 +34,6 @@ Ny = N_min + FLOOR( (N_max+1-N_min)*random_real )
 CALL RANDOM_NUMBER(random_real)
 Nz = N_min + FLOOR( (N_max+1-N_min)*random_real )
 
-write(*,*), Nx
-write(*,*), Ny
-write(*,*), Nz
-
 Nthreads = 8
 
 ALLOCATE(Q(   -2:Nx+3,-2:Ny+3,-2:Nz+3,0:Nthreads-1))
