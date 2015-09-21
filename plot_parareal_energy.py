@@ -16,7 +16,7 @@ def extract_energy(line):
 
 fs = 8
 Nsamples = 50
-Nsamples = 1
+#Nsamples = 1
 
 #Nprocs  = numpy.array([2, 4, 6, 8, 12, 24])
 Nprocs     = numpy.array([24])
@@ -52,7 +52,10 @@ for tt in range(0,3):
       f = open(filename,'r')
       line1 = f.readline()
       line2 = f.readline()
-      energy[tt,ii,jj] = extract_energy(line2)
+      if "energy_used" in line1:
+        energy[tt,ii,jj] = extract_energy(line1)
+      elif "energy_used" in line2:
+        energy[tt,ii,jj] = extract_energy(line2)
       f.close()
     # Compute averages
     for jj in range(0,Nsamples):
