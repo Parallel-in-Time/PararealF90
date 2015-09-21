@@ -8,16 +8,25 @@ DOUBLE PRECISION, PARAMETER :: pi = 3.1415926535897932_8 ! underscore indicates 
 
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:) :: Q, Qall
 DOUBLE PRECISION :: dx, dy, dz, x, y, z
-INTEGER :: Nx, Ny, Nz, seed, time1(8), i, j, k
+INTEGER :: Nx, Ny, Nz, seed_size, i, j, k, clock
+INTEGER, PARAMETER :: N_min = 25, N_max = 256
+INTEGER, ALLOCATABLE, DIMENSION(:) :: seed
+REAL random_real
 
-CALL DATE_AND_TIME(values=time1)
-seed = 1000*time1(7)+time1(8)
-CALL SRAND(seed)
+CALL RANDOM_SEED(size = seed_size)
+ALLOCATE(seed(seed_size))
+CALL SYSTEM_CLOCK(count = clock)
+seed = clock +  37 * (/ (i - 1, i = 1, seed_size) /)
+CALL RANDOM_SEED(put = seed)
+DEALLOCATE(seed)
 
 ! Create random integer values for Nx, Ny, Nz
-Nx = 25 + INT(RAND()*256)
-Ny = 25 + INT(RAND()*256)
-Nz = 25 + INT(RAND()*256)
+CALL RANDOM_NUMBER(random_real)
+Nx = N_min + FLOOR( (N_max+1-N_min)*random_real )
+CALL RANDOM_NUMBER(random_real)
+Ny = N_min + FLOOR( (N_max+1-N_min)*random_real )
+CALL RANDOM_NUMBER(random_real)
+Nz = N_min + FLOOR( (N_max+1-N_min)*random_real )
 
 dx = 1.0/DBLE(Nx)
 dy = 1.0/DBLE(Ny)

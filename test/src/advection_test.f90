@@ -25,37 +25,43 @@ DOUBLE PRECISION                                  :: dx, dy, dz, T0, T1, x, y, z
 DOUBLE PRECISION, DIMENSION(Nthreads)             :: runtimes
 INTEGER                                           :: i, j, k, r, nt, ierr, mpi_thread_provided, i_add, j_add, k_add
 
-INTEGER :: Nx, Ny, Nz, i_start, i_end, j_start, j_end, k_start, k_end, seed, time1(8), order
+INTEGER, ALLOCATABLE, DIMENSION(:) :: seed
+
+INTEGER :: Nx, Ny, Nz, i_start, i_end, j_start, j_end, k_start, k_end, seed_size, clock, order
+REAL :: random_real
 
 LOGICAL, PARAMETER, DIMENSION(3) :: do_test = (/ .true. , .true., .true. /)
 
 CALL MPI_INIT_THREAD(MPI_THREAD_FUNNELED, mpi_thread_provided, ierr)
 
 ! Create two random value for the offsets
-CALL DATE_AND_TIME(values=time1)
-seed = 1000*time1(7)+time1(8)
-CALL SRAND(seed)
+CALL RANDOM_SEED(size = seed_size)
+ALLOCATE(seed(seed_size))
+CALL SYSTEM_CLOCK(count = clock)
+seed = clock +  37 * (/ (i - 1, i = 1, seed_size) /)
+CALL RANDOM_SEED(put = seed)
+DEALLOCATE(seed)
 
 IF (do_test(1)) THEN
 
     ! Test for order 1 and 5
     DO order=1,5,4
 
-        Nx = 128 + INT( RAND()*128 )
-        Ny = 128 + INT( RAND()*128 )
-        Nz = 128 + INT( RAND()*128 )
+        Nx = random_integer(128, 256)
+        Ny = random_integer(128, 256)
+        Nz = random_integer(128, 256)
 
         ! Generate three random integers between -256 and +256
-        i_start = INT( RAND()*(256+1+256) )-256
-        j_start = INT( RAND()*(256+1+256) )-256
-        k_start = INT( RAND()*(256+1+256) )-256
+        i_start = random_integer(-256, 256)
+        j_start = random_integer(-256, 256)
+        k_start = random_integer(-256, 256)
 
         ! Then generate three more positive random integers between 3 and 32.
         ! In initialization, the used buffer is enlarged by these numbers to verify the routine
         ! can correctly work on a subset of the allocated buffer
-        i_add = 3 + INT( RAND()*32 )
-        j_add = 3 + INT( RAND()*32 )
-        k_add = 3 + INT( RAND()*32 )
+        i_add = random_integer(3, 32)
+        j_add = random_integer(3, 32)
+        k_add = random_integer(3, 32)
 
         ! The first test makes sure that a constant Q leads to a zero flux divergence. This is
         ! for running 1 to 8 concurrent calls to GetRHS. Also, the time is measured in some 
@@ -80,7 +86,7 @@ IF (do_test(1)) THEN
             CALL OMP_SET_NUM_THREADS(nt)
 
             ! fill Q with constant random value
-            q_val = RAND(1)
+            CALL RANDOM_NUMBER(q_val)
     
             !$OMP PARALLEL DO schedule(static)
             DO i=0,nt-1
@@ -134,21 +140,21 @@ END IF
 ! TEST 2: Make sure that if Q is constant in one dimension, so is the resulting RQ
 IF (do_test(2)) THEN
 
-        Nx = 32 + INT( RAND()*32 )
-        Ny = 32 + INT( RAND()*32 )
-        Nz = 32 + INT( RAND()*32 )
+        Nx = random_integer(32, 64)
+        Ny = random_integer(32, 64)
+        Nz = random_integer(32, 64)
 
         ! Generate three random integers between -256 and +256
-        i_start = INT( RAND()*(256+1+256) )-256
-        j_start = INT( RAND()*(256+1+256) )-256
-        k_start = INT( RAND()*(256+1+256) )-256
+        i_start = random_integer(-256, 256)
+        j_start = random_integer(-256, 256)
+        k_start = random_integer(-256, 256)
 
         ! Then generate three more positive random integers between 3 and 32.
         ! In initialization, the used buffer is enlarged by these numbers to verify the routine
         ! can correctly work on a subset of the allocated buffer
-        i_add = 3 + INT( RAND()*32 )
-        j_add = 3 + INT( RAND()*32 )
-        k_add = 3 + INT( RAND()*32 )
+        i_add = random_integer(3, 32)
+        j_add = random_integer(3, 32)
+        k_add = random_integer(3, 32)
 
         ! The first test makes sure that a constant Q leads to a zero flux divergence. This is
         ! for running 1 to 8 concurrent calls to GetRHS. Also, the time is measured in some 
@@ -295,16 +301,16 @@ IF (do_test(3)) THEN
             dz = 1.0/DBLE(Nz)
 
             ! Generate three random integers between -256 and +256
-            i_start = INT( RAND()*(256+1+256) )-256
-            j_start = INT( RAND()*(256+1+256) )-256
-            k_start = INT( RAND()*(256+1+256) )-256
+            i_start = random_integer(-256, 256)
+            j_start = random_integer(-256, 256)
+            k_start = random_integer(-256, 256)
 
-            ! Then generate three more positive random integers between 3 and 32.
+            ! Then generate three more positive random integers between 3 and 8.
             ! In initialization, the used buffer is enlarged by these numbers to verify the routine
             ! can correctly work on a subset of the allocated buffer
-            i_add = 3 + INT( RAND()*8 )
-            j_add = 3 + INT( RAND()*8 )
-            k_add = 3 + INT( RAND()*8 )
+            i_add = random_integer(3, 8)
+            j_add = random_integer(3, 8)
+            k_add = random_integer(3, 8)
 
             i_end = i_start + Nx - 1
             j_end = j_start + Ny - 1
@@ -411,5 +417,15 @@ IF(SIZE(Nx_v)==1) THEN
 ELSE
     PRINT*, '\x1B[32m[0] -- Successful: Advection module returns zero for constant input and produces expected rates of convergence. \x1B[0m'
 END IF
+
+CONTAINS
+        FUNCTION random_integer(vmin, vmax) RESULT(val)
+                INTEGER, INTENT(IN)  :: vmin, vmax
+                INTEGER              :: val
+
+                CALL RANDOM_NUMBER(random_real)
+                val = vmin + FLOOR( (vmax+1-vmin)*random_real )
+
+        END FUNCTION random_integer
 
 END PROGRAM Upwind_Test
