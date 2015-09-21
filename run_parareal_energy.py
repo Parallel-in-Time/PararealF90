@@ -11,7 +11,7 @@ nu, Nx, Ny, Nz, dt_fine, dt_coarse, Niter, Tend, do_io, be_verbose = get_paramet
 #
 generate_q0(Nx, Ny, Nz)
 Nproc = 24
-Nsamples = 40
+Nsamples = 50
 
 # Prepare generation of a bash script to rename RUR output...
 # These log files are identified using the JobID. Running rename.sh after all jobs are finished will
@@ -32,7 +32,7 @@ timemesh = generate_timemesh(0.0, Tend, dt_fine, dt_coarse, Nproc)
 Nfine = timemesh.get('Nfine')
 Ncoarse = timemesh.get('Ncoarse')
   
-for kk in range(14,15):
+for kk in range(0,Nsamples):
   types = [ 'mpi', 'openmp', 'openmp_pipe' ]
   for ii in range(0,len(types)):
       
