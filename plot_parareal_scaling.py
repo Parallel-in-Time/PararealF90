@@ -4,7 +4,7 @@ from pylab import rcParams
 
 fs = 8
 
-Nsamples   = 4
+Nsamples   = 5
 
 machine = "dora"
 
