@@ -67,9 +67,9 @@ CALL InitializeTimestepper(nu, Nx, Ny, Nz, Nthreads)
 
 ! Load initial value
 ALLOCATE(Q(-2:Nx+3,-2:Ny+3,-2:Nz+3))
-OPEN(unit=100, file='q0.dat', ACTION='read', STATUS='old')
-READ(100,'(F35.25)') Q
-CLOSE(100)
+OPEN(unit=11, file='q0.dat', ACTION='read', STATUS='old')
+READ(11,'(F35.25)') Q
+CLOSE(11)
 
 ! Output
 IF (be_verbose) THEN
