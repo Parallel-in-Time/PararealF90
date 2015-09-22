@@ -1,3 +1,5 @@
+[![][image]][link]
+
 Parareal F90 {#mainpage}
 ============
 
@@ -42,3 +44,6 @@ Who do I talk to?
 -----------------
 
 This code is written by Daniel Ruprecht.
+
+[image]:  https://zenodo.org/badge/doi/10.5281/zenodo.31288.svg
+[link]:  http://dx.doi.org/10.5281/zenodo.31288
