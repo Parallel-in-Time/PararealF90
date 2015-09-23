@@ -2,6 +2,7 @@
 import numpy
 from matplotlib import pyplot as plt
 from pylab import rcParams
+from matplotlib.patches import Ellipse, Polygon
 
 fs = 8
 
@@ -61,9 +62,10 @@ rcParams['figure.figsize'] = 6, 2.5
 fig, ax = plt.subplots()
 ind = numpy.arange(Nprocs.size)
 width = 0.2
-rects1 = ax.bar( ind,         memory[0,:], width, color='b')
-rects2 = ax.bar( ind+width,   memory[1,:], width, color='g')
-rects3 = ax.bar( ind+2*width, memory[2,:], width, color='r')
+rects1 = ax.bar( ind,         memory[0,:], width, color='b', hatch='x')
+rects2 = ax.bar( ind+width,   memory[1,:], width, color='g', hatch='\\')
+rects3 = ax.bar( ind+2*width, memory[2,:], width, color='r', hatch='-')
+
 ax.plot( ind+1.5*width, memory_fine*Nprocs, 'k-', linewidth=1.0)
 #ax.plot( ind+1.5*width, (memory_fine+3)*Nprocs, 'k-', linewidth=2.5)
 ax.legend( (rects1[0], rects2[0], rects3[3]), ('MPI','OpenMP','OpenMP(pipe)'), loc=2, fontsize=fs)
