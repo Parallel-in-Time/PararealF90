@@ -76,9 +76,9 @@ rcParams['figure.figsize'] = 6, 2.5
 fig, ax = plt.subplots()
 ind     = numpy.arange(3)
 width   = 0.5
-rects_1 = ax.bar(0.5-0.5*width, energy_avg[0,:]/1000, width, color='b', yerr = confidence[0,0]/1000, error_kw=dict(ecolor='k', lw=1, capsize=8, capthick=1.0))
-rects_2 = ax.bar(1.5-0.5*width, energy_avg[1,:]/1000, width, color='g', yerr = confidence[1,0]/1000, error_kw=dict(ecolor='k', lw=1, capsize=8, capthick=1.0))
-rects_3 = ax.bar(2.5-0.5*width, energy_avg[2,:]/1000, width, color='r', yerr = confidence[2,0]/1000, error_kw=dict(ecolor='k', lw=1, capsize=8, capthick=1.0))
+rects_1 = ax.bar(0.5-0.5*width, energy_avg[0,:]/1000, width, color='b', hatch='x',  yerr = confidence[0,0]/1000, error_kw=dict(ecolor='k', lw=1, capsize=8, capthick=1.0))
+rects_2 = ax.bar(1.5-0.5*width, energy_avg[1,:]/1000, width, color='g', hatch='\\', yerr = confidence[1,0]/1000, error_kw=dict(ecolor='k', lw=1, capsize=8, capthick=1.0))
+rects_3 = ax.bar(2.5-0.5*width, energy_avg[2,:]/1000, width, color='r', hatch='-', yerr = confidence[2,0]/1000, error_kw=dict(ecolor='k', lw=1, capsize=8, capthick=1.0))
 ax.set_xlim([0, 3])
 ax.grid()
 #ax.set_yscale('log')
