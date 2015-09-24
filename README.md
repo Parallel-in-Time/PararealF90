@@ -1,5 +1,7 @@
 [![][image]][link]
 
+A description of the code and performance results can be found [here](http://arxiv.org/abs/1509.06935).
+
 Parareal F90 {#mainpage}
 ============
 
