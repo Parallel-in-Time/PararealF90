@@ -1,6 +1,7 @@
 import numpy
 from matplotlib import pyplot as plt
 from pylab import rcParams
+from subprocess import call
 
 fs = 8
 
@@ -81,8 +82,8 @@ rcParams['figure.figsize'] = 2.5, 2.5
 
 fig = plt.figure()
 plt.plot(Nprocs, speedup[0,:], linewidth=1.0, marker='^', markersize=fs, color='b', label='MPI')
-plt.plot(Nprocs, speedup[1,:], linewidth=1.0, marker='<', markersize=fs, color='g', label='OpenMP')
-plt.plot(Nprocs, speedup[2,:], linewidth=1.0, marker='>', markersize=fs, color='r', label='OpenMP(pipe)')
+#plt.plot(Nprocs, speedup[1,:], linewidth=1.0, marker='<', markersize=fs, color='g', label='OpenMP')
+plt.plot(Nprocs, speedup[2,:], linewidth=1.0, marker='>', markersize=fs, color='r', label='OpenMP')
 plt.plot(Nprocs,   bound[0,:], linewidth=1.0, color='k', label='Bound')
 nodes = list(Nprocs)
 ymin  = 0
@@ -100,15 +101,15 @@ plt.grid(True)
 plt.legend(loc='upper left', fontsize=fs, prop={'size':fs})
 plt.ylim([ymin, ymax])
 
-# Saveing figure
-fig.savefig('Speedup.pdf',bbox_inches='tight')
-
-plt.show()
+filename = 'speedup_'+machine+'.pdf'
+fig.savefig(filename,bbox_inches='tight')
+call(["pdfcrop", filename, filename])
+#plt.show()
 
 fig = plt.figure()
 plt.plot(Nprocs, timers_avg[0,:], linewidth=1.0, marker='^', markersize=fs, color='b', label='MPI')
-plt.plot(Nprocs, timers_avg[1,:], linewidth=1.0, marker='<', markersize=fs, color='g', label='OpenMP')
-plt.plot(Nprocs, timers_avg[2,:], linewidth=1.0, marker='>', markersize=fs, color='r', label='OpenMP(pipe)')
+#plt.plot(Nprocs, timers_avg[1,:], linewidth=1.0, marker='<', markersize=fs, color='g', label='OpenMP')
+plt.plot(Nprocs, timers_avg[2,:], linewidth=1.0, marker='>', markersize=fs, color='r', label='OpenMP')
 plt.plot(Nprocs, time_serial_f + 0.0*timers_avg[0,:], linewidth=1.0, color='k')
 nodes = list(Nprocs)
 ymax = max(map(max,timers_avg))+1.0
@@ -138,9 +139,10 @@ if machine=="cub":
   plt.legend(loc='lower left', prop={'size':fs})
 
 # Saveing figure
-fig.savefig('Runtime.pdf',bbox_inches='tight')
-
-plt.show()
+filename = 'runtime_'+machine+'.pdf'
+fig.savefig(filename,bbox_inches='tight')
+call(["pdfcrop", filename, filename])
+#plt.show()
 
 print "For MPI ..."
 for i in range(0,numpy.size(Nprocs)):
