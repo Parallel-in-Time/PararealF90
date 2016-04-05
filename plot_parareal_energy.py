@@ -2,6 +2,9 @@
 import numpy
 from matplotlib import pyplot as plt
 from pylab import rcParams
+from subprocess import call
+
+compiler = 'gcc'
 
 def extract_energy(line):
   str_to_find = "energy_used', "
@@ -72,19 +75,21 @@ for tt in range(0,3):
 print ('Average energy-to-solution for MPI: %7.2f +/- %5.2f joule' % (energy_avg[0,0], confidence[0,0]))  
 print ('Average energy-to-solution for OpenMP: %7.2f +/- %5.2f joule' % (energy_avg[1,0], confidence[1,0]))  
 print ('Average energy-to-solution for OpenMP-pipe: %7.2f +/- %5.2f joule' % (energy_avg[2,0], confidence[2,0]))  
-rcParams['figure.figsize'] = 6, 2.5   
+rcParams['figure.figsize'] = 2.5, 2.5   
 fig, ax = plt.subplots()
 ind     = numpy.arange(3)
 width   = 0.5
 rects_1 = ax.bar(0.5-0.5*width, energy_avg[0,:]/1000, width, color='b', hatch='x',  yerr = confidence[0,0]/1000, error_kw=dict(ecolor='k', lw=1, capsize=8, capthick=1.0))
-rects_2 = ax.bar(1.5-0.5*width, energy_avg[1,:]/1000, width, color='g', hatch='\\', yerr = confidence[1,0]/1000, error_kw=dict(ecolor='k', lw=1, capsize=8, capthick=1.0))
-rects_3 = ax.bar(2.5-0.5*width, energy_avg[2,:]/1000, width, color='r', hatch='-', yerr = confidence[2,0]/1000, error_kw=dict(ecolor='k', lw=1, capsize=8, capthick=1.0))
-ax.set_xlim([0, 3])
+rects_2 = ax.bar(1.5-0.5*width, energy_avg[2,:]/1000, width, color='r', hatch='\\', yerr = confidence[1,0]/1000, error_kw=dict(ecolor='k', lw=1, capsize=8, capthick=1.0))
+#rects_3 = ax.bar(2.5-0.5*width, energy_avg[2,:]/1000, width, color='r', hatch='-', yerr = confidence[2,0]/1000, error_kw=dict(ecolor='k', lw=1, capsize=8, capthick=1.0))
+ax.set_xlim([0, 2])
 ax.grid()
 #ax.set_yscale('log')
 plt.tick_params(axis='both', which='major', labelsize=fs)
-ax.set_xticks([0.5, 1.5, 2.5])
-ax.set_xticklabels( ('MPI', 'OpenMP', 'OpenMP(pipe)') , fontsize=fs)
+ax.set_xticks([0.5, 1.5])
+ax.set_xticklabels( ('MPI', 'OpenMP') , fontsize=fs)
 ax.set_ylabel('Energy-to-solution (kilojoule)', fontsize=fs, labelpad=15)
-fig.savefig('Energy.pdf', bbox_inches='tight')
-plt.show()
+filename = 'energy_dora_'+compiler+'.pdf'
+fig.savefig(filename, bbox_inches='tight')
+call(["pdfcrop", filename, filename])
+#plt.show()
