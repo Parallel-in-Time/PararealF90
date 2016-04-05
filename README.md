@@ -1,9 +1,29 @@
-[![][image]][link]
 
 Parareal F90 {#mainpage}
 ============
 
-This is a lightweight standalone implementation of Parareal solving 3D Burger's equation using a forward Euler and a RK3SSP method as coarse and fine integrators. It contains three different implementations of Parareal, one based on MPI, one using OpenMP without pipelining and one using OpenMP with pipelining. All three versions compute the same result, the purpose of the code is to compare different implement strategies with respect to speedup, memory footprint and energy consumption.
+This is a lightweight standalone implementation of [Parareal](https://en.wikipedia.org/wiki/Parareal) solving 3D Burger's equation using a forward Euler and a RK3SSP method as coarse and fine integrators. It contains three different implementations of Parareal, one based on MPI, one using OpenMP without pipelining and one using OpenMP with pipelining. All three versions compute the same result, the purpose of the code is to compare different implement strategies with respect to speedup, memory footprint and energy consumption.
+
+Attribution
+-----------
+You can freely use and reuse this code in line with the BSD license. 
+If you use it (or parts of it) for a publication, please cite
+
+@unpublished{Ruprecht2015,   
+  author = {Ruprecht, Daniel},    
+  howpublished = {arXiv:1509.06935 [cs.MS]},    
+  title = {{Implementing Parareal - OpenMP or MPI?}},    
+  url = {http://arxiv.org/abs/1509.06935},    
+  year = {2015}    
+}
+
+(this will be updated once published).
+
+Releases
+--------
+[![][image]][link]
+
+A description of the code and performance results can be found [here](http://arxiv.org/abs/1509.06935).
 
 Documentation
 -------------
@@ -43,7 +63,7 @@ There is a set of tests, some written in Fortran and some in Python. Just type *
 Who do I talk to?
 -----------------
 
-This code is written by Daniel Ruprecht.
+This code is written by [Daniel Ruprecht](http://www.parallelintime.org/groups/leeds.html).
 
 [image]:  https://zenodo.org/badge/doi/10.5281/zenodo.31288.svg
 [link]:  http://dx.doi.org/10.5281/zenodo.31288
