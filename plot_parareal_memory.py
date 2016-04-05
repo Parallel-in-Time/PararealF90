@@ -3,8 +3,10 @@ import numpy
 from matplotlib import pyplot as plt
 from pylab import rcParams
 from matplotlib.patches import Ellipse, Polygon
+from subprocess import call
 
 fs = 8
+compiler = 'cray'
 
 # Two functions to be used below
 def extract_memory(line):
@@ -17,6 +19,7 @@ def extract_memory(line):
   return memory
   
 Nprocs  = numpy.array([2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24])
+
 memory  = numpy.zeros([3,Nprocs.size])
 
 # Load serial energy
@@ -58,22 +61,25 @@ for tt in range(0,3):
   for ii in range(0,Nprocs.size):
     print ("Memory for Parareal "+type+" on "+str(ii)+" cores (MB): %4i" % memory[tt,ii])
     
-rcParams['figure.figsize'] = 6, 2.5   
+rcParams['figure.figsize'] = 2.5, 2.5   
 fig, ax = plt.subplots()
 ind = numpy.arange(Nprocs.size)
-width = 0.2
+width = 0.4
 rects1 = ax.bar( ind,         memory[0,:], width, color='b', hatch='x')
-rects2 = ax.bar( ind+width,   memory[1,:], width, color='g', hatch='\\')
-rects3 = ax.bar( ind+2*width, memory[2,:], width, color='r', hatch='-')
+rects2 = ax.bar( ind+width,   memory[2,:], width, color='r', hatch='\\')
+#rects3 = ax.bar( ind+2*width, memory[2,:], width, color='r', hatch='-')
 
-ax.plot( ind+1.5*width, memory_fine*Nprocs, 'k-', linewidth=1.0)
-#ax.plot( ind+1.5*width, (memory_fine+3)*Nprocs, 'k-', linewidth=2.5)
-ax.legend( (rects1[0], rects2[0], rects3[3]), ('MPI','OpenMP','OpenMP(pipe)'), loc=2, fontsize=fs)
-ax.set_xticks(ind+1.5*width)
+ax.plot( ind+1.0*width, memory_fine*Nprocs, 'k-', linewidth=1.0)
+ax.legend( (rects1[0], rects2[0]), ('MPI','OpenMP','OpenMP(pipe)'), loc=2, fontsize=fs)
+ax.set_xticks(ind+1.0*width)
 ax.set_xticklabels( ('2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '22', '24'))
+for label in ax.xaxis.get_ticklabels()[::2]:
+    label.set_visible(False)
 ax.tick_params(axis='both', which='major', labelsize=fs)
 ax.set_xlabel(r'Number of cores $P$', fontsize=fs)
 ax.set_ylabel(r'Memory in MByte $m(P)$', fontsize=fs, labelpad=5)
 ax.set_ylim([0, 350])
-plt.show()
-fig.savefig('Memory.pdf', bbox_inches='tight')
+#plt.show()
+filename = 'memory_dora_'+compiler+'.pdf'
+fig.savefig(filename, bbox_inches='tight')
+call(["pdfcrop", filename, filename])
