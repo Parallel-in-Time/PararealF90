@@ -7,11 +7,15 @@ fs = 8
 
 Nsamples   = 5
 
-machine = "dora"
+machine = "centos"
 
 if machine=="dora":
   Nprocs     = numpy.array([2, 4, 6, 8, 10, 12, 24])
 if machine=="cub":
+  Nprocs     = numpy.array([2, 4, 6, 8])
+if machine=="mac":
+  Nprocs     = numpy.array([2, 4, 6, 8])
+if machine=="centos":
   Nprocs     = numpy.array([2, 4, 6, 8])
 Niter      = 4
 timers     = numpy.zeros([3, Nprocs.size, Nsamples])
@@ -93,7 +97,7 @@ plt.xlabel(r'Number of cores $P$', fontsize=fs)
 plt.ylabel(r'Speedup $s(P)$', fontsize=fs, labelpad=2)
 if machine=="dora":
   plt.xticks([2,6,10,14,18,22], fontsize=fs)
-if machine=="cub":
+if machine=="cub" or machine=="centos":
   plt.xticks(Nprocs, fontsize=fs)
 
 plt.yticks(fontsize=fs)
@@ -105,6 +109,8 @@ filename = 'speedup_'+machine+'.pdf'
 fig.savefig(filename,bbox_inches='tight')
 call(["pdfcrop", filename, filename])
 #plt.show()
+
+rcParams['figure.figsize'] = 2.5, 2.5    
 
 fig = plt.figure()
 plt.plot(Nprocs, timers_avg[0,:], linewidth=1.0, marker='^', markersize=fs, color='b', label='MPI')
@@ -127,7 +133,7 @@ plt.tick_params(axis='both', which='major', labelsize=fs)
 plt.gca().set_ylim([2.0, 50.0])
 if machine=="dora":
   plt.gca().set_xticks([2,6,10,14,18,22])
-if machine=="cub":
+if machine=="cub" or machine=="centos":
   plt.gca().set_xticks(Nprocs)
 plt.gca().set_yticks([5, 10, 20, 50])
 plt.gca().set_yticklabels(["5", "10", "20", "50"])
@@ -135,7 +141,7 @@ plt.gca().get_yaxis().get_major_formatter().labelOnlyBase = False
 plt.grid(True)
 if machine=="dora":
   plt.legend(loc='upper right', prop={'size':fs})
-if machine=="cub":
+if machine=="cub" or machine=="centos":
   plt.legend(loc='lower left', prop={'size':fs})
 
 # Saveing figure
