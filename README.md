@@ -9,12 +9,12 @@ Attribution
 You can freely use and reuse this code in line with the BSD license. 
 If you use it (or parts of it) for a publication, please cite
 
-@unpublished{Ruprecht2015,   
-  author = {Ruprecht, Daniel},    
-  howpublished = {arXiv:1509.06935 [cs.MS]},    
-  title = {{Implementing Parareal - OpenMP or MPI?}},    
-  url = {http://arxiv.org/abs/1509.06935},    
-  year = {2015}    
+@unpublished{Ruprecht2017,  
+  author = {Ruprecht, Daniel},  
+  howpublished = {arXiv:1509.06935 [cs.MS]},  
+  title = {{A shared memory implementation of pipelined Parareal}},   
+  url = { https://arxiv.org/abs/1509.06935 },  
+  year = {2017}  
 }
 
 (this will be updated once published).

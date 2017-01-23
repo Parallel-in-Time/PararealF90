@@ -120,23 +120,23 @@ plt.plot(Nprocs, time_serial_f + 0.0*timers_avg[0,:], linewidth=1.0, color='k')
 nodes = list(Nprocs)
 ymax = max(map(max,timers_avg))+1.0
  
-NN = Nprocs[ numpy.size(Nprocs) - 2] - 0.75
+NN = Nprocs[ numpy.size(Nprocs) - 2] - 0.85
   
-plt.gca().annotate('Serial runtime', xy=( NN, 1.075*time_serial_f), xytext=( NN, 1.075*time_serial_f ), fontsize=fs-1)
-plt.gca().set_yscale('log')
+plt.gca().annotate('Serial runtime', xy=( NN, 1.075*time_serial_f), xytext=( NN, 1.075*time_serial_f ), fontsize=fs-1, fontweight='bold')
+#plt.gca().set_yscale('log')
 #plt.gca().set_xscale('log')
 plt.xlabel(r'Number of cores $P$', fontsize=fs)
-plt.ylabel('Runtime [sec.] (log-scaled)', fontsize=fs, labelpad=2)
+plt.ylabel('Runtime [sec.]', fontsize=fs, labelpad=2)
 
 plt.tick_params(axis='both', which='major', labelsize=fs)
 
-plt.gca().set_ylim([2.0, 50.0])
+plt.gca().set_ylim([0.0, 20.0])
 if machine=="dora":
   plt.gca().set_xticks([2,6,10,14,18,22])
 if machine=="cub" or machine=="centos":
   plt.gca().set_xticks(Nprocs)
-plt.gca().set_yticks([5, 10, 20, 50])
-plt.gca().set_yticklabels(["5", "10", "20", "50"])
+plt.gca().set_yticks([5, 10, 20])
+plt.gca().set_yticklabels(["5", "10", "20"])
 plt.gca().get_yaxis().get_major_formatter().labelOnlyBase = False
 plt.grid(True)
 if machine=="dora":

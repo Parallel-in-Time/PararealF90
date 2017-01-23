@@ -1,6 +1,1 @@
-F90 = /usr/local/bin/mpif90
-
-FCFLAGS = -cpp -O3 -fopenmp -Wtabs -ffree-line-length-none -Wall -fbackslash
-
-# Flags useful for debugging
-#FCFLAGS += -g -frecursive -ffree-form -frange-check -fbacktrace -fvar-tracking -C -Wconversion -fimplicit-none -Warray-temporaries -Wcharacter-truncation -Wline-truncation -fcheck=all -fbounds-check
+makefile.defs
