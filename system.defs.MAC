@@ -1,3 +1,3 @@
 mac
-/usr/local/bin/mpirun
+mpirun
 8
