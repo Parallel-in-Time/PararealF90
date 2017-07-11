@@ -13,7 +13,7 @@ If you use it (or parts of it) for a publication, please cite
   author = {Ruprecht, Daniel},  
   howpublished = {arXiv:1509.06935 [cs.MS]},  
   title = {{A shared memory implementation of pipelined Parareal}},   
-  url = {https://arxiv.org/abs/1509.06935},  
+  url = {{https://arxiv.org/abs/1509.06935}},  
   year = {2017}  
 }
 
