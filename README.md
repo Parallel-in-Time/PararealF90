@@ -9,15 +9,18 @@ Attribution
 You can freely use and reuse this code in line with the BSD license. 
 If you use it (or parts of it) for a publication, please cite
 
-@unpublished{Ruprecht2017,  
-  author = {Ruprecht, Daniel},  
-  howpublished = {arXiv:1509.06935 [cs.MS]},  
-  title = {{A shared memory implementation of pipelined Parareal}},   
-  url = { https://arxiv.org/abs/1509.06935 },  
-  year = {2017}  
+@inbook{Ruprecht2017_lncs,
+  author = {Ruprecht, Daniel},
+  booktitle = {Euro-Par 2017: Parallel Processing: 23rd International Conference on Parallel and Distributed Computing, Santiago de Compostela, Spain, August 28 -- September 1, 2017, Proceedings},
+  doi = {10.1007/978-3-319-64203-1_48},
+  editor = {Rivera, Francisco F. and Pena, Tom{\'a}s F. and Cabaleiro, Jos{\'e} C.},
+  pages = {669--681},
+  publisher = {Springer International Publishing},
+  url = {https://doi.org/10.1007/978-3-319-64203-1_48},
+  title = {Shared Memory Pipelined Parareal},
+  year = {2017}
 }
 
-(this will be updated once published).
 
 Releases
 --------
